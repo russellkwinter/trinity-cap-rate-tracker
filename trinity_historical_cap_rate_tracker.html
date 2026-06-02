@@ -1,0 +1,679 @@
+
+<!-- saved from url=(0092)file:///Users/russellkwinter/Downloads/trinity_cap_rate_tracker_bloomberg_functional_v4.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+:root{
+  --bg:#06090b;
+  --panel:#0d1317;
+  --panel2:#101820;
+  --panel3:#141e24;
+  --grid:#26343c;
+  --text:#e6edf0;
+  --muted:#8f9ca3;
+  --faint:#617077;
+  --line:#273640;
+  --trinity-green:#2f6f4f;
+  --trinity-olive:#7d8f42;
+  --trinity-maroon:#5b1732;
+  --trinity-slate:#24364d;
+  --terminal:#b8c95b;
+  --amber:#d7a63f;
+  --red:#b6464a;
+  --blue:#2f6f87;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text)}
+body{font-family:'Georgia',serif;font-size:12px}
+.wrap{padding-bottom:2rem;background:linear-gradient(180deg,#050709 0%,#0a1013 100%)}
+.hdr{background:#070b0d;color:var(--text);padding:14px 18px 0;border-bottom:1px solid var(--line);box-shadow:0 2px 18px rgba(0,0,0,.45)}
+.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--trinity-maroon) 0 36%,#f4f4f1 36% 48%,var(--trinity-slate) 48% 70%,var(--trinity-olive) 70%);border:1px solid #2b3439;border-radius:2px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0;color:transparent;flex-shrink:0}
+.hdr-title{font-size:15px;letter-spacing:2px;text-transform:uppercase;color:#f1f5f6}
+.hdr-sub{font-size:10px;color:var(--terminal);letter-spacing:1.8px;text-transform:uppercase;margin-top:3px}
+.tabs{display:flex;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.05)}
+.tab{background:transparent;color:var(--muted);border:none;border-right:1px solid rgba(255,255,255,.06);padding:9px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Georgia',serif;border-radius:0;transition:all .12s}
+.tab:hover{background:#0f171b;color:#fff}
+.tab.active{background:var(--terminal);color:#07100b;font-weight:bold}
+.body{background:transparent;padding:14px;max-width:1600px;margin:0 auto}
+.cr{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px;align-items:center;background:rgba(13,19,23,.72);border:1px solid var(--line);padding:7px 9px;border-radius:2px}
+.control-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:10px}
+@media(min-width:1100px){.control-grid{grid-template-columns:1fr 1fr}}
+.kpi-tape{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px;margin-bottom:10px}
+.kpi{background:#080d10;border:1px solid var(--line);border-left:3px solid var(--terminal);padding:8px 10px;border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.kv{font-size:17px;color:#f3f7f8;line-height:1.1}.kl{font-size:8px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-top:3px}
+.btn.ghost{background:#070b0d;color:#9fb0b6;border-color:#25333b}
+.btn.ghost:hover{color:#fff;border-color:var(--terminal)}
+.lbl{font-size:9px;color:var(--terminal);letter-spacing:1.4px;text-transform:uppercase;flex-shrink:0;min-width:84px;font-weight:bold}
+.grp{display:flex;gap:5px;flex-wrap:wrap}
+.btn{background:#0b1115;border:1px solid #31414a;border-radius:2px;padding:5px 9px;font-size:10px;cursor:pointer;font-family:'Georgia',serif;color:#cbd4d8;transition:all .1s;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.btn:hover{border-color:var(--terminal);color:#fff;background:#121b20}
+.btn.on{background:var(--terminal);color:#07100b;border-color:var(--terminal);font-weight:bold}
+.btn.r10.on{background:var(--trinity-maroon);color:#fff;border-color:#8f4763}
+.btn.r5.on{background:var(--blue);color:#fff;border-color:#5b9aae}
+.btn.rpr.on{background:var(--amber);color:#101010;border-color:#f2c05a}
+.cbox{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:12px;margin-bottom:10px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.ct{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;color:var(--terminal);margin-bottom:10px;font-weight:bold}
+.leg{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:10px;background:#0a0f12;border:1px solid rgba(255,255,255,.06);padding:7px 8px;border-radius:2px}
+.li{display:flex;align-items:center;gap:5px;font-size:10px;color:#c8d1d5}
+.ld{width:16px;height:4px;border-radius:1px;flex-shrink:0}
+.ldd{width:16px;height:0;border-top:2.5px dashed;flex-shrink:0}
+.lbar{width:12px;height:10px;border-radius:1px;flex-shrink:0;opacity:.85}
+.info{background:#0a0f12;border:1px solid var(--line);border-left:4px solid var(--terminal);border-radius:2px;padding:10px 12px;margin-bottom:10px;font-size:11px;color:#c8d1d5;line-height:1.65;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+.sc{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--terminal);border-radius:2px;padding:10px 11px;box-shadow:0 5px 20px rgba(0,0,0,.25)}
+.sv{font-size:20px;color:#f2f6f7;line-height:1.1}
+.sl{font-size:9px;color:var(--terminal);letter-spacing:1.4px;text-transform:uppercase;margin-top:4px}
+.ss{font-size:9px;color:var(--muted);margin-top:3px}
+.tw{background:var(--panel);border:1px solid var(--line);border-radius:2px;overflow-x:auto;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th{background:#0a0f12;color:var(--terminal);padding:8px 9px;text-align:left;font-size:8px;letter-spacing:1.4px;text-transform:uppercase;font-weight:bold;white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:7px 9px;border-bottom:1px solid #18242a;color:#d8e0e3;white-space:nowrap}
+tr:nth-child(even) td{background:#101820}
+tr:hover td{background:#17252d}
+.spg{color:#6fc68c;font-weight:bold}.spa{color:#e1b45a;font-weight:bold}.spr{color:#ef777c;font-weight:bold}
+.note{font-size:9px;color:var(--muted);margin-top:6px;text-align:right;letter-spacing:.2px}
+.rpanel{background:#0a0f12;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:2px;padding:10px 14px;margin-bottom:10px;font-size:11px;color:#c8d1d5;line-height:1.8}
+select{padding:5px 8px;border:1px solid #31414a;border-radius:2px;font-size:10px;font-family:'Georgia',serif;background:#0b1115;color:#e6edf0}
+canvas{background:transparent}
+::selection{background:var(--terminal);color:#07100b}
+</style>
+
+</head><body><div class="wrap">
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">T</div>
+    <div>
+      <div class="hdr-title">Trinity Development Group — Retail Cap Rate Tracker</div>
+      <div class="hdr-sub">Colliers + CBRE · GoC 10Y / 5Y / Prime · 2008 context · Q1 2018 – Q1 2026</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin:0 0 10px 52px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8f9ca3">
+    <span style="color:#b8c95b">LIVE VIEW: CUSTOM SERIES BUILDER</span>
+    <span>Rates 2008–Q1 2026</span>
+    <span>City retail Q1 2018–Q1 2026</span>
+    <span>Spread bars independently toggleable</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab(&#39;chart&#39;)">Chart View</button>
+    <button class="tab" onclick="showTab(&#39;rates&#39;)">Rate Environment</button>
+    <button class="tab" onclick="showTab(&#39;spread&#39;)">Spread Analysis</button>
+    <button class="tab" onclick="showTab(&#39;compare&#39;)">Colliers vs CBRE</button>
+    <button class="tab" onclick="showTab(&#39;table&#39;)">Full Data Table</button>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- CHART TAB -->
+<div id="tab-chart">
+  <div class="cr">
+    <span class="lbl">City</span>
+    <div class="grp" id="cc">
+      <button class="btn on" onclick="setCity(&#39;Toronto&#39;)">Toronto</button>
+      <button class="btn" onclick="setCity(&#39;Ottawa&#39;)">Ottawa</button>
+      <button class="btn" onclick="setCity(&#39;Calgary&#39;)">Calgary</button>
+      <button class="btn" onclick="setCity(&#39;Montreal&#39;)">Montréal</button>
+    </div>
+  </div>
+  <div class="cr">
+    <span class="lbl">Type</span>
+    <div class="grp" id="ct">
+      <button class="btn" onclick="setType(&#39;rp&#39;)">Regional/Power</button>
+      <button class="btn" onclick="setType(&#39;gc&#39;)">Grocery/Community</button>
+      <button class="btn on" onclick="setType(&#39;ns&#39;)">Neighbourhood/Strip</button>
+    </div>
+  </div>
+  <div class="control-grid">
+    <div class="cr">
+      <span class="lbl">Cap series</span>
+      <button class="btn on" id="scol" onclick="togSrc(&#39;col&#39;)">Colliers City Mid</button>
+      <button class="btn on" id="lcolRange" onclick="togLine(&#39;colRange&#39;)">Colliers Range</button>
+      <button class="btn" id="scbre" onclick="togSrc(&#39;cbre&#39;)">CBRE City Mid</button>
+      <button class="btn" id="lnat" onclick="togLine(&#39;nat&#39;)">National Retail</button>
+      <button class="btn" id="lcbreNat" onclick="togLine(&#39;cbreNat&#39;)">CBRE National</button>
+      <button class="btn" id="liso" onclick="togLine(&#39;iso&#39;)">Isolated Points</button>
+    </div>
+    <div class="cr">
+      <span class="lbl">Rate lines</span>
+      <button class="btn r10" id="r10" onclick="tog(&#39;r10&#39;)">GoC 10Y</button>
+      <button class="btn r5 on" id="r5" onclick="tog(&#39;r5&#39;)">GoC 5Y</button>
+      <button class="btn rpr" id="rpr" onclick="tog(&#39;rpr&#39;)">Prime Rate</button>
+    </div>
+    <div class="cr">
+      <span class="lbl">Spread bars</span>
+      <button class="btn r10" id="sp10" onclick="togSpread(&#39;s10&#39;)">Spread vs 10Y</button>
+      <button class="btn r5 on" id="sp5" onclick="togSpread(&#39;s5&#39;)">Spread vs 5Y</button>
+      <button class="btn rpr" id="sppr" onclick="togSpread(&#39;spr&#39;)">Spread vs Prime</button>
+    </div>
+    <div class="cr">
+      <span class="lbl">Presets</span>
+      <button class="btn ghost" onclick="preset(&#39;clean&#39;)">Clean City View</button>
+      <button class="btn ghost" onclick="preset(&#39;rates&#39;)">Rates Only</button>
+      <button class="btn ghost" onclick="preset(&#39;spreads&#39;)">Spread Builder</button>
+      <button class="btn ghost" onclick="preset(&#39;all&#39;)">All On</button>
+    </div>
+  </div>
+  <div class="kpi-tape" id="kpiTape">
+    <div class="kpi"><div class="kv">5.63%</div><div class="kl">Toronto Neighbourhood/Strip mid</div></div>
+    <div class="kpi"><div class="kv" style="color:#5b1732">3.43%</div><div class="kl">GoC 10Y</div></div>
+    <div class="kpi"><div class="kv" style="color:#2f6f87">3.17%</div><div class="kl">GoC 5Y</div></div>
+    <div class="kpi"><div class="kv" style="color:#8a6f2a">4.45%</div><div class="kl">Prime</div></div>
+    <div class="kpi"><div class="kv">2.20%</div><div class="kl">Spread vs 10Y</div></div>
+    <div class="kpi"><div class="kv">2.46%</div><div class="kl">Spread vs 5Y</div></div></div>
+  <div class="cbox">
+    <div class="ct" id="cht">Toronto — Neighbourhood/Strip</div>
+    <div class="leg" id="chleg"><div class="li"><div class="ld" style="background:#7d8f42"></div>Colliers midpoint</div><div class="li"><div class="lbar" style="background:#7d8f42"></div>Colliers range</div><div class="li"><div class="lbar" style="background:rgba(47,111,135,.50)"></div>Spread vs GoC 5Y (right axis)</div><div class="li"><div class="ldd" style="border-color:#2f6f87"></div>GoC 5Y</div></div>
+    <div style="position:relative;height:430px"><canvas id="mainC" role="img" aria-label="Cap rate chart" style="box-sizing: border-box; display: block; height: 430px; width: 1416px;" width="2832" height="860">Cap rate data.</canvas></div>
+  </div>
+  <div class="info" id="chins"><strong style="color:#e6edf0">Toronto Neighbourhood/Strip:</strong> Latest Colliers midpoint <strong>5.63%</strong>. Current spreads: <strong>2.20%</strong> vs 10Y, <strong>2.46%</strong> vs 5Y, <strong>1.18%</strong> vs Prime. Visible spread bars are controlled independently below, so nothing is implicit.</div>
+  <div class="note">2008–2017 national context is approximate and not city-specific. Q4 2011, Q2 2013, Q2 2016, and Q2 2017 show isolated city points. Q1 2018–Q1 2026 uses quarterly city-level data. All cap-rate, rate, reference, isolated-point, and spread-bar series can be independently toggled, so the chart can be built up from scratch like a research terminal.</div>
+</div>
+
+<!-- RATES TAB -->
+<div id="tab-rates" style="display:none">
+  <div class="rpanel">
+    <strong>Three rate benchmarks — what each means for Trinity:</strong><br>
+    <span style="display:inline-block;width:16px;height:3px;background:#5b1732;vertical-align:middle;margin-right:4px;border-radius:2px"></span><strong>GoC 10Y</strong> — institutional benchmark. Spread vs cap rate shows if retail is cheap or expensive vs bonds.<br>
+    <span style="display:inline-block;width:16px;height:3px;background:#2f6f87;vertical-align:middle;margin-right:4px;border-radius:2px;border-top:none"></span><strong>GoC 5Y</strong> — most Canadian commercial mortgages price off this. Directly affects acquisition financing.<br>
+    <span style="display:inline-block;width:16px;height:3px;background:#8a6f2a;vertical-align:middle;margin-right:4px;border-radius:2px"></span><strong>Prime Rate</strong> — floating construction loans price off Prime. With Trinity developing 2.2M sq ft, this hits project budgets directly.
+  </div>
+  <div class="cbox">
+    <div class="ct">All three rate benchmarks — Q1 2018 to Q1 2026</div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#5b1732"></div>GoC 10Y</div>
+      <div class="li"><div class="ldd" style="border-color:#2f6f87"></div>GoC 5Y</div>
+      <div class="li"><div class="ldd" style="border-color:#8a6f2a;border-style:dotted"></div>Prime Rate</div>
+    </div>
+    <div style="position:relative;height:300px"><canvas id="ratesC" role="img" aria-label="Rate environment">Rate chart.</canvas></div>
+  </div>
+  <div class="sg">
+    <div class="sc"><div class="sv" style="color:#5b1732">3.43%</div><div class="sl">GoC 10Y — Q1 2026</div><div class="ss">Peak: 4.22% Q3 2023</div></div>
+    <div class="sc"><div class="sv" style="color:#2f6f87">3.17%</div><div class="sl">GoC 5Y — Q1 2026</div><div class="ss">Peak: 4.78% Q3 2023</div></div>
+    <div class="sc"><div class="sv" style="color:#8a6f2a">4.45%</div><div class="sl">Prime — Q1 2026</div><div class="ss">Peak: 7.20% Q3–Q4 2023</div></div>
+    <div class="sc"><div class="sv">0.59%</div><div class="sl">Trough GoC 10Y</div><div class="ss">Q2–Q3 2020</div></div>
+    <div class="sc"><div class="sv">+354 bps</div><div class="sl">10Y rate hike</div><div class="ss">Dec 2020 → Sep 2023</div></div>
+    <div class="sc"><div class="sv">+475 bps</div><div class="sl">Prime rate hike</div><div class="ss">Mar 2022 → Jul 2023</div></div>
+  </div>
+  <div class="note">Source: Bank of Canada. Quarter-end values.</div>
+</div>
+
+<!-- SPREAD TAB -->
+<div id="tab-spread" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Spread = Colliers midpoint − selected benchmark (quarter-end).</strong> The zero line is key — below it means cap rates have been compressed below the benchmark. Switch the benchmark to see how the story changes: vs Prime Rate shows development feasibility; vs GoC 5Y shows mortgage financing context.
+  </div>
+  <div class="cr">
+    <span class="lbl">City</span>
+    <div class="grp" id="spc">
+      <button class="btn on" onclick="setSpCity(&#39;Toronto&#39;)">Toronto</button>
+      <button class="btn" onclick="setSpCity(&#39;Ottawa&#39;)">Ottawa</button>
+      <button class="btn" onclick="setSpCity(&#39;Calgary&#39;)">Calgary</button>
+      <button class="btn" onclick="setSpCity(&#39;Montreal&#39;)">Montréal</button>
+    </div>
+  </div>
+  <div class="cr">
+    <span class="lbl">Benchmark</span>
+    <button class="btn r10 on" id="sb10" onclick="setSpB(&#39;10y&#39;)">GoC 10Y</button>
+    <button class="btn r5" id="sb5" onclick="setSpB(&#39;5y&#39;)">GoC 5Y</button>
+    <button class="btn rpr" id="sbpr" onclick="setSpB(&#39;pr&#39;)">Prime Rate</button>
+  </div>
+  <div class="sg" id="spst"></div>
+  <div class="cbox">
+    <div class="ct" id="sptit">Spread over GoC 10Y — Toronto</div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#0f3460"></div>Regional/Power</div>
+      <div class="li"><div class="ldd" style="border-color:#3a6f53"></div>Grocery/Community</div>
+      <div class="li"><div class="ldd" style="border-color:#7d8f42;border-style:dotted"></div>Neighbourhood/Strip</div>
+      <div class="li"><div class="ldd" style="border-color:rgba(226,75,74,.6)"></div>Zero line</div>
+    </div>
+    <div style="position:relative;height:270px"><canvas id="spC" role="img" aria-label="Spread chart">Spread data.</canvas></div>
+  </div>
+  <div class="note">Colliers data only. Quarter-end yields from Bank of Canada.</div>
+</div>
+
+<!-- COMPARE TAB -->
+<div id="tab-compare" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Colliers vs CBRE — same market, different survey methodology.</strong> Differences of 25–75 bps are normal and expected. CBRE gaps appear as breaks in the line. CBRE Regional/Power = average of CBRE's "Regional" and "Sector/Power" subcategories.
+  </div>
+  <div class="cr">
+    <span class="lbl">City</span>
+    <div class="grp" id="cmpc">
+      <button class="btn on" onclick="setCmpC(&#39;Toronto&#39;)">Toronto</button>
+      <button class="btn" onclick="setCmpC(&#39;Ottawa&#39;)">Ottawa</button>
+      <button class="btn" onclick="setCmpC(&#39;Calgary&#39;)">Calgary</button>
+      <button class="btn" onclick="setCmpC(&#39;Montreal&#39;)">Montréal</button>
+    </div>
+  </div>
+  <div class="cr">
+    <span class="lbl">Type</span>
+    <div class="grp" id="cmpt">
+      <button class="btn on" onclick="setCmpT(&#39;rp&#39;)">Regional/Power</button>
+      <button class="btn" onclick="setCmpT(&#39;gc&#39;)">Grocery/Community</button>
+      <button class="btn" onclick="setCmpT(&#39;ns&#39;)">Neighbourhood/Strip</button>
+    </div>
+  </div>
+  <div class="cbox">
+    <div class="ct" id="cmptit">Colliers vs CBRE — Toronto Regional/Power</div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#7d8f42"></div>Colliers midpoint</div>
+      <div class="li"><div class="lbar" style="background:#7d8f42"></div>Colliers range</div>
+      <div class="li"><div class="ldd" style="border-color:#5b1732"></div>CBRE midpoint (confirmed quarters only)</div>
+    </div>
+    <div style="position:relative;height:280px"><canvas id="cmpC" role="img" aria-label="Broker comparison">Colliers vs CBRE.</canvas></div>
+  </div>
+  <div class="note">CBRE R/P = avg of Regional + Sector/Power subcategories. confirmed quarters only; gaps remain breaks.</div>
+</div>
+
+<!-- TABLE TAB -->
+<div id="tab-table" style="display:none">
+  <div class="cr">
+    <span class="lbl">City</span>
+    <select id="tbcity" onchange="renderTable()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+    <span class="lbl" style="margin-left:8px">Source</span>
+    <select id="tbsrc" onchange="renderTable()"><option value="col">Colliers</option><option value="cbre">CBRE</option></select>
+  </div>
+  <div class="tw"><table><thead><tr>
+    <th>Quarter</th><th>R/P Low</th><th>R/P High</th><th>R/P Mid</th>
+    <th>G/C Low</th><th>G/C High</th><th>G/C Mid</th>
+    <th>N/S Low</th><th>N/S High</th><th>N/S Mid</th>
+    <th>GoC 10Y</th><th>GoC 5Y</th><th>Prime</th><th>R/P Sprd</th><th>G/C Sprd</th>
+  </tr></thead><tbody id="tbb"><tr><td style="font-weight:bold;color:#24364d">Q1 2018</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">2.09%</td><td style="color:#2f6f87">1.86%</td><td style="color:#8a6f2a">3.45%</td><td class="spg">2.54%</td><td class="spg">3.54%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2018</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">2.28%</td><td style="color:#2f6f87">2.10%</td><td style="color:#8a6f2a">3.45%</td><td class="spa">2.35%</td><td class="spg">3.35%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2018</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">2.43%</td><td style="color:#2f6f87">2.32%</td><td style="color:#8a6f2a">3.45%</td><td class="spa">2.20%</td><td class="spg">3.20%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2018</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">1.97%</td><td style="color:#2f6f87">1.88%</td><td style="color:#8a6f2a">3.95%</td><td class="spg">2.66%</td><td class="spg">3.66%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2019</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">1.70%</td><td style="color:#2f6f87">1.52%</td><td style="color:#8a6f2a">3.95%</td><td class="spg">2.93%</td><td class="spg">3.93%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2019</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">1.47%</td><td style="color:#2f6f87">1.31%</td><td style="color:#8a6f2a">3.95%</td><td class="spg">3.16%</td><td class="spg">4.16%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2019</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">1.37%</td><td style="color:#2f6f87">1.26%</td><td style="color:#8a6f2a">3.95%</td><td class="spg">3.26%</td><td class="spg">4.26%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2019</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">1.70%</td><td style="color:#2f6f87">1.68%</td><td style="color:#8a6f2a">3.95%</td><td class="spg">2.93%</td><td class="spg">3.93%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2020</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>5.75%</td><td style="font-weight:bold">5.25%</td><td style="color:#5b1732">0.70%</td><td style="color:#2f6f87">0.57%</td><td style="color:#8a6f2a">3.45%</td><td class="spg">3.93%</td><td class="spg">4.93%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2020</td><td>4.25%</td><td>5.00%</td><td style="font-weight:bold">4.63%</td><td>5.25%</td><td>6.00%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">0.59%</td><td style="color:#2f6f87">0.39%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">4.04%</td><td class="spg">5.04%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2020</td><td>4.25%</td><td>5.25%</td><td style="font-weight:bold">4.75%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">0.59%</td><td style="color:#2f6f87">0.42%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">4.16%</td><td class="spg">5.16%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2020</td><td>4.25%</td><td>5.25%</td><td style="font-weight:bold">4.75%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>4.75%</td><td>7.25%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">0.68%</td><td style="color:#2f6f87">0.49%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">4.07%</td><td class="spg">5.07%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2021</td><td>4.50%</td><td>5.50%</td><td style="font-weight:bold">5.00%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">1.55%</td><td style="color:#2f6f87">1.14%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">3.45%</td><td class="spg">4.20%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2021</td><td>4.50%</td><td>5.50%</td><td style="font-weight:bold">5.00%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">1.39%</td><td style="color:#2f6f87">1.00%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">3.61%</td><td class="spg">4.36%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2021</td><td>4.50%</td><td>5.50%</td><td style="font-weight:bold">5.00%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">1.53%</td><td style="color:#2f6f87">1.22%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">3.47%</td><td class="spg">4.22%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2021</td><td>4.50%</td><td>5.50%</td><td style="font-weight:bold">5.00%</td><td>5.00%</td><td>6.25%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">1.71%</td><td style="color:#2f6f87">1.53%</td><td style="color:#8a6f2a">2.45%</td><td class="spg">3.29%</td><td class="spg">3.92%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2022</td><td>4.50%</td><td>5.50%</td><td style="font-weight:bold">5.00%</td><td>5.00%</td><td>6.25%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">2.71%</td><td style="color:#2f6f87">2.55%</td><td style="color:#8a6f2a">2.70%</td><td class="spa">2.29%</td><td class="spg">2.92%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2022</td><td>4.75%</td><td>5.50%</td><td style="font-weight:bold">5.13%</td><td>5.00%</td><td>6.25%</td><td style="font-weight:bold">5.63%</td><td>4.75%</td><td>6.00%</td><td style="font-weight:bold">5.38%</td><td style="color:#5b1732">3.20%</td><td style="color:#2f6f87">3.19%</td><td style="color:#8a6f2a">3.70%</td><td class="spa">1.93%</td><td class="spa">2.43%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2022</td><td>5.00%</td><td>6.00%</td><td style="font-weight:bold">5.50%</td><td>5.00%</td><td>6.25%</td><td style="font-weight:bold">5.63%</td><td>5.00%</td><td>6.00%</td><td style="font-weight:bold">5.50%</td><td style="color:#5b1732">3.61%</td><td style="color:#2f6f87">3.82%</td><td style="color:#8a6f2a">4.70%</td><td class="spa">1.89%</td><td class="spa">2.02%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2022</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.30%</td><td style="color:#2f6f87">3.46%</td><td style="color:#8a6f2a">6.45%</td><td class="spg">2.83%</td><td class="spg">2.70%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2023</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">2.90%</td><td style="color:#2f6f87">3.10%</td><td style="color:#8a6f2a">6.70%</td><td class="spg">3.23%</td><td class="spg">3.10%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2023</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.64%</td><td style="color:#2f6f87">4.14%</td><td style="color:#8a6f2a">6.95%</td><td class="spa">2.49%</td><td class="spa">2.36%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2023</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">4.22%</td><td style="color:#2f6f87">4.78%</td><td style="color:#8a6f2a">7.20%</td><td class="spa">1.91%</td><td class="spa">1.78%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2023</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.11%</td><td style="color:#2f6f87">3.68%</td><td style="color:#8a6f2a">7.20%</td><td class="spg">3.02%</td><td class="spg">2.89%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2024</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.59%</td><td style="color:#2f6f87">3.87%</td><td style="color:#8a6f2a">7.20%</td><td class="spg">2.54%</td><td class="spa">2.41%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2024</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.47%</td><td style="color:#2f6f87">3.58%</td><td style="color:#8a6f2a">7.20%</td><td class="spg">2.66%</td><td class="spg">2.53%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2024</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.10%</td><td style="color:#2f6f87">2.89%</td><td style="color:#8a6f2a">6.45%</td><td class="spg">3.03%</td><td class="spg">2.90%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2024</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.25%</td><td style="color:#2f6f87">2.96%</td><td style="color:#8a6f2a">5.95%</td><td class="spg">2.88%</td><td class="spg">2.75%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2025</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">2.98%</td><td style="color:#2f6f87">2.61%</td><td style="color:#8a6f2a">5.45%</td><td class="spg">3.15%</td><td class="spg">3.02%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q2 2025</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.26%</td><td style="color:#2f6f87">2.77%</td><td style="color:#8a6f2a">5.20%</td><td class="spg">2.87%</td><td class="spg">2.74%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q3 2025</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td>5.50%</td><td>6.50%</td><td style="font-weight:bold">6.00%</td><td style="color:#5b1732">3.18%</td><td style="color:#2f6f87">2.85%</td><td style="color:#8a6f2a">4.70%</td><td class="spg">2.95%</td><td class="spg">2.82%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q4 2025</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td>5.25%</td><td>6.25%</td><td style="font-weight:bold">5.75%</td><td style="color:#5b1732">3.21%</td><td style="color:#2f6f87">2.74%</td><td style="color:#8a6f2a">4.45%</td><td class="spg">2.92%</td><td class="spg">2.54%</td></tr><tr><td style="font-weight:bold;color:#24364d">Q1 2026</td><td>5.50%</td><td>6.75%</td><td style="font-weight:bold">6.13%</td><td>5.00%</td><td>6.00%</td><td style="font-weight:bold">5.50%</td><td>5.00%</td><td>6.25%</td><td style="font-weight:bold">5.63%</td><td style="color:#5b1732">3.43%</td><td style="color:#2f6f87">3.17%</td><td style="color:#8a6f2a">4.45%</td><td class="spg">2.70%</td><td class="spa">2.07%</td></tr></tbody></table></div>
+  <div class="note">Spread = midpoint − GoC 10Y. Green ≥2.5%, amber 1.5–2.5%, red &lt;1.5%.</div>
+</div>
+
+</div></div>
+
+<script src="./trinity_historical_cap_rate_tracker_files/chart.umd.js"></script>
+<script>
+const QS=['Q1 2019','Q2 2019','Q3 2019','Q4 2019','Q1 2020','Q2 2020','Q3 2020','Q4 2020','Q1 2021','Q2 2021','Q3 2021','Q4 2021','Q1 2022','Q2 2022','Q3 2022','Q4 2022','Q1 2023','Q2 2023','Q3 2023','Q4 2023','Q1 2024','Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026'];
+const R10=[1.70,1.47,1.37,1.70,0.70,0.59,0.59,0.68,1.55,1.39,1.53,1.71,2.71,3.20,3.61,3.30,2.90,3.64,4.22,3.11,3.59,3.47,3.10,3.25,2.98,3.26,3.18,3.21,3.43];
+const R5=[1.52,1.31,1.26,1.68,0.57,0.39,0.42,0.49,1.14,1.00,1.22,1.53,2.55,3.19,3.82,3.46,3.10,4.14,4.78,3.68,3.87,3.58,2.89,2.96,2.61,2.77,2.85,2.74,3.17];
+const PR=[3.95,3.95,3.95,3.95,3.45,2.45,2.45,2.45,2.45,2.45,2.45,2.45,2.70,3.70,4.70,6.45,6.70,6.95,7.20,7.20,7.20,7.20,6.45,5.95,5.45,5.20,4.70,4.45,4.45];
+
+const COL={
+Toronto:[[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,6.00],[4.25,5.25,5.25,6.25,4.75,6.00],[4.25,5.25,5.25,6.25,4.75,7.25],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.00,6.25,4.75,6.00],[4.50,5.50,5.00,6.25,4.75,6.00],[4.75,5.50,5.00,6.25,4.75,6.00],[5.00,6.00,5.00,6.25,5.00,6.00],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.25,6.25,5.25,6.25],[5.50,6.75,5.00,6.00,5.00,6.25]],
+Ottawa:[[5.00,5.50,6.00,6.50,6.25,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.50,6.50,6.00,6.50,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[6.00,6.75,6.00,6.75,6.00,7.00],[6.25,6.75,6.25,6.75,6.25,7.00],[6.25,6.75,6.25,6.75,6.25,7.00],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,5.75,6.75,6.00,7.00]],
+Calgary:[[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.25,5.25,6.25,5.50,6.75],[5.50,6.50,5.50,6.50,5.75,7.00],[5.50,6.50,5.50,6.50,5.75,7.00],[5.50,6.50,5.50,6.50,5.75,7.00],[5.75,6.75,5.75,6.75,6.00,7.25],[5.75,6.75,5.75,6.75,6.00,7.25],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.00,7.00],[5.75,6.75,5.50,6.50,5.75,6.75],[5.75,6.75,5.75,6.25,5.75,6.75]],
+Montreal:[[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.25,7.00,6.00,7.00],[4.75,6.50,6.25,7.00,6.50,7.50],[5.25,6.50,6.25,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.00,6.50,6.00,7.00,6.50,7.50],[5.50,6.50,6.50,7.00,7.00,7.50],[5.00,6.00,5.50,6.50,6.00,7.00],[5.50,6.25,5.75,6.75,6.00,7.00],[5.00,6.00,5.50,6.50,6.00,7.00],[5.00,6.00,6.00,7.00,6.00,7.00],[5.50,6.50,5.50,6.50,5.50,6.50],[6.00,6.50,6.25,6.75,6.50,7.00],[6.00,6.50,6.25,6.75,6.50,7.00],[6.00,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.50,6.50,7.00],[6.00,7.00,6.00,6.75,6.25,7.00],[6.00,7.00,6.00,6.75,6.25,7.00]]
+};
+const CBRE={
+Toronto:[[4.25,5.25,5.00,6.25,5.00,5.50],[4.25,5.25,5.00,6.25,4.75,6.00],[4.25,5.50,5.00,6.25,4.75,6.00],null,[4.25,5.50,5.00,6.25,5.00,5.50],[4.25,5.50,5.00,6.25,4.75,6.00],[4.25,5.50,5.00,6.25,4.75,6.00],[4.25,6.00,5.00,6.25,4.75,6.00],[4.25,6.00,5.00,6.25,4.75,6.00],null,null,[4.25,6.00,5.00,6.25,4.50,5.75],null,[4.25,5.00,5.00,6.25,4.50,5.75],null,null,[5.00,6.50,5.50,6.50,5.00,5.75],[5.25,6.75,5.75,6.75,5.25,6.00],null,null,null,null,null,null,[5.25,7.00,5.75,6.75,5.00,6.00],[5.25,7.00,5.50,6.50,5.00,6.00],null,null,[5.25,7.00,5.50,6.50,5.00,6.00]],
+Ottawa:[[5.00,5.75,6.00,6.75,6.25,7.00],[5.00,5.75,6.00,6.50,6.00,7.00],[5.00,5.75,6.00,6.50,6.00,7.00],null,[5.00,5.75,6.00,6.75,5.75,6.50],[5.00,5.75,5.75,6.50,5.50,6.25],[5.00,5.75,5.75,6.75,5.75,6.50],[5.00,5.75,5.75,6.50,5.50,6.25],[5.00,5.75,5.75,6.75,5.50,6.25],null,null,[5.00,5.75,5.75,6.75,4.75,5.50],null,[5.25,5.75,6.00,6.75,5.75,6.25],null,null,[5.75,6.00,5.75,6.00,6.25,6.50],[6.00,6.25,6.25,6.75,6.50,7.00],null,null,null,null,null,null,[6.00,6.50,6.00,6.75,6.25,6.75],[6.00,6.50,6.00,7.00,6.25,6.75],null,null,[6.00,7.00,5.75,6.75,6.00,7.00]],
+Calgary:[[4.75,5.50,5.25,6.00,5.50,6.00],[4.75,5.50,5.25,6.00,5.50,6.00],[4.75,5.50,5.50,6.00,5.50,6.00],null,[4.75,5.50,5.75,6.25,5.50,6.00],[4.75,6.75,5.50,6.25,5.50,6.25],[5.00,6.00,5.50,6.25,5.75,6.50],[5.00,6.00,6.50,7.00,5.75,6.50],[5.00,6.00,6.50,7.50,5.50,6.00],null,null,[5.00,6.00,6.50,7.00,5.25,5.75],null,[5.00,6.25,5.25,6.25,5.50,5.75],null,null,[5.25,6.25,5.25,6.50,5.75,6.25],[5.75,6.75,5.75,6.75,5.25,5.75],null,null,null,null,null,null,[5.50,6.50,5.50,6.50,5.00,5.50],[5.50,6.00,5.75,6.75,5.25,5.75],null,null,[5.50,6.50,5.75,6.25,5.75,6.75]],
+Montreal:[[5.00,5.75,6.00,6.75,5.25,6.00],[5.25,5.75,6.00,6.75,5.50,6.00],[5.25,5.75,6.25,6.75,5.75,6.25],null,[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,7.25,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],null,null,[5.50,6.00,6.25,6.75,5.75,6.25],null,[6.00,6.50,6.75,7.25,6.25,6.75],null,null,[6.00,6.50,5.50,6.50,6.25,6.75],[6.25,6.75,6.00,6.75,6.50,7.00],null,null,null,null,null,null,[6.00,6.75,6.25,6.75,6.00,6.50],[6.00,6.75,6.25,6.75,6.00,6.50],null,null,[6.75,7.50,6.00,6.75,6.25,7.25]]
+};
+
+// --- 2018 expansion + historical context added June 2026 ---
+(function expandTo2018(){
+  const q18=['Q1 2018','Q2 2018','Q3 2018','Q4 2018'];
+  QS.unshift(...q18);
+  R10.unshift(2.09,2.28,2.43,1.97);
+  R5.unshift(1.86,2.10,2.32,1.88);
+  PR.unshift(3.45,3.45,3.45,3.95);
+
+  COL.Toronto.unshift(
+    [4.25,5.00,5.25,6.00,4.75,5.75],
+    [4.25,5.00,5.25,6.00,4.75,5.75],
+    [4.25,5.00,5.25,6.00,4.75,5.75],
+    [4.25,5.00,5.25,6.00,4.75,5.75]
+  );
+  COL.Ottawa.unshift(
+    [5.00,5.50,6.00,6.50,6.25,7.00],
+    [5.00,5.50,6.00,6.50,6.25,7.00],
+    [5.00,5.50,6.00,6.50,6.25,7.00],
+    [5.00,5.50,6.00,6.50,6.25,7.00]
+  );
+  COL.Calgary.unshift(
+    [5.25,6.00,5.25,6.00,5.50,6.50],
+    [5.25,6.00,5.25,6.25,5.50,6.50],
+    [5.25,6.00,5.25,6.00,5.50,6.50],
+    [5.25,6.00,5.25,6.00,5.50,6.50]
+  );
+  COL.Montreal.unshift(
+    [4.75,6.50,6.75,7.50,6.25,7.25],
+    [4.75,6.50,6.75,7.50,6.25,7.25],
+    [4.75,6.50,6.75,7.50,6.25,7.25],
+    [4.75,6.50,6.75,7.50,6.25,7.25]
+  );
+  CBRE.Toronto.unshift([4.25,5.25,5.00,6.25,5.00,5.50],null,null,null);
+  CBRE.Ottawa.unshift(null,null,null,null);
+  CBRE.Calgary.unshift(null,null,null,null);
+  CBRE.Montreal.unshift(null,null,null,null);
+})();
+
+const HIST_LABELS=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017'];
+const HIST_GOC10=[2.68,3.61,3.12,1.94,1.79,3.01,1.79,1.40,1.72,2.04];
+const HIST_GOC5=[2.46,2.95,2.41,1.43,1.33,2.17,1.32,0.73,1.11,1.82];
+const HIST_PRIME=[3.50,2.25,3.00,3.00,3.00,3.00,3.00,2.70,2.70,3.20];
+const NAT_RETAIL_BY_YEAR={2008:6.9,2009:7.4,2010:7.0,2011:6.5,2012:6.3,2013:6.1,2014:6.1,2015:6.0,2016:5.8,2017:5.7,2018:5.7,2019:5.7,2020:5.6,2021:5.4,2022:5.8,2023:6.2,2024:6.3,2025:6.4,2026:5.8};
+const CBRE_NATIONAL_BY_YEAR={2008:7.6,2009:7.5,2010:7.0,2011:6.5,2012:6.2,2013:6.0,2014:5.9,2015:5.8,2016:5.8,2017:5.8,2018:5.7,2019:5.6,2020:5.6,2021:5.7,2022:6.1,2023:6.6,2024:6.6,2025:6.6,2026:6.6};
+function yearOfLabel(q){return +(String(q).match(/(20\d\d|19\d\d)/)||[])[0]}
+function natRetailSeries(){return [...HIST_LABELS.map(y=>NAT_RETAIL_BY_YEAR[y]),...QS.map(q=>NAT_RETAIL_BY_YEAR[yearOfLabel(q)])]}
+function cbreNationalSeries(){return [...HIST_LABELS.map(y=>CBRE_NATIONAL_BY_YEAR[y]),...QS.map(q=>CBRE_NATIONAL_BY_YEAR[yearOfLabel(q)])]}
+function padded(a){return Array(HIST_LABELS.length).fill(null).concat(a)}
+function fullRate(hist,q){return hist.concat(q)}
+function activeSpreadRate(){return (rOn.r5&&!rOn.r10)?{key:'5y',name:'GoC 5Y',hist:HIST_GOC5,q:R5,color:'#2f6f87'}:{key:'10y',name:'GoC 10Y',hist:HIST_GOC10,q:R10,color:'#5b1732'}}
+function typeIndicesForIso(t){return t==='rp'?[0,1]:t==='gc'?[2,3]:[4,5]}
+const ISO_POINTS={
+  '2011':{quarter:'Q4 2011',source:'Colliers single-quarter city table',Toronto:[5.75,6.50,6.50,7.50,6.00,7.25],Calgary:[5.50,6.00,6.00,6.75,6.25,7.25],Montreal:[5.75,6.75,7.00,7.75,7.00,7.75],Ottawa:null},
+  '2013':{quarter:'Q2 2013',source:'Colliers single-quarter city table',Toronto:[4.75,5.75,6.00,6.75,5.75,6.75],Ottawa:[5.00,5.50,6.00,6.50,7.00,7.50],Calgary:[5.50,6.00,6.00,6.75,6.25,7.00],Montreal:[5.75,6.75,6.90,7.75,7.00,7.75]},
+  '2016':{quarter:'Q2 2016',source:'CBRE table, R/P and N/S synthesized from subcategory rows',Toronto:[5.00,6.00,null,null,5.25,6.25],Ottawa:[5.38,6.13,null,null,5.63,6.38],Calgary:[5.38,5.88,null,null,5.38,5.88],Montreal:[5.38,6.25,null,null,6.25,7.00]},
+  '2017':{quarter:'Q2 2017',source:'CBRE table, R/P and N/S synthesized from subcategory rows',Toronto:[5.00,6.00,null,null,5.13,6.25],Ottawa:[5.38,6.13,null,null,5.63,6.38],Calgary:[5.13,5.63,null,null,5.13,5.63],Montreal:[5.38,6.25,null,null,6.13,6.88]}
+};
+function isolatedSeries(c,t){
+  const [lo,hi]=typeIndicesForIso(t);
+  return HIST_LABELS.map(y=>{
+    const r=ISO_POINTS[y]&&ISO_POINTS[y][c];
+    if(!r||r[lo]==null||r[hi]==null)return null;
+    return +m(r[lo],r[hi]).toFixed(2);
+  }).concat(Array(QS.length).fill(null));
+}
+const contextZonePlugin={id:'contextZone',beforeDatasetsDraw(chart){
+  const {ctx,chartArea,scales}=chart; if(!chartArea||!scales.x)return;
+  const x0=chartArea.left, x1=scales.x.getPixelForValue(HIST_LABELS.length-.5);
+  ctx.save(); ctx.fillStyle='rgba(88,104,92,.07)'; ctx.fillRect(x0,chartArea.top,x1-x0,chartArea.bottom-chartArea.top);
+  ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(58,111,83,.7)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x1,chartArea.top); ctx.lineTo(x1,chartArea.bottom); ctx.stroke();
+  ctx.setLineDash([]); ctx.fillStyle='#3a6f53'; ctx.font='10px Georgia'; ctx.translate(x1+8,chartArea.top+105); ctx.rotate(-Math.PI/2); ctx.fillText('City-level data begins',0,0); ctx.restore();
+}};
+Chart.register(contextZonePlugin);
+
+function m(a,b){return Math.round((a+b)/2*100)/100}
+function ti(t){return t==='rp'?[0,1]:t==='gc'?[2,3]:[4,5]}
+function tn(t){return{rp:'Regional/Power',gc:'Grocery/Community',ns:'Neighbourhood/Strip'}[t]}
+function ra(k){return k==='10y'?R10:k==='5y'?R5:PR}
+function rn(k){return k==='10y'?'GoC 10Y':k==='5y'?'GoC 5Y':'Prime Rate'}
+function rc(k){return k==='10y'?'#5b1732':k==='5y'?'#2f6f87':'#8a6f2a'}
+
+// State
+let city='Toronto',type='rp',spCity='Toronto',spB='10y',cmpC='Toronto',cmpT='rp';
+let rOn={r10:true,r5:true,rpr:false};
+let sOn={col:true,cbre:true,nat:true,cbreNat:true,iso:true,colRange:true};
+let spOn={s10:true,s5:false,spr:false};
+let charts={};
+function kill(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+
+function setCity(c){
+  city=c;
+  document.querySelectorAll('#cc .btn').forEach(b=>b.classList.toggle('on',b.textContent===c||(c==='Montreal'&&b.textContent==='Montréal')));
+  renderMain();
+}
+function setType(t){
+  type=t;
+  document.querySelectorAll('#ct .btn').forEach(b=>b.classList.toggle('on',b.onclick.toString().includes("'"+t+"'")));
+  renderMain();
+}
+function tog(id){
+  rOn[id]=!rOn[id];
+  document.getElementById(id).classList.toggle('on',rOn[id]);
+  renderMain();
+}
+function togSrc(s){
+  sOn[s]=!sOn[s];
+  document.getElementById('s'+s).classList.toggle('on',sOn[s]);
+  renderMain();
+}
+function togLine(k){
+  sOn[k]=!sOn[k];
+  const el=document.getElementById('l'+k);
+  if(el) el.classList.toggle('on',sOn[k]);
+  renderMain();
+}
+function togSpread(k){
+  spOn[k]=!spOn[k];
+  const id=k==='s10'?'sp10':k==='s5'?'sp5':'sppr';
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('on',spOn[k]);
+  renderMain();
+}
+function setAll(obj,val){Object.keys(obj).forEach(k=>obj[k]=val)}
+function syncButtons(){
+  ['col','cbre'].forEach(k=>{const el=document.getElementById('s'+k); if(el) el.classList.toggle('on',sOn[k]);});
+  ['nat','cbreNat','iso','colRange'].forEach(k=>{const el=document.getElementById('l'+k); if(el) el.classList.toggle('on',sOn[k]);});
+  ['r10','r5','rpr'].forEach(k=>{const el=document.getElementById(k); if(el) el.classList.toggle('on',rOn[k]);});
+  [['s10','sp10'],['s5','sp5'],['spr','sppr']].forEach(([k,id])=>{const el=document.getElementById(id); if(el) el.classList.toggle('on',spOn[k]);});
+}
+function preset(p){
+  if(p==='clean'){setAll(sOn,false);sOn.col=true;sOn.colRange=true;sOn.nat=true;setAll(rOn,false);rOn.r10=true;setAll(spOn,false);spOn.s10=true;}
+  if(p==='rates'){setAll(sOn,false);setAll(rOn,true);setAll(spOn,false);}
+  if(p==='spreads'){setAll(sOn,false);sOn.col=true;sOn.nat=true;setAll(rOn,false);rOn.r10=true;rOn.r5=true;setAll(spOn,false);spOn.s10=true;spOn.s5=true;}
+  if(p==='all'){setAll(sOn,true);setAll(rOn,true);spOn.s10=true;spOn.s5=true;spOn.spr=false;}
+  syncButtons();renderMain();
+}
+function setSpCity(c){
+  spCity=c;
+  document.querySelectorAll('#spc .btn').forEach(b=>b.classList.toggle('on',b.textContent===c||(c==='Montreal'&&b.textContent==='Montréal')));
+  renderSpread();
+}
+function setSpB(b){
+  spB=b;
+  ['sb10','sb5','sbpr'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',['10y','5y','pr'][i]===b));
+  renderSpread();
+}
+function setCmpC(c){
+  cmpC=c;
+  document.querySelectorAll('#cmpc .btn').forEach(b=>b.classList.toggle('on',b.textContent===c||(c==='Montreal'&&b.textContent==='Montréal')));
+  renderCompare();
+}
+function setCmpT(t){
+  cmpT=t;
+  document.querySelectorAll('#cmpt .btn').forEach(b=>b.classList.toggle('on',b.onclick.toString().includes("'"+t+"'")));
+  renderCompare();
+}
+
+function renderMain(){
+  const d=COL[city];
+  const cd=CBRE[city];
+  const [lo,hi]=ti(type);
+  document.getElementById('cht').textContent=`${city} — ${tn(type)}`;
+
+  const mids=d.map(r=>+m(r[lo],r[hi]).toFixed(2));
+  const lows=d.map(r=>r[lo]);
+  const highs=d.map(r=>r[hi]);
+  const spreadDefs={
+    s10:{name:'GoC 10Y',hist:HIST_GOC10,q:R10,color:'#5b1732'},
+    s5:{name:'GoC 5Y',hist:HIST_GOC5,q:R5,color:'#2f6f87'},
+    spr:{name:'Prime',hist:HIST_PRIME,q:PR,color:'#8a6f2a'}
+  };
+  const spreadsBy={};
+  Object.keys(spreadDefs).forEach(k=>{
+    const b=spreadDefs[k];
+    const qSp=mids.map((v,i)=>+(v-b.q[i]).toFixed(2));
+    const hSp=HIST_LABELS.map((y,i)=>+(NAT_RETAIL_BY_YEAR[y]-b.hist[i]).toFixed(2));
+    spreadsBy[k]=[...hSp,...qSp];
+  });
+  const activeSpreadKey=spOn.s10?'s10':spOn.s5?'s5':spOn.spr?'spr':'s10';
+  const spreadBench=spreadDefs[activeSpreadKey];
+  const spreads=mids.map((v,i)=>+(v-spreadBench.q[i]).toFixed(2));
+  const cbreMids=cd.map(r=>r?+m(r[lo],r[hi]).toFixed(2):null);
+  const mainLabels=[...HIST_LABELS,...QS];
+  const isoData=isolatedSeries(city,type);
+
+  // Compute y-axis range — include all visible data
+  let allVals=[];
+  if(sOn.col) allVals.push(...mids);
+  if(sOn.colRange) allVals.push(...lows,...highs);
+  if(sOn.nat) allVals.push(...natRetailSeries());
+  if(sOn.cbreNat) allVals.push(...cbreNationalSeries());
+  if(sOn.iso) allVals.push(...isoData.filter(x=>x!==null));
+  if(sOn.cbre) allVals.push(...cbreMids.filter(x=>x!==null));
+  if(rOn.r10) allVals.push(...fullRate(HIST_GOC10,R10));
+  if(rOn.r5) allVals.push(...fullRate(HIST_GOC5,R5));
+  if(rOn.rpr) allVals.push(...fullRate(HIST_PRIME,PR));
+  if(!allVals.length) allVals=[0,1];
+  const yMin=Math.max(0,Math.floor(Math.min(...allVals)*4)/4-0.25);
+  const yMax=Math.ceil(Math.max(...allVals)*4)/4+0.25;
+
+  // Insight
+  const last=mids[mids.length-1];
+  const b10=spreadBench.q[spreadBench.q.length-1];
+  const sp=(last-b10).toFixed(2);
+  const minSp=Math.min(...spreads).toFixed(2);
+  const minQ=QS[spreads.indexOf(Math.min(...spreads))];
+  document.getElementById('chins').innerHTML=`<strong style="color:#e6edf0">${city} ${tn(type)}:</strong> Latest Colliers midpoint <strong>${last}%</strong>. Current spreads: <strong>${(last-R10[R10.length-1]).toFixed(2)}%</strong> vs 10Y, <strong>${(last-R5[R5.length-1]).toFixed(2)}%</strong> vs 5Y, <strong>${(last-PR[PR.length-1]).toFixed(2)}%</strong> vs Prime. Visible spread bars are controlled independently below, so nothing is implicit.`;
+  const kt=document.getElementById('kpiTape');
+  if(kt){kt.innerHTML=`
+    <div class="kpi"><div class="kv">${last.toFixed(2)}%</div><div class="kl">${city} ${tn(type)} mid</div></div>
+    <div class="kpi"><div class="kv" style="color:#5b1732">${R10[R10.length-1].toFixed(2)}%</div><div class="kl">GoC 10Y</div></div>
+    <div class="kpi"><div class="kv" style="color:#2f6f87">${R5[R5.length-1].toFixed(2)}%</div><div class="kl">GoC 5Y</div></div>
+    <div class="kpi"><div class="kv" style="color:#8a6f2a">${PR[PR.length-1].toFixed(2)}%</div><div class="kl">Prime</div></div>
+    <div class="kpi"><div class="kv">${(last-R10[R10.length-1]).toFixed(2)}%</div><div class="kl">Spread vs 10Y</div></div>
+    <div class="kpi"><div class="kv">${(last-R5[R5.length-1]).toFixed(2)}%</div><div class="kl">Spread vs 5Y</div></div>`;}
+
+  // Build legend
+  const legEl=document.getElementById('chleg');
+  let legHTML='';
+  if(sOn.nat) legHTML+='<div class="li"><div class="ldd" style="border-color:#6f6f72"></div>National retail avg. 2008–2026 (estimated)</div>';
+  if(sOn.cbreNat) legHTML+='<div class="li"><div class="ldd" style="border-color:#3a6f53"></div>CBRE national all-property avg. reference</div>';
+  if(sOn.iso) legHTML+='<div class="li"><div class="ld" style="width:10px;height:10px;transform:rotate(45deg);background:#0b1115;border:2px solid #2f6f87"></div>Isolated city points</div>';
+  if(sOn.col) legHTML+=`<div class="li"><div class="ld" style="background:#7d8f42"></div>Colliers midpoint</div>`;
+  if(sOn.colRange) legHTML+=`<div class="li"><div class="lbar" style="background:#7d8f42"></div>Colliers range</div>`;
+  if(sOn.cbre) legHTML+=`<div class="li"><div class="ldd" style="border-color:#5b1732"></div>CBRE midpoint</div>`;
+  if(spOn.s10) legHTML+=`<div class="li"><div class="lbar" style="background:rgba(91,23,50,.55)"></div>Spread vs GoC 10Y (right axis)</div>`;
+  if(spOn.s5) legHTML+=`<div class="li"><div class="lbar" style="background:rgba(47,111,135,.50)"></div>Spread vs GoC 5Y (right axis)</div>`;
+  if(spOn.spr) legHTML+=`<div class="li"><div class="lbar" style="background:rgba(138,111,42,.45)"></div>Spread vs Prime (right axis)</div>`;
+  if(rOn.r10) legHTML+=`<div class="li"><div class="ld" style="background:#5b1732"></div>GoC 10Y</div>`;
+  if(rOn.r5) legHTML+=`<div class="li"><div class="ldd" style="border-color:#2f6f87"></div>GoC 5Y</div>`;
+  if(rOn.rpr) legHTML+=`<div class="li"><div class="ldd" style="border-color:#8a6f2a;border-style:dotted"></div>Prime Rate</div>`;
+  legEl.innerHTML=legHTML;
+
+  // Build datasets
+  const ds=[];
+  const spreadColors={s10:'rgba(91,23,50,.48)',s5:'rgba(47,111,135,.42)',spr:'rgba(138,111,42,.36)'};
+  Object.keys(spOn).forEach(k=>{
+    if(spOn[k]) ds.push({type:'bar',label:'Spread vs '+spreadDefs[k].name,data:spreadsBy[k],backgroundColor:spreadsBy[k].map(v=>spreadColors[k]),borderColor:'transparent',yAxisID:'yr',order:8,barPercentage:.8,categoryPercentage:.72});
+  });
+
+  if(sOn.nat) ds.push({type:'line',label:'Colliers national retail avg. (est.)',data:natRetailSeries(),borderColor:'#6f6f72',backgroundColor:'transparent',borderWidth:2,borderDash:[7,4],pointRadius:2,pointBackgroundColor:'#fff',pointBorderColor:'#6f6f72',pointBorderWidth:1.5,tension:.25,yAxisID:'yl',order:0});
+  if(sOn.cbreNat) ds.push({type:'line',label:'CBRE national all-property avg. (ref.)',data:cbreNationalSeries(),borderColor:'#3a6f53',backgroundColor:'transparent',borderWidth:1.8,borderDash:[2,4],pointRadius:0,tension:.25,yAxisID:'yl',order:0});
+  if(sOn.iso) ds.push({type:'line',label:'Isolated city data points',data:isoData,showLine:false,pointStyle:'rectRot',pointRadius:7,pointHoverRadius:9,pointBackgroundColor:'#fff',pointBorderColor:'#2f6f87',pointBorderWidth:2.5,yAxisID:'yl',order:1});
+
+  if(sOn.colRange){
+    ds.push({type:'line',label:'Range high',data:padded(highs),borderColor:'rgba(125,143,66,.2)',backgroundColor:'rgba(125,143,66,.1)',borderWidth:1,pointRadius:0,fill:'+1',tension:.3,yAxisID:'yl',order:5});
+    ds.push({type:'line',label:'Range low',data:padded(lows),borderColor:'rgba(125,143,66,.2)',borderWidth:1,pointRadius:0,fill:false,tension:.3,yAxisID:'yl',order:6});
+  }
+  if(sOn.col){
+    ds.push({type:'line',label:'Colliers',data:padded(mids),borderColor:'#7d8f42',backgroundColor:'#7d8f42',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#7d8f42',tension:.3,yAxisID:'yl',order:2});
+  }
+  if(sOn.cbre){
+    ds.push({type:'line',label:'CBRE',data:padded(cbreMids),borderColor:'#5b1732',borderDash:[5,4],borderWidth:2.5,pointRadius:6,pointStyle:'rectRot',pointBackgroundColor:'#fff',pointBorderColor:'#5b1732',pointBorderWidth:2.5,tension:.3,spanGaps:false,yAxisID:'yl',order:3});
+  }
+  if(rOn.r10) ds.push({type:'line',label:'GoC 10Y',data:fullRate(HIST_GOC10,R10),borderColor:'#5b1732',backgroundColor:'transparent',borderWidth:2,pointRadius:2,pointBackgroundColor:'#5b1732',tension:.4,yAxisID:'yl',order:1});
+  if(rOn.r5) ds.push({type:'line',label:'GoC 5Y',data:fullRate(HIST_GOC5,R5),borderColor:'#2f6f87',backgroundColor:'transparent',borderWidth:2,borderDash:[6,3],pointRadius:2,pointBackgroundColor:'#2f6f87',tension:.4,yAxisID:'yl',order:1});
+  if(rOn.rpr) ds.push({type:'line',label:'Prime Rate',data:fullRate(HIST_PRIME,PR),borderColor:'#8a6f2a',backgroundColor:'transparent',borderWidth:2,borderDash:[3,3],pointRadius:2,pointBackgroundColor:'#8a6f2a',tension:.3,yAxisID:'yl',order:1});
+
+  kill('main');
+  const ctx=document.getElementById('mainC').getContext('2d');
+  charts.main=new Chart(ctx,{
+    data:{labels:mainLabels,datasets:ds},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>{
+          if(c.dataset.label==='Range high') return `  Cap rate high: ${c.parsed.y}%`;
+          if(c.dataset.label==='Range low') return `  Cap rate low: ${c.parsed.y}%`;
+          if(c.dataset.label.startsWith('Spread vs')) return `  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`;
+          if(c.dataset.label==='Isolated city data points'){const meta=ISO_POINTS[String(c.label)]; return meta?`  ${meta.quarter} ${city}: ${c.parsed.y.toFixed(2)}% midpoint (${meta.source})`:`  Isolated point: ${c.parsed.y.toFixed(2)}%`;}
+          if(c.parsed.y===null) return `  ${c.dataset.label}: — (no data)`;
+          return `  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`;
+        }}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},
+        yl:{type:'linear',position:'left',grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:yMin,max:yMax,title:{display:true,text:'Rate / Cap Rate (%)',font:{size:9},color:'#8f9ca3'}},
+        yr:{type:'linear',position:'right',grid:{display:false},ticks:{font:{size:9},color:'#3a6f53',callback:v=>v+'%'},title:{display:true,text:'Spread (%)',font:{size:9},color:'#8f9ca3'},min:-3,max:6}
+      }
+    }
+  });
+}
+
+function renderRatesTab(){
+  kill('rates');
+  const ctx=document.getElementById('ratesC').getContext('2d');
+  charts.rates=new Chart(ctx,{type:'line',data:{labels:[...HIST_LABELS,...QS],datasets:[
+    {label:'GoC 10Y',data:fullRate(HIST_GOC10,R10),borderColor:'#5b1732',backgroundColor:'transparent',borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#5b1732',tension:.4},
+    {label:'GoC 5Y',data:fullRate(HIST_GOC5,R5),borderColor:'#2f6f87',backgroundColor:'transparent',borderWidth:2.5,borderDash:[6,3],pointRadius:3,pointBackgroundColor:'#2f6f87',tension:.4},
+    {label:'Prime Rate',data:fullRate(HIST_PRIME,PR),borderColor:'#8a6f2a',backgroundColor:'transparent',borderWidth:2.5,borderDash:[3,3],pointRadius:3,pointBackgroundColor:'#8a6f2a',tension:.3},
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:10},boxWidth:20,color:'#c8d1d5'}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},y:{grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:0,max:8}}}});
+}
+
+function renderSpread(){
+  const d=COL[spCity];
+  const rate=ra(spB);
+  document.getElementById('sptit').textContent=`Spread over ${rn(spB)} — ${spCity}`;
+  const rp=d.map((r,i)=>+(m(r[0],r[1])-rate[i]).toFixed(2));
+  const gc=d.map((r,i)=>+(m(r[2],r[3])-rate[i]).toFixed(2));
+  const ns=d.map((r,i)=>+(m(r[4],r[5])-rate[i]).toFixed(2));
+  const latR=rate[rate.length-1];
+  const latRP=m(d[d.length-1][0],d[d.length-1][1]);
+  const latGC=m(d[d.length-1][2],d[d.length-1][3]);
+  document.getElementById('spst').innerHTML=`
+    <div class="sc"><div class="sv" style="color:${rc(spB)}">${latR.toFixed(2)}%</div><div class="sl">${rn(spB)} — Q1 2026</div></div>
+    <div class="sc"><div class="sv">${latRP.toFixed(2)}%</div><div class="sl">R/P Midpoint — Q1 2026</div><div class="ss">${spCity} (Colliers)</div></div>
+    <div class="sc"><div class="sv">${(latRP-latR).toFixed(2)}%</div><div class="sl">R/P Spread</div></div>
+    <div class="sc"><div class="sv">${(latGC-latR).toFixed(2)}%</div><div class="sl">G/C Spread</div></div>`;
+  const all=[...rp,...gc,...ns];
+  const sMin=Math.floor(Math.min(...all)*4)/4-0.25;
+  const sMax=Math.ceil(Math.max(...all)*4)/4+0.25;
+  kill('sp');
+  const ctx=document.getElementById('spC').getContext('2d');
+  charts.sp=new Chart(ctx,{type:'line',data:{labels:QS,datasets:[
+    {label:'R/P',data:rp,borderColor:'#0f3460',backgroundColor:'transparent',borderWidth:2.5,pointRadius:3,tension:.3},
+    {label:'G/C',data:gc,borderColor:'#3a6f53',backgroundColor:'transparent',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3},
+    {label:'N/S',data:ns,borderColor:'#7d8f42',backgroundColor:'transparent',borderWidth:2,borderDash:[2,2],pointRadius:3,tension:.3},
+    {label:'Zero',data:QS.map(()=>0),borderColor:'rgba(226,75,74,.5)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[6,4],pointRadius:0},
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:9},boxWidth:20,color:'#c8d1d5',filter:i=>i.text!=='Zero'}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},y:{grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:sMin,max:sMax,title:{display:true,text:`Spread over ${rn(spB)} (%)`,font:{size:9},color:'#8f9ca3'}}}}});
+}
+
+function renderCompare(){
+  const cd=COL[cmpC];
+  const bd=CBRE[cmpC];
+  const [lo,hi]=ti(cmpT);
+  document.getElementById('cmptit').textContent=`Colliers vs CBRE — ${cmpC} ${tn(cmpT)}`;
+  const cMids=cd.map(r=>+m(r[lo],r[hi]).toFixed(2));
+  const cLo=cd.map(r=>r[lo]);
+  const cHi=cd.map(r=>r[hi]);
+  const bMids=bd.map(r=>r?+m(r[lo],r[hi]).toFixed(2):null);
+  const allV=[...cMids,...bMids.filter(x=>x!==null),...cLo,...cHi];
+  const yMin=Math.max(3,Math.floor(Math.min(...allV)*4)/4-0.25);
+  const yMax=Math.ceil(Math.max(...allV)*4)/4+0.25;
+  kill('cmp');
+  const ctx=document.getElementById('cmpC').getContext('2d');
+  charts.cmp=new Chart(ctx,{data:{labels:QS,datasets:[
+    {type:'line',label:'Range high',data:cHi,borderColor:'rgba(201,168,76,.2)',backgroundColor:'rgba(201,168,76,.08)',borderWidth:1,pointRadius:0,fill:'+1',tension:.3,order:4},
+    {type:'line',label:'Range low',data:cLo,borderColor:'rgba(201,168,76,.2)',borderWidth:1,pointRadius:0,fill:false,tension:.3,order:5},
+    {type:'line',label:'Colliers',data:cMids,borderColor:'#7d8f42',backgroundColor:'#7d8f42',borderWidth:2.5,pointRadius:4,fill:false,tension:.3,order:2},
+    {type:'line',label:'CBRE',data:bMids,borderColor:'#5b1732',backgroundColor:'transparent',borderWidth:2.5,borderDash:[5,4],pointRadius:6,pointStyle:'rectRot',pointBackgroundColor:'#fff',pointBorderColor:'#5b1732',pointBorderWidth:2.5,fill:false,tension:.3,spanGaps:false,order:3},
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:10},boxWidth:20,color:'#c8d1d5',filter:i=>i.text!=='Range high'&&i.text!=='Range low'}},tooltip:{callbacks:{label:c=>{if(c.dataset.label==='Range high')return`  Colliers high: ${c.parsed.y}%`;if(c.dataset.label==='Range low')return`  Colliers low: ${c.parsed.y}%`;return`  ${c.dataset.label}: ${c.parsed.y!==null?c.parsed.y.toFixed(2)+'%':'— (no data)'}`}}}},scales:{x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},y:{grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:yMin,max:yMax}}}});
+}
+
+function renderTable(){
+  const c=document.getElementById('tbcity').value;
+  const s=document.getElementById('tbsrc').value;
+  const data=s==='col'?COL[c]:CBRE[c];
+  const tb=document.getElementById('tbb');
+  tb.innerHTML='';
+  QS.forEach((q,i)=>{
+    const r=data[i];
+    if(!r){tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td colspan="14" style="color:#8f9ca3;font-style:italic">No ${s==='cbre'?'CBRE ':''} data confirmed for this quarter</td></tr>`;return}
+    const rpm=m(r[0],r[1]),gcm=m(r[2],r[3]),nsm=m(r[4],r[5]);
+    const rps=+(rpm-R10[i]).toFixed(2),gcs=+(gcm-R10[i]).toFixed(2);
+    const sc=v=>{const cl=v>=2.5?'spg':v>=1.5?'spa':'spr';return`<td class="${cl}">${v.toFixed(2)}%</td>`};
+    tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td>${r[0].toFixed(2)}%</td><td>${r[1].toFixed(2)}%</td><td style="font-weight:bold">${rpm.toFixed(2)}%</td><td>${r[2].toFixed(2)}%</td><td>${r[3].toFixed(2)}%</td><td style="font-weight:bold">${gcm.toFixed(2)}%</td><td>${r[4].toFixed(2)}%</td><td>${r[5].toFixed(2)}%</td><td style="font-weight:bold">${nsm.toFixed(2)}%</td><td style="color:#5b1732">${R10[i].toFixed(2)}%</td><td style="color:#2f6f87">${R5[i].toFixed(2)}%</td><td style="color:#8a6f2a">${PR[i].toFixed(2)}%</td>${sc(rps)}${sc(gcs)}</tr>`;
+  });
+}
+
+function showTab(t){
+  ['chart','rates','spread','compare','table'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'':'none');
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['chart','rates','spread','compare','table'][i]===t));
+  if(t==='rates'&&!charts.rates) renderRatesTab();
+  if(t==='spread') renderSpread();
+  if(t==='compare') renderCompare();
+  if(t==='table') renderTable();
+}
+
+renderMain();
+renderTable();
+</script>
+</body></html>
