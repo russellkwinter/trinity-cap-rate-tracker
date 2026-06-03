@@ -1,5 +1,4 @@
 
-<link rel="icon" href="data:,">
 <style>
 :root{
   --bg:#06090b;
@@ -74,7 +73,32 @@ tr:hover td{background:#17252d}
 .rpanel{background:#0a0f12;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:2px;padding:10px 14px;margin-bottom:10px;font-size:11px;color:#c8d1d5;line-height:1.8}
 select{padding:5px 8px;border:1px solid #31414a;border-radius:2px;font-size:10px;font-family:'Georgia',serif;background:#0b1115;color:#e6edf0}
 canvas{background:transparent}
+
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:10px}
+.answer-box{background:#080d10;border:1px solid var(--line);border-left:4px solid var(--terminal);padding:12px;border-radius:2px;min-height:82px;line-height:1.65;color:#d8e0e3}
+.ask-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ask-input{flex:1;min-width:260px;background:#0b1115;border:1px solid #31414a;color:#e6edf0;font-family:Georgia,serif;font-size:12px;padding:8px 10px;border-radius:2px}
+.pill{display:inline-block;border:1px solid #31414a;background:#0b1115;color:#cbd4d8;padding:5px 8px;border-radius:2px;font-size:10px;margin:0 5px 5px 0;cursor:pointer}
+.pill:hover{border-color:var(--terminal);color:#fff}
 ::selection{background:var(--terminal);color:#07100b}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+@media(min-width:1050px){.grid2{grid-template-columns:1fr 1fr}}
+.memo-card{background:linear-gradient(180deg,#0d1317 0%,#0a0f12 100%);border:1px solid var(--line);border-radius:2px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.memo-toolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px;background:#080d10;border:1px solid rgba(255,255,255,.06);padding:8px;border-radius:2px}
+.memo-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:1050px){.memo-grid{grid-template-columns:1fr 1fr}}
+.memo-field{display:flex;flex-direction:column;gap:5px}
+.memo-label{font-size:9px;color:var(--terminal);letter-spacing:1.3px;text-transform:uppercase;font-weight:bold}
+.memo-area{width:100%;min-height:118px;resize:vertical;background:#070b0d;border:1px solid #31414a;color:#e6edf0;font-family:Georgia,serif;font-size:12px;line-height:1.55;padding:10px;border-radius:2px;box-shadow:inset 0 1px 8px rgba(0,0,0,.25)}
+.memo-area:focus{outline:none;border-color:var(--terminal);box-shadow:0 0 0 2px rgba(184,201,91,.12)}
+.memo-wide{grid-column:1/-1}.memo-wide .memo-area{min-height:150px}
+.mini-metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0 10px}
+.mini-metric{background:#080d10;border:1px solid var(--line);border-left:3px solid var(--terminal);padding:8px 9px}
+.mini-metric strong{display:block;font-size:14px;color:#f2f6f7}.mini-metric span{font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.score-pill{display:inline-block;padding:2px 7px;border-radius:2px;border:1px solid #31414a;background:#0b1115;color:#e6edf0;font-weight:bold}
+.score-high{background:rgba(111,198,140,.12);border-color:#6fc68c;color:#8fe3aa}.score-mid{background:rgba(225,180,90,.12);border-color:#e1b45a;color:#f1c86d}.score-low{background:rgba(239,119,124,.12);border-color:#ef777c;color:#ff9297}
+
 </style>
 
 <div class="wrap">
@@ -90,10 +114,15 @@ canvas{background:transparent}
     <span style="color:#b8c95b">LIVE VIEW: CUSTOM SERIES BUILDER</span>
     <span>Rates 2008–Q1 2026</span>
     <span>City retail Q1 2018–Q1 2026</span>
-    <span>Spread bars independently toggleable</span>
+    <span>Spread bars independently toggleable</span><span>Market Compare + Macro + Intelligence + Offline Assistant</span>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('chart')">Chart View</button>
+    <button class="tab" onclick="showTab('market')">Market Compare</button>
+    <button class="tab" onclick="showTab('macro')">Macro Context</button>
+    <button class="tab" onclick="showTab('assistant')">Data Assistant</button>
+    <button class="tab" onclick="showTab('tools')">Deal Lens</button>
+    <button class="tab" onclick="showTab('intel')">Market Intelligence</button>
     <button class="tab" onclick="showTab('rates')">Rate Environment</button>
     <button class="tab" onclick="showTab('spread')">Spread Analysis</button>
     <button class="tab" onclick="showTab('compare')">Colliers vs CBRE</button>
@@ -131,6 +160,7 @@ canvas{background:transparent}
       <button class="btn on" id="lnat" onclick="togLine('nat')">National Retail</button>
       <button class="btn on" id="lcbreNat" onclick="togLine('cbreNat')">CBRE National</button>
       <button class="btn on" id="liso" onclick="togLine('iso')">Isolated Points</button>
+      <button class="btn on" id="lcycle" onclick="togLine('cycle')">Cycle Shading</button>
     </div>
     <div class="cr">
       <span class="lbl">Rate lines</span>
@@ -160,6 +190,224 @@ canvas{background:transparent}
   </div>
   <div class="info" id="chins">Loading...</div>
   <div class="note">2008–2017 national context is approximate and not city-specific. Q4 2011, Q2 2013, Q2 2016, and Q2 2017 show isolated city points. Q1 2018–Q1 2026 uses quarterly city-level data. All cap-rate, rate, reference, isolated-point, and spread-bar series can be independently toggled, so the chart can be built up from scratch like a research terminal.</div>
+</div>
+
+
+<!-- MARKET COMPARE TAB -->
+<div id="tab-market" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Market Compare:</strong> Compare Colliers city-level retail midpoint cap rates across markets and categories. This tab uses exact quarterly city data from Q1 2018 to Q1 2026, so it is separated from the national historical context series.
+  </div>
+  <div class="control-grid">
+    <div class="cr">
+      <span class="lbl">Compare mode</span>
+      <button class="btn on" id="mcModeCities" onclick="setMarketMode('cities')">Cities, same category</button>
+      <button class="btn" id="mcModeCats" onclick="setMarketMode('cats')">Categories, same city</button>
+      <button class="btn" id="mcModeMatrix" onclick="setMarketMode('matrix')">Latest matrix</button>
+    </div>
+    <div class="cr" id="mcCityToggles">
+      <span class="lbl">City toggles</span>
+      <button class="btn on" id="mcCityToronto" onclick="togMcCity('Toronto')">Toronto</button>
+      <button class="btn on" id="mcCityOttawa" onclick="togMcCity('Ottawa')">Ottawa</button>
+      <button class="btn" id="mcCityCalgary" onclick="togMcCity('Calgary')">Calgary</button>
+      <button class="btn" id="mcCityMontreal" onclick="togMcCity('Montreal')">Montréal</button>
+      <button class="btn ghost" onclick="setMcCities(['Toronto','Ottawa','Calgary','Montreal'])">All cities</button>
+      <button class="btn ghost" onclick="setMcCities(['Toronto','Calgary'])">Toronto vs Calgary</button>
+    </div>
+    <div class="cr">
+      <span class="lbl">Category</span>
+      <select id="mcType" onchange="renderMarketCompare()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
+      <span class="lbl" style="margin-left:8px">City</span>
+      <select id="mcCity" onchange="renderMarketCompare()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+    </div>
+  </div>
+  <div class="sg" id="mcCards"></div>
+  <div class="cbox">
+    <div class="ct" id="mcTitle">Market comparison</div>
+    <div style="position:relative;height:360px"><canvas id="marketC" role="img" aria-label="Market comparison chart">Market comparison data.</canvas></div>
+  </div>
+  <div class="tw"><table><thead><tr><th>Series</th><th>Q1 2018</th><th>Q1 2026</th><th>Change</th><th>Max</th><th>Min</th></tr></thead><tbody id="mcTable"></tbody></table></div>
+</div>
+
+<!-- MACRO CONTEXT TAB -->
+<div id="tab-macro" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Macro Context:</strong> Exact macro series only. CPI is Canada annual average inflation from Statistics Canada Table 18-10-0005-01. Interest-rate series use year-end values from Bank of Canada data already loaded in the dashboard. No estimated macro figures are used here.
+  </div>
+  <div class="cr">
+    <span class="lbl">Macro series</span>
+    <button class="btn on" id="macroCpi" onclick="togMacro('cpi')">CPI inflation</button>
+    <button class="btn r10 on" id="macro10" onclick="togMacro('g10')">GoC 10Y</button>
+    <button class="btn r5 on" id="macro5" onclick="togMacro('g5')">GoC 5Y</button>
+    <button class="btn rpr" id="macroPrime" onclick="togMacro('prime')">Prime</button>
+  </div>
+  <div class="sg" id="macroCards"></div>
+  <div class="cbox">
+    <div class="ct">Macro series, annual view</div>
+    <div style="position:relative;height:350px"><canvas id="macroC" role="img" aria-label="Macro context chart">Macro context data.</canvas></div>
+  </div>
+  <div class="note">CPI is annual average year-over-year inflation. 2026 CPI is intentionally excluded until a full official annual value is available.</div>
+</div>
+
+<!-- DATA ASSISTANT TAB -->
+<div id="tab-assistant" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Offline Data Assistant:</strong> This is not a live AI model. It is a deterministic question helper built directly into the HTML, so it works without an API key and never exposes data externally. It can answer common analytical questions from the loaded dataset.
+  </div>
+  <div class="ask-row">
+    <input class="ask-input" id="qaInput" placeholder="Ask: Which city has the highest grocery cap rate in Q1 2026?" onkeydown="if(event.key==='Enter')answerQuestion()">
+    <button class="btn on" onclick="answerQuestion()">Ask</button>
+  </div>
+  <div style="margin-bottom:8px">
+    <span class="pill" onclick="sampleQ('highest cap rate latest')">Highest latest cap rate</span>
+    <span class="pill" onclick="sampleQ('lowest cap rate latest')">Lowest latest cap rate</span>
+    <span class="pill" onclick="sampleQ('widest spread to 10y')">Widest spread to 10Y</span>
+    <span class="pill" onclick="sampleQ('compare Toronto Calgary regional')">Compare Toronto vs Calgary</span>
+    <span class="pill" onclick="sampleQ('inflation latest')">Latest CPI inflation</span>
+  </div>
+  <div class="answer-box" id="qaAnswer">Ask a question about cities, categories, cap rates, spreads, CBRE gaps, or CPI inflation.</div>
+</div>
+
+
+<!-- DEAL LENS / TOOLS TAB -->
+<div id="tab-tools" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Deal Lens:</strong> Tools for acquisition screening and internal research. Export current datasets, save custom chart presets, stress-test value sensitivity to cap-rate movement, and generate a quick market snapshot for Trinity-style deal review.
+  </div>
+  <div class="control-grid">
+    <div class="cbox">
+      <div class="ct">Valuation impact calculator</div>
+      <div class="cr" style="background:transparent;border:none;padding:0">
+        <span class="lbl">Inputs</span>
+        <label style="color:#cbd4d8;font-size:10px">NOI <input id="noiInput" type="number" value="1000000" step="50000" style="width:120px;margin-left:5px;background:#0b1115;border:1px solid #31414a;color:#e6edf0;padding:5px"></label>
+        <label style="color:#cbd4d8;font-size:10px">Current cap % <input id="capInput" type="number" value="6.00" step="0.05" style="width:80px;margin-left:5px;background:#0b1115;border:1px solid #31414a;color:#e6edf0;padding:5px"></label>
+        <label style="color:#cbd4d8;font-size:10px">Target cap % <input id="targetCapInput" type="number" value="5.50" step="0.05" style="width:80px;margin-left:5px;background:#0b1115;border:1px solid #31414a;color:#e6edf0;padding:5px"></label>
+        <button class="btn on" onclick="calcValuation()">Calculate</button>
+      </div>
+      <div class="sg" id="valCards" style="margin-top:10px"></div>
+      <div class="tw"><table><thead><tr><th>Cap-rate move</th><th>Cap rate</th><th>Implied value</th><th>Value change</th></tr></thead><tbody id="valTable"></tbody></table></div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Research exports</div>
+      <div class="cr" style="background:transparent;border:none;padding:0">
+        <span class="lbl">CSV</span>
+        <button class="btn on" onclick="exportFullDataCSV()">Export full data</button>
+        <button class="btn" onclick="exportCurrentViewCSV()">Export current chart</button>
+        <button class="btn" onclick="exportMarketCompareCSV()">Export market compare</button>
+      </div>
+      <div class="note" style="text-align:left">Exports are generated locally from the data embedded in this HTML file.</div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Custom chart presets</div>
+      <div class="cr" style="background:transparent;border:none;padding:0">
+        <span class="lbl">Preset</span>
+        <button class="btn on" onclick="saveCustomPreset()">Save current builder</button>
+        <button class="btn" onclick="loadCustomPreset()">Load saved builder</button>
+        <button class="btn ghost" onclick="clearCustomPreset()">Clear saved preset</button>
+      </div>
+      <div class="answer-box" id="presetStatus" style="margin-top:10px;min-height:54px">No custom preset loaded yet.</div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Trinity market snapshot</div>
+      <div class="cr" style="background:transparent;border:none;padding:0">
+        <span class="lbl">Screen</span>
+        <select id="snapCity"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+        <select id="snapType"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
+        <button class="btn on" onclick="renderSnapshot()">Generate snapshot</button>
+      </div>
+      <div class="answer-box" id="snapshotBox" style="margin-top:10px">Generate a snapshot to see current cap rate, spread, historical change, and relative ranking.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MARKET INTELLIGENCE TAB -->
+<div id="tab-intel" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">Market Intelligence:</strong> A simple acquisition screener built from the embedded Colliers city/category data. It ranks the 12 city/category combinations by current cap rate, spread, historical percentile, expansion since Q1 2018, and a Trinity value score.
+  </div>
+  <div class="sg" id="intelCards"></div>
+  <div class="grid2">
+    <div class="cbox">
+      <div class="ct">Key takeaways</div>
+      <div class="answer-box" id="intelInsights">Loading insights...</div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Selected market profile</div>
+      <div class="cr" style="background:transparent;border:none;padding:0;margin-bottom:10px">
+        <span class="lbl">Market</span>
+        <select id="intelCity" onchange="renderIntel()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+        <select id="intelType" onchange="renderIntel()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
+      </div>
+      <div class="sg" id="intelProfile"></div>
+    </div>
+  </div>
+  <div class="cbox">
+    <div class="ct">Market rankings</div>
+    <div class="note" style="text-align:left;margin:0 0 8px 0">Click a column header to sort. Higher percentile means the current cap rate is high relative to its Q1 2018 to Q1 2026 history.</div>
+    <div class="tw"><table class="sortable"><thead><tr>
+      <th onclick="sortIntel('rank')">Rank</th>
+      <th onclick="sortIntel('market')">Market</th>
+      <th onclick="sortIntel('category')">Category</th>
+      <th onclick="sortIntel('cap')">Current cap</th>
+      <th onclick="sortIntel('spread10')">Spread vs 10Y</th>
+      <th onclick="sortIntel('spread5')">Spread vs 5Y</th>
+      <th onclick="sortIntel('change')">Change since 2018</th>
+      <th onclick="sortIntel('percentile')">Percentile</th>
+      <th onclick="sortIntel('cycle')">Cycle position</th>
+      <th onclick="sortIntel('score')">Value score</th>
+    </tr></thead><tbody id="intelTable"></tbody></table></div>
+  </div>
+  <div class="memo-card">
+    <div class="ct">Market memo and thesis</div>
+    <div class="memo-toolbar">
+      <span class="lbl">Memo for</span>
+      <select id="noteCity" onchange="loadThesisNote()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+      <select id="noteType" onchange="loadThesisNote()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
+      <button class="btn on" onclick="saveThesisNote()">Save memo</button>
+      <button class="btn ghost" onclick="insertMemoTemplate()">Insert template</button>
+      <button class="btn ghost" onclick="copyMarketMemo()">Copy memo</button>
+      <button class="btn ghost" onclick="clearThesisNote()">Clear</button>
+      <span class="note" id="thesisStatus" style="margin-left:auto;text-align:left">Saved locally in this browser.</span>
+    </div>
+    <div class="mini-metric-row" id="memoMetrics"></div>
+    <div class="memo-grid">
+      <div class="memo-field memo-wide">
+        <div class="memo-label">Investment thesis</div>
+        <textarea id="memoThesis" class="memo-area" placeholder="Why does this market/category look attractive or unattractive? Example: grocery-anchored demand is resilient, cap rates sit near cycle highs, and spreads remain wide versus GoC 10Y."></textarea>
+      </div>
+      <div class="memo-field">
+        <div class="memo-label">Risks</div>
+        <textarea id="memoRisks" class="memo-area" placeholder="What could go wrong? Tenant rollover, financing costs, leasing softness, construction competition, cap-rate decompression, weak discretionary retail, etc."></textarea>
+      </div>
+      <div class="memo-field">
+        <div class="memo-label">Watch list / catalysts</div>
+        <textarea id="memoWatch" class="memo-area" placeholder="What should Trinity monitor? Rate cuts, transaction evidence, tenant sales, new supply, leasing spreads, major retailer moves, municipal approvals, etc."></textarea>
+      </div>
+      <div class="memo-field memo-wide">
+        <div class="memo-label">Deal notes / follow-ups</div>
+        <textarea id="memoDeals" class="memo-area" placeholder="Paste deal notes, comparable sales, IC comments, broker calls, underwriting assumptions, or next steps here."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="cbox">
+      <div class="ct">How the value score works</div>
+      <div class="answer-box">
+        <strong>Score out of 100</strong><br>
+        40% spread vs GoC 10Y, 30% historical percentile, 20% cap-rate expansion since Q1 2018, and 10% relative current cap rate. This is a screening tool, not an investment recommendation.
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Simple workflow</div>
+      <div class="answer-box">
+        <strong>1.</strong> Use the ranking table to screen markets.<br>
+        <strong>2.</strong> Select the market/category above.<br>
+        <strong>3.</strong> Write the thesis, risks, and watch list.<br>
+        <strong>4.</strong> Copy the memo into an email, IC note, or deal file.
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- RATES TAB -->
@@ -277,7 +525,7 @@ canvas{background:transparent}
 
 </div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const QS=['Q1 2019','Q2 2019','Q3 2019','Q4 2019','Q1 2020','Q2 2020','Q3 2020','Q4 2020','Q1 2021','Q2 2021','Q3 2021','Q4 2021','Q1 2022','Q2 2022','Q3 2022','Q4 2022','Q1 2023','Q2 2023','Q3 2023','Q4 2023','Q1 2024','Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026'];
 const R10=[1.70,1.47,1.37,1.70,0.70,0.59,0.59,0.68,1.55,1.39,1.53,1.71,2.71,3.20,3.61,3.30,2.90,3.64,4.22,3.11,3.59,3.47,3.10,3.25,2.98,3.26,3.18,3.21,3.43];
@@ -369,7 +617,40 @@ const contextZonePlugin={id:'contextZone',beforeDatasetsDraw(chart){
   ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(58,111,83,.7)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x1,chartArea.top); ctx.lineTo(x1,chartArea.bottom); ctx.stroke();
   ctx.setLineDash([]); ctx.fillStyle='#3a6f53'; ctx.font='10px Georgia'; ctx.translate(x1+8,chartArea.top+105); ctx.rotate(-Math.PI/2); ctx.fillText('City-level data begins',0,0); ctx.restore();
 }};
-Chart.register(contextZonePlugin);
+
+const cycleShadingPlugin={id:'cycleShading',beforeDatasetsDraw(chart){
+  if(!sOn||!sOn.cycle) return;
+  if(!chart.canvas || !['mainC','ratesC','macroC'].includes(chart.canvas.id)) return;
+  const {ctx,chartArea,scales}=chart; if(!chartArea||!scales.x) return;
+  const labels=chart.data.labels||[];
+  function shade(labelStart,labelEnd,color,text){
+    const si=labels.indexOf(labelStart), ei=labels.indexOf(labelEnd);
+    if(si<0||ei<0) return;
+    const x0=scales.x.getPixelForValue(si-.5), x1=scales.x.getPixelForValue(ei+.5);
+    ctx.save(); ctx.fillStyle=color; ctx.fillRect(x0,chartArea.top,x1-x0,chartArea.bottom-chartArea.top);
+    ctx.fillStyle='rgba(230,237,240,.55)'; ctx.font='9px Georgia'; ctx.fillText(text,x0+6,chartArea.top+15); ctx.restore();
+  }
+  shade('Q1 2020','Q4 2020','rgba(47,111,135,.07)','COVID / rate floor');
+  shade('Q1 2022','Q4 2023','rgba(91,23,50,.08)','Rate-hike cycle');
+  shade('2020','2020','rgba(47,111,135,.07)','COVID');
+  shade('2022','2023','rgba(91,23,50,.08)','Rate hikes');
+}};
+
+Chart.register(contextZonePlugin,cycleShadingPlugin);
+
+
+// Exact macro context series. CPI values are annual average Canada CPI year-over-year increases.
+const MACRO_YEARS=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+const CPI_INFL=[2.3,0.3,1.8,2.9,1.5,0.9,2.0,1.1,1.4,1.6,2.3,1.9,0.7,3.4,6.8,3.9,2.4,2.1];
+function annualFromQuarterRate(hist, q, year){
+  if(year<=2017){const i=HIST_LABELS.indexOf(String(year)); return i>=0?hist[i]:null;}
+  const target='Q4 '+year;
+  let idx=QS.indexOf(target);
+  if(idx<0 && year===2026) idx=QS.indexOf('Q1 2026');
+  return idx>=0?q[idx]:null;
+}
+function annualRateSeries(hist,q,years){return years.map(y=>annualFromQuarterRate(hist,q,+y));}
+
 
 function m(a,b){return Math.round((a+b)/2*100)/100}
 function ti(t){return t==='rp'?[0,1]:t==='gc'?[2,3]:[4,5]}
@@ -381,9 +662,12 @@ function rc(k){return k==='10y'?'#5b1732':k==='5y'?'#2f6f87':'#8a6f2a'}
 // State
 let city='Toronto',type='rp',spCity='Toronto',spB='10y',cmpC='Toronto',cmpT='rp';
 let rOn={r10:true,r5:true,rpr:false};
-let sOn={col:true,cbre:true,nat:true,cbreNat:true,iso:true,colRange:true};
+let sOn={col:true,cbre:true,nat:true,cbreNat:true,iso:true,colRange:true,cycle:true};
 let spOn={s10:true,s5:false,spr:false};
 let charts={};
+let marketMode='cities';
+let mcCityOn={Toronto:true,Ottawa:true,Calgary:false,Montreal:false};
+let macroOn={cpi:true,g10:true,g5:true,prime:false};
 function kill(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
 
 function setCity(c){
@@ -422,7 +706,7 @@ function togSpread(k){
 function setAll(obj,val){Object.keys(obj).forEach(k=>obj[k]=val)}
 function syncButtons(){
   ['col','cbre'].forEach(k=>{const el=document.getElementById('s'+k); if(el) el.classList.toggle('on',sOn[k]);});
-  ['nat','cbreNat','iso','colRange'].forEach(k=>{const el=document.getElementById('l'+k); if(el) el.classList.toggle('on',sOn[k]);});
+  ['nat','cbreNat','iso','colRange','cycle'].forEach(k=>{const el=document.getElementById('l'+k); if(el) el.classList.toggle('on',sOn[k]);});
   ['r10','r5','rpr'].forEach(k=>{const el=document.getElementById(k); if(el) el.classList.toggle('on',rOn[k]);});
   [['s10','sp10'],['s5','sp5'],['spr','sppr']].forEach(([k,id])=>{const el=document.getElementById(id); if(el) el.classList.toggle('on',spOn[k]);});
 }
@@ -658,9 +942,390 @@ function renderTable(){
   });
 }
 
+
+function seriesMidFor(cityName,typeKey){
+  const [lo,hi]=ti(typeKey);
+  return COL[cityName].map(r=>+m(r[lo],r[hi]).toFixed(2));
+}
+function summarizeSeries(vals){
+  const first=vals[0], last=vals[vals.length-1];
+  const max=Math.max(...vals), min=Math.min(...vals);
+  return {first,last,change:+(last-first).toFixed(2),max,min};
+}
+function mcActiveCities(){return ['Toronto','Ottawa','Calgary','Montreal'].filter(c=>mcCityOn[c]);}
+function togMcCity(c){
+  const active=mcActiveCities();
+  if(mcCityOn[c]&&active.length===1) return;
+  mcCityOn[c]=!mcCityOn[c];
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
+    const el=document.getElementById('mcCity'+cityName);
+    if(el) el.classList.toggle('on',mcCityOn[cityName]);
+  });
+  renderMarketCompare();
+}
+function setMcCities(list){
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(c=>mcCityOn[c]=list.includes(c));
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
+    const el=document.getElementById('mcCity'+cityName);
+    if(el) el.classList.toggle('on',mcCityOn[cityName]);
+  });
+  renderMarketCompare();
+}
+function setMarketMode(mode){
+  marketMode=mode;
+  document.getElementById('mcModeCities').classList.toggle('on',mode==='cities');
+  document.getElementById('mcModeCats').classList.toggle('on',mode==='cats');
+  document.getElementById('mcModeMatrix').classList.toggle('on',mode==='matrix');
+  renderMarketCompare();
+}
+function renderMarketCompare(){
+  const typeKey=document.getElementById('mcType')?.value||'rp';
+  const cityName=document.getElementById('mcCity')?.value||'Toronto';
+  const activeCities=mcActiveCities();
+  const cityColors={Toronto:'#2f6f87',Ottawa:'#3a6f53',Calgary:'#b6464a',Montreal:'#5b1732'};
+  let datasets=[], rows=[], cards='';
+  let title='';
+  if(marketMode==='cities'){
+    title=`Cities compared — ${tn(typeKey)} (${activeCities.join(' vs ')})`;
+    activeCities.forEach(c=>{
+      const vals=seriesMidFor(c,typeKey); const st=summarizeSeries(vals);
+      datasets.push({label:c,data:vals,borderColor:cityColors[c],backgroundColor:'transparent',borderWidth:2.8,pointRadius:3,pointHoverRadius:6,tension:.25});
+      rows.push([c,st]);
+    });
+  }else if(marketMode==='cats'){
+    title=`Retail categories compared — ${cityName}`;
+    const defs=[['Regional/Power','rp','#2f6f87'],['Grocery/Community','gc','#3a6f53'],['Neighbourhood/Strip','ns','#b8c95b']];
+    defs.forEach(([label,key,color])=>{
+      const vals=seriesMidFor(cityName,key); const st=summarizeSeries(vals);
+      datasets.push({label,data:vals,borderColor:color,backgroundColor:'transparent',borderWidth:2.6,pointRadius:3,pointHoverRadius:6,tension:.25});
+      rows.push([label,st]);
+    });
+  }else{
+    title=`Latest cap-rate matrix — Q1 2026 (${activeCities.join(', ')})`;
+    const keys=[['R/P','rp'],['G/C','gc'],['N/S','ns']];
+    activeCities.forEach(c=>keys.forEach(([lab,key])=>{const vals=seriesMidFor(c,key); rows.push([`${c} ${lab}`,summarizeSeries(vals)]);}));
+    datasets=[{type:'bar',label:'Q1 2026 midpoint',data:rows.map(r=>r[1].last),backgroundColor:rows.map(r=>r[0].startsWith('Toronto')?'rgba(47,111,135,.78)':r[0].startsWith('Ottawa')?'rgba(58,111,83,.78)':r[0].startsWith('Calgary')?'rgba(182,70,74,.78)':'rgba(91,23,50,.78)'),borderColor:'transparent'}];
+  }
+  const sorted=[...rows].sort((a,b)=>b[1].last-a[1].last);
+  const high=sorted[0], low=sorted[sorted.length-1];
+  cards=`<div class="sc"><div class="sv">${high[1].last.toFixed(2)}%</div><div class="sl">Highest latest</div><div class="ss">${high[0]}</div></div>
+  <div class="sc"><div class="sv">${low[1].last.toFixed(2)}%</div><div class="sl">Lowest latest</div><div class="ss">${low[0]}</div></div>
+  <div class="sc"><div class="sv">${(high[1].last-low[1].last).toFixed(2)}%</div><div class="sl">Current gap</div><div class="ss">High minus low</div></div>
+  <div class="sc"><div class="sv">${sorted[0][1].change>=0?'+':''}${sorted[0][1].change.toFixed(2)}%</div><div class="sl">Change since Q1 2018</div><div class="ss">${sorted[0][0]}</div></div>`;
+  document.getElementById('mcCards').innerHTML=cards;
+  document.getElementById('mcTitle').textContent=title;
+  const tb=document.getElementById('mcTable');
+  tb.innerHTML=rows.map(([name,st])=>`<tr><td style="font-weight:bold;color:#e6edf0">${name}</td><td>${st.first.toFixed(2)}%</td><td>${st.last.toFixed(2)}%</td><td class="${st.change>=0?'spa':'spg'}">${st.change>=0?'+':''}${st.change.toFixed(2)}%</td><td>${st.max.toFixed(2)}%</td><td>${st.min.toFixed(2)}%</td></tr>`).join('');
+  kill('market');
+  const ctx=document.getElementById('marketC').getContext('2d');
+  const allVals=marketMode==='matrix'?rows.map(r=>r[1].last):datasets.flatMap(d=>d.data||[]).filter(v=>v!==null&&Number.isFinite(v));
+  const yMin=Math.max(3,Math.floor(Math.min(...allVals)*4)/4-0.25);
+  const yMax=Math.ceil(Math.max(...allVals)*4)/4+0.25;
+  charts.market=new Chart(ctx,{type:'line',data:{labels:marketMode==='matrix'?rows.map(r=>r[0]):QS,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:10},color:'#c8d1d5',boxWidth:20}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:8},color:'#8f9ca3',maxRotation:45,autoSkip:marketMode!=='matrix',maxTicksLimit:16}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{font:{size:10},color:'#cbd4d8',callback:v=>v+'%'},min:yMin,max:yMax,title:{display:true,text:'Cap rate midpoint (%)',font:{size:9},color:'#8f9ca3'}}}}});
+}
+function togMacro(k){
+  macroOn[k]=!macroOn[k];
+  const ids={cpi:'macroCpi',g10:'macro10',g5:'macro5',prime:'macroPrime'};
+  document.getElementById(ids[k]).classList.toggle('on',macroOn[k]);
+  renderMacro();
+}
+function renderMacro(){
+  const y=MACRO_YEARS;
+  const g10=annualRateSeries(HIST_GOC10,R10,y);
+  const g5=annualRateSeries(HIST_GOC5,R5,y);
+  const pr=annualRateSeries(HIST_PRIME,PR,y);
+  const ds=[];
+  if(macroOn.cpi) ds.push({label:'CPI inflation',data:CPI_INFL,borderColor:'#b8c95b',backgroundColor:'transparent',borderWidth:2.5,pointRadius:3,tension:.25});
+  if(macroOn.g10) ds.push({label:'GoC 10Y',data:g10,borderColor:'#5b1732',backgroundColor:'transparent',borderWidth:2.3,pointRadius:2.5,tension:.25});
+  if(macroOn.g5) ds.push({label:'GoC 5Y',data:g5,borderColor:'#2f6f87',backgroundColor:'transparent',borderWidth:2.3,borderDash:[6,3],pointRadius:2.5,tension:.25});
+  if(macroOn.prime) ds.push({label:'Prime',data:pr,borderColor:'#8a6f2a',backgroundColor:'transparent',borderWidth:2.3,borderDash:[3,3],pointRadius:2.5,tension:.25});
+  document.getElementById('macroCards').innerHTML=`
+    <div class="sc"><div class="sv">${CPI_INFL[CPI_INFL.length-1].toFixed(1)}%</div><div class="sl">Latest full-year CPI</div><div class="ss">2025, Statistics Canada annual average</div></div>
+    <div class="sc"><div class="sv">${Math.max(...CPI_INFL).toFixed(1)}%</div><div class="sl">Inflation peak</div><div class="ss">2022</div></div>
+    <div class="sc"><div class="sv">${g10[g10.length-1].toFixed(2)}%</div><div class="sl">GoC 10Y year-end</div><div class="ss">2025 Q4 value</div></div>
+    <div class="sc"><div class="sv">${pr[pr.length-1].toFixed(2)}%</div><div class="sl">Prime year-end</div><div class="ss">2025 Q4 value</div></div>`;
+  kill('macro');
+  const ctx=document.getElementById('macroC').getContext('2d');
+  charts.macro=new Chart(ctx,{type:'line',data:{labels:y,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:10},color:'#c8d1d5',boxWidth:20}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:9},color:'#8f9ca3',maxRotation:45}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{font:{size:10},color:'#cbd4d8',callback:v=>v+'%'},title:{display:true,text:'Percent',font:{size:9},color:'#8f9ca3'}}}}});
+}
+function sampleQ(q){document.getElementById('qaInput').value=q;answerQuestion();}
+function answerQuestion(){
+  const q=(document.getElementById('qaInput').value||'').toLowerCase();
+  const latest=[];
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(c=>['rp','gc','ns'].forEach(t=>{const vals=seriesMidFor(c,t); latest.push({name:`${c} ${tn(t)}`,city:c,type:t,val:vals[vals.length-1],first:vals[0]});}));
+  const ans=document.getElementById('qaAnswer');
+  if(!q.trim()){ans.innerHTML='Ask a question first.';return;}
+  if(q.includes('inflation')||q.includes('cpi')){ans.innerHTML=`Latest full-year CPI inflation in the macro tab is <strong>${CPI_INFL[CPI_INFL.length-1].toFixed(1)}%</strong> for 2025. The peak in the loaded period is <strong>${Math.max(...CPI_INFL).toFixed(1)}%</strong> in 2022.`;return;}
+  if(q.includes('spread')){
+    const bench=q.includes('5')?'5Y':'10Y'; const rate=bench==='5Y'?R5[R5.length-1]:R10[R10.length-1];
+    const arr=latest.map(x=>({...x,spread:+(x.val-rate).toFixed(2)})).sort((a,b)=>b.spread-a.spread);
+    ans.innerHTML=`The widest latest spread to GoC ${bench} is <strong>${arr[0].name}</strong> at <strong>${arr[0].spread.toFixed(2)}%</strong> (${arr[0].val.toFixed(2)}% cap rate minus ${rate.toFixed(2)}% GoC ${bench}).`;return;
+  }
+  if(q.includes('low')){const x=[...latest].sort((a,b)=>a.val-b.val)[0]; ans.innerHTML=`The lowest latest Colliers midpoint is <strong>${x.name}</strong> at <strong>${x.val.toFixed(2)}%</strong> in Q1 2026.`;return;}
+  if(q.includes('high')){const x=[...latest].sort((a,b)=>b.val-a.val)[0]; ans.innerHTML=`The highest latest Colliers midpoint is <strong>${x.name}</strong> at <strong>${x.val.toFixed(2)}%</strong> in Q1 2026.`;return;}
+  if(q.includes('compare')){
+    const cities=['toronto','ottawa','calgary','montreal'].filter(c=>q.includes(c));
+    const t=q.includes('grocery')?'gc':q.includes('neigh')||q.includes('strip')?'ns':'rp';
+    if(cities.length>=2){const parts=cities.map(c=>{const C=c[0].toUpperCase()+c.slice(1); const vals=seriesMidFor(C,t); return `${C}: <strong>${vals[vals.length-1].toFixed(2)}%</strong>`;}); ans.innerHTML=`Latest ${tn(t)} comparison: ${parts.join(' | ')}.`;return;}
+  }
+  const x=[...latest].sort((a,b)=>b.val-a.val)[0];
+  ans.innerHTML=`I can answer highest/lowest cap rates, latest spreads, city comparisons, and CPI questions. As a quick read, the highest latest cap rate is <strong>${x.name}</strong> at <strong>${x.val.toFixed(2)}%</strong>.`;
+}
+
+
+function downloadCSV(filename, rows){
+  const csv=rows.map(r=>r.map(v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+}
+function exportFullDataCSV(){
+  const rows=[['Quarter','City','Source','Category','Low','High','Mid','GoC 10Y','GoC 5Y','Prime','Spread 10Y','Spread 5Y','Spread Prime']];
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(c=>['col','cbre'].forEach(src=>{
+    const data=src==='col'?COL[c]:CBRE[c];
+    QS.forEach((q,i)=>['rp','gc','ns'].forEach(t=>{
+      const r=data[i]; const [lo,hi]=ti(t); if(!r) return;
+      const mid=m(r[lo],r[hi]); rows.push([q,c,src==='col'?'Colliers':'CBRE',tn(t),r[lo],r[hi],mid,R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);
+    }));
+  }));
+  downloadCSV('trinity_full_cap_rate_data.csv',rows);
+}
+function exportCurrentViewCSV(){
+  const [lo,hi]=ti(type); const data=COL[city]; const bd=CBRE[city];
+  const rows=[['Label','Colliers Mid','Colliers Low','Colliers High','CBRE Mid','National Retail','CBRE National','GoC 10Y','GoC 5Y','Prime','Spread vs 10Y','Spread vs 5Y','Spread vs Prime']];
+  HIST_LABELS.forEach((y,i)=>rows.push([y,'','','','',NAT_RETAIL_BY_YEAR[y],CBRE_NATIONAL_BY_YEAR[y],HIST_GOC10[i],HIST_GOC5[i],HIST_PRIME[i],+(NAT_RETAIL_BY_YEAR[y]-HIST_GOC10[i]).toFixed(2),+(NAT_RETAIL_BY_YEAR[y]-HIST_GOC5[i]).toFixed(2),+(NAT_RETAIL_BY_YEAR[y]-HIST_PRIME[i]).toFixed(2)]));
+  QS.forEach((q,i)=>{const mid=m(data[i][lo],data[i][hi]); const b=bd[i]?m(bd[i][lo],bd[i][hi]):''; rows.push([q,mid,data[i][lo],data[i][hi],b,NAT_RETAIL_BY_YEAR[yearOfLabel(q)],CBRE_NATIONAL_BY_YEAR[yearOfLabel(q)],R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);});
+  downloadCSV(`trinity_current_view_${city}_${type}.csv`,rows);
+}
+function exportMarketCompareCSV(){
+  const typeKey=document.getElementById('mcType')?.value||'rp';
+  const cityName=document.getElementById('mcCity')?.value||'Toronto';
+  const rows=[['Quarter']]; const series=[];
+  if(marketMode==='cities') mcActiveCities().forEach(c=>series.push([c,seriesMidFor(c,typeKey)]));
+  else if(marketMode==='cats') [['Regional/Power','rp'],['Grocery/Community','gc'],['Neighbourhood/Strip','ns']].forEach(([n,k])=>series.push([cityName+' '+n,seriesMidFor(cityName,k)]));
+  else mcActiveCities().forEach(c=>['rp','gc','ns'].forEach(k=>series.push([c+' '+tn(k),seriesMidFor(c,k)])));
+  series.forEach(s=>rows[0].push(s[0]));
+  QS.forEach((q,i)=>rows.push([q,...series.map(s=>s[1][i]) ]));
+  downloadCSV('trinity_market_compare.csv',rows);
+}
+function saveCustomPreset(){
+  const payload={city,type,rOn,sOn,spOn,marketMode,mcCityOn};
+  localStorage.setItem('trinityCapRatePreset',JSON.stringify(payload));
+  document.getElementById('presetStatus').innerHTML='Saved current chart builder preset locally in this browser.';
+}
+function loadCustomPreset(){
+  const raw=localStorage.getItem('trinityCapRatePreset');
+  if(!raw){document.getElementById('presetStatus').innerHTML='No saved preset found in this browser.';return;}
+  try{const p=JSON.parse(raw); city=p.city||city; type=p.type||type; rOn=Object.assign(rOn,p.rOn||{}); sOn=Object.assign(sOn,p.sOn||{}); spOn=Object.assign(spOn,p.spOn||{}); marketMode=p.marketMode||marketMode; mcCityOn=Object.assign(mcCityOn,p.mcCityOn||{}); syncButtons(); renderMain(); renderMarketCompare(); document.getElementById('presetStatus').innerHTML='Loaded saved preset.';}catch(e){document.getElementById('presetStatus').innerHTML='Saved preset could not be read.';}
+}
+function clearCustomPreset(){localStorage.removeItem('trinityCapRatePreset');document.getElementById('presetStatus').innerHTML='Cleared saved preset from this browser.';}
+function money(v){return '$'+Math.round(v).toLocaleString();}
+function calcValuation(){
+  const noi=+(document.getElementById('noiInput').value||0);
+  const cap=+(document.getElementById('capInput').value||0)/100;
+  const target=+(document.getElementById('targetCapInput').value||0)/100;
+  if(!noi||!cap||!target){return;}
+  const now=noi/cap, tgt=noi/target, diff=tgt-now;
+  document.getElementById('valCards').innerHTML=`<div class="sc"><div class="sv">${money(now)}</div><div class="sl">Value at current cap</div></div><div class="sc"><div class="sv">${money(tgt)}</div><div class="sl">Value at target cap</div></div><div class="sc"><div class="sv" style="color:${diff>=0?'#6fc68c':'#ef777c'}">${diff>=0?'+':''}${money(diff)}</div><div class="sl">Value change</div></div><div class="sc"><div class="sv">${((target-cap)*100).toFixed(2)}%</div><div class="sl">Cap-rate move</div></div>`;
+  const moves=[-0.75,-0.50,-0.25,0,0.25,0.50,0.75];
+  document.getElementById('valTable').innerHTML=moves.map(bp=>{const c=Math.max(.01,cap+(bp/100)); const v=noi/c; const d=v-now; return `<tr><td>${bp>0?'+':''}${bp.toFixed(2)}%</td><td>${(c*100).toFixed(2)}%</td><td>${money(v)}</td><td class="${d>=0?'spg':'spr'}">${d>=0?'+':''}${money(d)}</td></tr>`;}).join('');
+}
+function renderSnapshot(){
+  const c=document.getElementById('snapCity').value; const t=document.getElementById('snapType').value; const vals=seriesMidFor(c,t); const latest=vals[vals.length-1];
+  const all=[]; ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>['rp','gc','ns'].forEach(k=>{const v=seriesMidFor(cityName,k); all.push({name:`${cityName} ${tn(k)}`,val:v[v.length-1],chg:v[v.length-1]-v[0]});}));
+  const rank=[...all].sort((a,b)=>b.val-a.val).findIndex(x=>x.name===`${c} ${tn(t)}`)+1;
+  const chg=latest-vals[0];
+  const spread10=latest-R10[R10.length-1], spread5=latest-R5[R5.length-1];
+  document.getElementById('snapshotBox').innerHTML=`<strong>${c} ${tn(t)}</strong><br>Latest cap-rate midpoint: <strong>${latest.toFixed(2)}%</strong>. Change since Q1 2018: <strong>${chg>=0?'+':''}${chg.toFixed(2)}%</strong>. Current spread: <strong>${spread10.toFixed(2)}%</strong> vs GoC 10Y and <strong>${spread5.toFixed(2)}%</strong> vs GoC 5Y. Rank among 12 city/category combinations: <strong>${rank}/12</strong> by latest cap rate.`;
+}
+
+
+let intelSortKey='score';
+let intelSortDir=-1;
+function percentileRank(vals,current){
+  if(!vals.length) return 0;
+  const lessEq=vals.filter(v=>v<=current).length;
+  return Math.round((lessEq/vals.length)*100);
+}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function allMarketRecords(){
+  const latest10=R10[R10.length-1], latest5=R5[R5.length-1];
+  let raw=[];
+  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
+    ['rp','gc','ns'].forEach(typeKey=>{
+      const vals=seriesMidFor(cityName,typeKey);
+      const first=vals[0], current=vals[vals.length-1];
+      const min=Math.min(...vals), max=Math.max(...vals);
+      const change=+(current-first).toFixed(2);
+      const spread10=+(current-latest10).toFixed(2);
+      const spread5=+(current-latest5).toFixed(2);
+      const percentile=percentileRank(vals,current);
+      const cycle=max===min?100:Math.round(((current-min)/(max-min))*100);
+      raw.push({city:cityName,type:typeKey,category:tn(typeKey),market:`${cityName} ${tn(typeKey)}`,current,first,min,max,change,spread10,spread5,percentile,cycle});
+    });
+  });
+  const maxSpread=Math.max(...raw.map(r=>r.spread10));
+  const minSpread=Math.min(...raw.map(r=>r.spread10));
+  const maxChange=Math.max(...raw.map(r=>r.change));
+  const minChange=Math.min(...raw.map(r=>r.change));
+  const maxCap=Math.max(...raw.map(r=>r.current));
+  const minCap=Math.min(...raw.map(r=>r.current));
+  raw.forEach(r=>{
+    const spreadScore=maxSpread===minSpread?50:((r.spread10-minSpread)/(maxSpread-minSpread))*100;
+    const changeScore=maxChange===minChange?50:((r.change-minChange)/(maxChange-minChange))*100;
+    const capScore=maxCap===minCap?50:((r.current-minCap)/(maxCap-minCap))*100;
+    r.score=Math.round(0.40*spreadScore + 0.30*r.percentile + 0.20*changeScore + 0.10*capScore);
+  });
+  return raw;
+}
+function scoreClass(score){return score>=75?'score-good':score>=55?'score-mid':'score-low';}
+function sortIntel(key){
+  if(intelSortKey===key) intelSortDir*=-1; else {intelSortKey=key; intelSortDir=(key==='market'||key==='category'||key==='rank')?1:-1;}
+  renderIntel();
+}
+function renderIntel(){
+  const records=allMarketRecords();
+  const latest10=R10[R10.length-1];
+  const sortedByCap=[...records].sort((a,b)=>b.current-a.current);
+  const sortedBySpread=[...records].sort((a,b)=>b.spread10-a.spread10);
+  const sortedByScore=[...records].sort((a,b)=>b.score-a.score);
+  const sortedByPct=[...records].sort((a,b)=>b.percentile-a.percentile);
+  document.getElementById('intelCards').innerHTML=`
+    <div class="sc"><div class="sv">${sortedByCap[0].current.toFixed(2)}%</div><div class="sl">Highest cap rate</div><div class="ss">${sortedByCap[0].market}</div></div>
+    <div class="sc"><div class="sv">+${Math.round(sortedBySpread[0].spread10*100)} bps</div><div class="sl">Widest spread vs GoC 10Y</div><div class="ss">${sortedBySpread[0].market}</div></div>
+    <div class="sc"><div class="sv">${sortedByPct[0].percentile}th</div><div class="sl">Highest historical percentile</div><div class="ss">${sortedByPct[0].market}</div></div>
+    <div class="sc"><div class="sv">${sortedByScore[0].score}/100</div><div class="sl">Top value score</div><div class="ss">${sortedByScore[0].market}</div></div>`;
+  const lowCap=[...records].sort((a,b)=>a.current-b.current)[0];
+  const maxExpansion=[...records].sort((a,b)=>b.change-a.change)[0];
+  const widestGap=(sortedByCap[0].current-lowCap.current).toFixed(2);
+  const avgSpread=(records.reduce((s,r)=>s+r.spread10,0)/records.length).toFixed(2);
+  document.getElementById('intelInsights').innerHTML=`
+    <ul style="margin-left:18px;line-height:1.9">
+      <li><strong>${sortedByCap[0].market}</strong> has the highest current cap-rate midpoint at <strong>${sortedByCap[0].current.toFixed(2)}%</strong>.</li>
+      <li><strong>${lowCap.market}</strong> has the lowest current cap-rate midpoint at <strong>${lowCap.current.toFixed(2)}%</strong>.</li>
+      <li>The current high-low gap across the 12 city/category combinations is <strong>${widestGap}%</strong>.</li>
+      <li><strong>${sortedBySpread[0].market}</strong> offers the widest spread to GoC 10Y at <strong>+${Math.round(sortedBySpread[0].spread10*100)} bps</strong>.</li>
+      <li>Average current spread to GoC 10Y across the screen is <strong>${avgSpread}%</strong> with GoC 10Y at <strong>${latest10.toFixed(2)}%</strong>.</li>
+      <li><strong>${maxExpansion.market}</strong> has expanded the most since Q1 2018 at <strong>+${maxExpansion.change.toFixed(2)}%</strong>.</li>
+    </ul>`;
+  const pc=document.getElementById('intelCity')?.value||city;
+  const pt=document.getElementById('intelType')?.value||type;
+  const profile=records.find(r=>r.city===pc&&r.type===pt) || records[0];
+  document.getElementById('intelProfile').innerHTML=`
+    <div class="sc"><div class="sv">${profile.current.toFixed(2)}%</div><div class="sl">Current midpoint</div><div class="ss">${profile.market}</div></div>
+    <div class="sc"><div class="sv">${profile.percentile}th</div><div class="sl">Historical percentile</div><div class="ss">Since Q1 2018</div></div>
+    <div class="sc"><div class="sv">${profile.cycle}%</div><div class="sl">Cycle position</div><div class="ss">0 = low, 100 = high</div></div>
+    <div class="sc"><div class="sv"><span class="score-pill ${scoreClass(profile.score)}">${profile.score}/100</span></div><div class="sl">Value score</div><div class="ss">Screening metric</div></div>`;
+  let table=[...records];
+  table.forEach(r=>r.rank=sortedByScore.findIndex(x=>x.market===r.market)+1);
+  table.sort((a,b)=>{
+    const ka=a[intelSortKey], kb=b[intelSortKey];
+    if(typeof ka==='string') return ka.localeCompare(kb)*intelSortDir;
+    return (ka-kb)*intelSortDir;
+  });
+  document.getElementById('intelTable').innerHTML=table.map(r=>`
+    <tr>
+      <td>${r.rank}</td>
+      <td style="font-weight:bold;color:#e6edf0">${r.city}</td>
+      <td>${r.category}</td>
+      <td style="font-weight:bold">${r.current.toFixed(2)}%</td>
+      <td>${r.spread10>=0?'+':''}${r.spread10.toFixed(2)}%</td>
+      <td>${r.spread5>=0?'+':''}${r.spread5.toFixed(2)}%</td>
+      <td class="${r.change>=0?'spa':'spg'}">${r.change>=0?'+':''}${r.change.toFixed(2)}%</td>
+      <td>${r.percentile}th</td>
+      <td>${r.cycle}%</td>
+      <td><span class="score-pill ${scoreClass(r.score)}">${r.score}</span></td>
+    </tr>`).join('');
+  const noteCity=document.getElementById('noteCity'); const noteType=document.getElementById('noteType');
+  if(noteCity&&noteType){noteCity.value=document.getElementById('intelCity')?.value||noteCity.value; noteType.value=document.getElementById('intelType')?.value||noteType.value;}
+  loadThesisNote(false);
+}
+function noteSelection(){
+  const c=document.getElementById('noteCity')?.value||'Toronto';
+  const t=document.getElementById('noteType')?.value||'rp';
+  return {c,t};
+}
+function thesisKey(){
+  const {c,t}=noteSelection();
+  return `trinityMemo_${c}_${t}`;
+}
+function getRecordFor(c,t){
+  return intelRecords().find(r=>r.city===c && r.type===t);
+}
+function renderMemoMetrics(){
+  const el=document.getElementById('memoMetrics'); if(!el) return;
+  const {c,t}=noteSelection();
+  const r=getRecordFor(c,t);
+  if(!r){el.innerHTML='';return;}
+  el.innerHTML=`
+    <div class="mini-metric"><strong>${r.current.toFixed(2)}%</strong><span>Current cap rate</span></div>
+    <div class="mini-metric"><strong>${r.spread10>=0?'+':''}${r.spread10.toFixed(2)}%</strong><span>Spread vs GoC 10Y</span></div>
+    <div class="mini-metric"><strong>${r.percentile}th</strong><span>Historical percentile</span></div>
+    <div class="mini-metric"><strong>${r.cycle}%</strong><span>Cycle position</span></div>
+    <div class="mini-metric"><strong>${r.score}/100</strong><span>Value score</span></div>`;
+}
+function loadThesisNote(showMsg=true){
+  const raw=localStorage.getItem(thesisKey());
+  let memo={thesis:'',risks:'',watch:'',deals:''};
+  if(raw){
+    try{memo=Object.assign(memo,JSON.parse(raw));}
+    catch(e){memo.thesis=raw;}
+  }
+  const ids={memoThesis:'thesis',memoRisks:'risks',memoWatch:'watch',memoDeals:'deals'};
+  Object.keys(ids).forEach(id=>{const el=document.getElementById(id); if(el) el.value=memo[ids[id]]||'';});
+  renderMemoMetrics();
+  if(showMsg) document.getElementById('thesisStatus').textContent='Loaded memo for selected market/category.';
+}
+function currentMemoObject(){
+  return {
+    thesis:document.getElementById('memoThesis')?.value||'',
+    risks:document.getElementById('memoRisks')?.value||'',
+    watch:document.getElementById('memoWatch')?.value||'',
+    deals:document.getElementById('memoDeals')?.value||'',
+    updated:new Date().toLocaleString()
+  };
+}
+function saveThesisNote(){
+  localStorage.setItem(thesisKey(),JSON.stringify(currentMemoObject()));
+  document.getElementById('thesisStatus').textContent='Saved memo locally in this browser.';
+}
+function clearThesisNote(){
+  localStorage.removeItem(thesisKey());
+  ['memoThesis','memoRisks','memoWatch','memoDeals'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+  document.getElementById('thesisStatus').textContent='Cleared memo for selected market/category.';
+}
+function insertMemoTemplate(){
+  const {c,t}=noteSelection();
+  const r=getRecordFor(c,t);
+  const cat=tn(t);
+  if(!r) return;
+  if(!document.getElementById('memoThesis').value){
+    document.getElementById('memoThesis').value=`${c} ${cat} currently screens at ${r.current.toFixed(2)}%, with a ${r.spread10>=0?'+':''}${r.spread10.toFixed(2)}% spread to GoC 10Y and a ${r.percentile}th percentile cap-rate position since Q1 2018. Initial read: ${r.percentile>=80?'pricing appears attractive relative to recent history, subject to asset quality and tenant durability.':'pricing is not at the top of its recent range, so conviction should come from property-level fundamentals.'}`;
+  }
+  if(!document.getElementById('memoRisks').value){
+    document.getElementById('memoRisks').value='Key risks to confirm: tenant rollover, rent sustainability, financing cost sensitivity, local competition, capital expenditure requirements, and whether recent cap-rate movement reflects asset-specific risk rather than broad market repricing.';
+  }
+  if(!document.getElementById('memoWatch').value){
+    document.getElementById('memoWatch').value='Watch list: Bank of Canada rate path, GoC yield movement, comparable retail trades, tenant sales productivity, leasing spreads, new supply, and broker guidance on buyer depth.';
+  }
+  document.getElementById('thesisStatus').textContent='Template inserted. Edit and save when ready.';
+}
+function copyMarketMemo(){
+  const {c,t}=noteSelection();
+  const r=getRecordFor(c,t);
+  const memo=currentMemoObject();
+  const text=`${c} ${tn(t)} Market Memo\n\nCurrent midpoint: ${r?r.current.toFixed(2)+'%':'N/A'}\nSpread vs GoC 10Y: ${r?(r.spread10>=0?'+':'')+r.spread10.toFixed(2)+'%':'N/A'}\nHistorical percentile: ${r?r.percentile+'th':'N/A'}\nCycle position: ${r?r.cycle+'%':'N/A'}\nValue score: ${r?r.score+'/100':'N/A'}\n\nInvestment Thesis\n${memo.thesis||''}\n\nRisks\n${memo.risks||''}\n\nWatch List / Catalysts\n${memo.watch||''}\n\nDeal Notes / Follow-ups\n${memo.deals||''}`;
+  navigator.clipboard?.writeText(text).then(()=>{document.getElementById('thesisStatus').textContent='Copied memo to clipboard.';}).catch(()=>{document.getElementById('thesisStatus').textContent='Copy failed. Select the text manually.';});
+}
+
+
 function showTab(t){
-  ['chart','rates','spread','compare','table'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'':'none');
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['chart','rates','spread','compare','table'][i]===t));
+  const tabs=['chart','market','macro','assistant','tools','intel','rates','spread','compare','table'];
+  tabs.forEach(id=>{const el=document.getElementById('tab-'+id); if(el) el.style.display=id===t?'':'none';});
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
+  if(t==='market') setTimeout(renderMarketCompare,0);
+  if(t==='macro') renderMacro();
+  if(t==='tools'){calcValuation();renderSnapshot();}
+  if(t==='intel') renderIntel();
   if(t==='rates'&&!charts.rates) renderRatesTab();
   if(t==='spread') renderSpread();
   if(t==='compare') renderCompare();
