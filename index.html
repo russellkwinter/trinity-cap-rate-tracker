@@ -137,7 +137,7 @@ canvas{background:transparent}
     <span style="color:#b8c95b">LIVE VIEW: CUSTOM SERIES BUILDER</span>
     <span>Rates 2008–Q1 2026</span>
     <span>City retail Q1 2018–Q1 2026</span>
-    <span>Spread bars independently toggleable</span><span>Market Compare + Macro + Intelligence + Offline Assistant</span>
+    <span>Spread bars independently toggleable</span><span>Market Compare + Macro + Intelligence + IC Memo + Offline Assistant</span>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('chart')">Chart View</button>
@@ -146,6 +146,7 @@ canvas{background:transparent}
     <button class="tab" onclick="showTab('assistant')">Data Assistant</button>
     <button class="tab" onclick="showTab('tools')">Deal Lens</button>
     <button class="tab" onclick="showTab('intel')">Market Intelligence</button>
+    <button class="tab" onclick="showTab('ic')">IC Memo</button>
     <button class="tab" onclick="showTab('qc')">QC & Sources</button>
     <button class="tab" onclick="showTab('rates')">Rate Environment</button>
     <button class="tab" onclick="showTab('spread')">Spread Analysis</button>
@@ -452,6 +453,62 @@ canvas{background:transparent}
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- IC MEMO TAB -->
+<div id="tab-ic" style="display:none">
+  <div class="info">
+    <strong style="color:#e6edf0">IC Memo Builder:</strong> Turn the selected market, ranking data, spreads, value score, and saved thesis notes into a clean investment committee style summary. This is meant to help organize thinking, not replace property-level underwriting.
+  </div>
+  <div class="control-grid">
+    <div class="cr">
+      <span class="lbl">Memo market</span>
+      <select id="icCity" onchange="renderICMemo()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+      <select id="icType" onchange="renderICMemo()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
+      <span class="lbl" style="margin-left:8px">Deal name</span>
+      <input id="icDeal" oninput="renderICMemo()" placeholder="Optional deal / site name" style="min-width:210px;background:#091014;color:#e6edf0;border:1px solid #2c3b43;border-radius:3px;padding:6px 8px;font-family:Georgia,serif;font-size:11px">
+    </div>
+    <div class="cr">
+      <span class="lbl">Decision</span>
+      <select id="icDecision" onchange="renderICMemo()"><option>Investigate</option><option>Prioritize</option><option>Watch</option><option>Pass</option></select>
+      <button class="btn on" onclick="copyICMemo()">Copy IC Memo</button>
+      <button class="btn ghost" onclick="downloadICMemo()">Download Memo</button>
+      <button class="btn ghost" onclick="openICPrintView()">Open Print View</button>
+    </div>
+  </div>
+  <div class="sg" id="icCards"></div>
+  <div class="grid2">
+    <div class="cbox">
+      <div class="ct">Executive Summary</div>
+      <div class="answer-box" id="icSummary">Loading memo summary...</div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Scenario Presets</div>
+      <div class="cr" style="background:transparent;border:none;padding:0;margin-bottom:8px">
+        <span class="lbl">NOI</span>
+        <input id="icNOI" value="1000000" oninput="renderICMemo()" style="width:120px;background:#091014;color:#e6edf0;border:1px solid #2c3b43;border-radius:3px;padding:6px 8px;font-family:Georgia,serif;font-size:11px">
+      </div>
+      <div class="grp" style="margin-bottom:8px">
+        <button class="btn ghost" onclick="setICScenario('rateCut')">Rate-cut case</button>
+        <button class="btn ghost" onclick="setICScenario('higher')">Higher-for-longer</button>
+        <button class="btn ghost" onclick="setICScenario('compression')">Spread compression</button>
+        <button class="btn ghost" onclick="setICScenario('stress')">Stress case</button>
+      </div>
+      <div class="answer-box" id="icScenario">Choose a preset to test value sensitivity.</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="cbox">
+      <div class="ct">Decision Checklist</div>
+      <div class="answer-box" id="icChecklist"></div>
+    </div>
+    <div class="cbox">
+      <div class="ct">Saved Market Memo Pull-through</div>
+      <div class="answer-box" id="icSavedMemo">No saved memo found for this market/category yet.</div>
+    </div>
+  </div>
+  <div class="report-sheet" id="icReportSheet"></div>
 </div>
 
 <!-- RATES TAB -->
@@ -1459,6 +1516,117 @@ function copyMarketMemo(){
 
 
 
+
+function icSelection(){
+  return {c:document.getElementById('icCity')?.value||'Toronto', t:document.getElementById('icType')?.value||'rp'};
+}
+function icRecord(){
+  const {c,t}=icSelection();
+  return allMarketRecords().find(r=>r.city===c && r.type===t) || allMarketRecords()[0];
+}
+function icSavedMemoObj(){
+  const {c,t}=icSelection();
+  const raw=localStorage.getItem(`trinityMemo_${c}_${t}`);
+  if(!raw) return {thesis:'',risks:'',watch:'',deals:''};
+  try{return Object.assign({thesis:'',risks:'',watch:'',deals:''},JSON.parse(raw));}
+  catch(e){return {thesis:raw,risks:'',watch:'',deals:''};}
+}
+function icText(){
+  const r=icRecord();
+  const memo=icSavedMemoObj();
+  const deal=(document.getElementById('icDeal')?.value||'Selected retail opportunity').trim();
+  const decision=document.getElementById('icDecision')?.value||'Investigate';
+  const latest10=R10[R10.length-1], latest5=R5[R5.length-1], latestPrime=PR[PR.length-1];
+  const rankByScore=[...allMarketRecords()].sort((a,b)=>b.score-a.score).findIndex(x=>x.market===r.market)+1;
+  const rankByCap=[...allMarketRecords()].sort((a,b)=>b.current-a.current).findIndex(x=>x.market===r.market)+1;
+  const thesis=memo.thesis || 'No saved thesis has been written yet. Use the Market Intelligence tab to add the market thesis, risks, and watch list.';
+  const risks=memo.risks || 'Risks to confirm: tenant durability, rent roll, leasing spreads, capex, financing sensitivity, local competition, and whether pricing reflects asset-specific issues.';
+  const watch=memo.watch || 'Watch list: Bank of Canada path, GoC yields, comparable retail trades, broker feedback, tenant sales, leasing demand, and new supply.';
+  const deals=memo.deals || 'No deal-specific follow-ups saved yet.';
+  const signal=r.score>=75?'Strong screen':r.score>=55?'Moderate screen':'Weak screen';
+  const why=`${r.market} screens at ${r.current.toFixed(2)}%, ranking ${rankByCap} of 12 by current cap rate and ${rankByScore} of 12 by Trinity value score. The spread is ${(r.spread10*100).toFixed(0)} bps over GoC 10Y and ${(r.spread5*100).toFixed(0)} bps over GoC 5Y. Current cap rates sit in the ${r.percentile}th historical percentile since Q1 2018, with cycle position at ${r.cycle}%.`;
+  return {r,memo,deal,decision,latest10,latest5,latestPrime,rankByScore,rankByCap,thesis,risks,watch,deals,signal,why};
+}
+function renderICMemo(){
+  const o=icText(), r=o.r;
+  document.getElementById('icCards').innerHTML=`
+    <div class="sc"><div class="sv">${r.current.toFixed(2)}%</div><div class="sl">Current cap rate</div><div class="ss">${r.market}</div></div>
+    <div class="sc"><div class="sv">${(r.spread10*100).toFixed(0)} bps</div><div class="sl">Spread vs GoC 10Y</div><div class="ss">GoC 10Y: ${o.latest10.toFixed(2)}%</div></div>
+    <div class="sc"><div class="sv">${r.percentile}th</div><div class="sl">Historical percentile</div><div class="ss">Q1 2018 to Q1 2026</div></div>
+    <div class="sc"><div class="sv"><span class="score-pill ${scoreClass(r.score)}">${r.score}/100</span></div><div class="sl">Value score</div><div class="ss">Rank ${o.rankByScore}/12</div></div>`;
+  document.getElementById('icSummary').innerHTML=`<strong>${o.deal}</strong><br><br><strong>Recommendation:</strong> ${o.decision}. <strong>Screen:</strong> ${o.signal}.<br>${o.why}<br><br><strong>Why this matters:</strong> the memo combines pricing, spread, and historical cycle position so Trinity can quickly decide whether a market deserves deeper property-level underwriting.`;
+  document.getElementById('icChecklist').innerHTML=`
+    <ul style="margin-left:18px;line-height:1.9">
+      <li>Confirm latest broker guidance for ${r.city} ${r.category}.</li>
+      <li>Compare target acquisition yield to current ${r.current.toFixed(2)}% market midpoint.</li>
+      <li>Stress-test value at +25, +50, and +75 bps cap-rate expansion.</li>
+      <li>Confirm tenant sales, lease rollover, rent steps, co-tenancy, and capital expenditure needs.</li>
+      <li>Decide whether the ${r.percentile}th percentile pricing position is broad-market repricing or asset-specific risk.</li>
+    </ul>`;
+  const memoBits=[];
+  if(o.thesis) memoBits.push(`<strong>Thesis</strong><br>${o.thesis}`);
+  if(o.risks) memoBits.push(`<strong>Risks</strong><br>${o.risks}`);
+  if(o.watch) memoBits.push(`<strong>Watch list</strong><br>${o.watch}`);
+  if(o.deals) memoBits.push(`<strong>Deal notes</strong><br>${o.deals}`);
+  document.getElementById('icSavedMemo').innerHTML=memoBits.join('<br><br>');
+  const noi=+(document.getElementById('icNOI')?.value||1000000);
+  const currentVal=noi/(r.current/100);
+  document.getElementById('icScenario').innerHTML=`Base value at ${r.current.toFixed(2)}% cap rate and ${money(noi)} NOI: <strong>${money(currentVal)}</strong>. Choose a preset to run a quick scenario.`;
+  document.getElementById('icReportSheet').innerHTML=icReportHTML();
+}
+function setICScenario(kind){
+  const o=icText(), r=o.r;
+  const noi=+(document.getElementById('icNOI')?.value||1000000);
+  const baseCap=r.current/100;
+  let targetCap=baseCap, title='Scenario';
+  if(kind==='rateCut'){targetCap=Math.max(0.01,baseCap-0.005); title='Rate-cut case: cap rate compresses 50 bps';}
+  if(kind==='higher'){targetCap=baseCap; title='Higher-for-longer: cap rate holds flat';}
+  if(kind==='compression'){targetCap=Math.max(0.01,baseCap-0.0075); title='Spread compression: cap rate compresses 75 bps';}
+  if(kind==='stress'){targetCap=baseCap+0.005; title='Stress case: cap rate expands 50 bps';}
+  const baseVal=noi/baseCap, targetVal=noi/targetCap, diff=targetVal-baseVal;
+  document.getElementById('icScenario').innerHTML=`<strong>${title}</strong><br>Base value: <strong>${money(baseVal)}</strong><br>Scenario cap rate: <strong>${(targetCap*100).toFixed(2)}%</strong><br>Scenario value: <strong>${money(targetVal)}</strong><br>Value change: <strong class="${diff>=0?'spg':'spr'}">${diff>=0?'+':''}${money(diff)}</strong>`;
+}
+function icReportHTML(){
+  const o=icText(), r=o.r;
+  return `<h2>Trinity Retail Market IC Memo</h2>
+    <p><strong>Deal / focus:</strong> ${o.deal}<br><strong>Market:</strong> ${r.market}<br><strong>Decision:</strong> ${o.decision}<br><strong>Screen:</strong> ${o.signal}</p>
+    <h3>Market screen</h3>
+    <table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>
+      <tr><td>Current cap-rate midpoint</td><td>${r.current.toFixed(2)}%</td></tr>
+      <tr><td>Spread vs GoC 10Y</td><td>${(r.spread10*100).toFixed(0)} bps</td></tr>
+      <tr><td>Spread vs GoC 5Y</td><td>${(r.spread5*100).toFixed(0)} bps</td></tr>
+      <tr><td>Historical percentile</td><td>${r.percentile}th</td></tr>
+      <tr><td>Cycle position</td><td>${r.cycle}%</td></tr>
+      <tr><td>Trinity value score</td><td>${r.score}/100</td></tr>
+      <tr><td>Rank by value score</td><td>${o.rankByScore}/12</td></tr>
+    </tbody></table>
+    <h3>Executive summary</h3><p>${o.why}</p>
+    <h3>Investment thesis</h3><p>${o.thesis}</p>
+    <h3>Risks</h3><p>${o.risks}</p>
+    <h3>Watch list / catalysts</h3><p>${o.watch}</p>
+    <h3>Deal notes / follow-ups</h3><p>${o.deals}</p>
+    <h3>Source discipline</h3><p>City-level data is used where entered from Colliers and CBRE quarterly reports. Long-run national context is approximate where visually extracted and should be labeled as such.</p>`;
+}
+function copyICMemo(){
+  const o=icText(), r=o.r;
+  const text=`Trinity Retail Market IC Memo\n\nDeal / focus: ${o.deal}\nMarket: ${r.market}\nDecision: ${o.decision}\nScreen: ${o.signal}\n\nCurrent cap-rate midpoint: ${r.current.toFixed(2)}%\nSpread vs GoC 10Y: ${(r.spread10*100).toFixed(0)} bps\nSpread vs GoC 5Y: ${(r.spread5*100).toFixed(0)} bps\nHistorical percentile: ${r.percentile}th\nCycle position: ${r.cycle}%\nTrinity value score: ${r.score}/100\nRank by value score: ${o.rankByScore}/12\n\nExecutive summary\n${o.why}\n\nInvestment thesis\n${o.thesis}\n\nRisks\n${o.risks}\n\nWatch list / catalysts\n${o.watch}\n\nDeal notes / follow-ups\n${o.deals}`;
+  navigator.clipboard?.writeText(text).then(()=>alert('IC memo copied.')).catch(()=>alert(text));
+}
+function downloadICMemo(){
+  const blob=new Blob([icTextForDownload()],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='trinity_ic_memo.txt'; a.click(); URL.revokeObjectURL(url);
+}
+function icTextForDownload(){
+  const o=icText(), r=o.r;
+  return `Trinity Retail Market IC Memo\n\nDeal / focus: ${o.deal}\nMarket: ${r.market}\nDecision: ${o.decision}\nScreen: ${o.signal}\n\n${o.why}\n\nInvestment thesis\n${o.thesis}\n\nRisks\n${o.risks}\n\nWatch list / catalysts\n${o.watch}\n\nDeal notes / follow-ups\n${o.deals}\n`;
+}
+function openICPrintView(){
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Trinity IC Memo</title><style>body{font-family:Georgia,serif;margin:28px;color:#111}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid #ddd;padding:7px;text-align:left}th{background:#1f2b2f;color:#dbe6a4}p,li{font-size:12px;line-height:1.6}h2{margin-top:0}</style></head><body>${icReportHTML()}</body></html>`);
+  w.document.close();
+}
+
 function countCbreMissing(){
   let missing=0,total=0;
   Object.keys(CBRE).forEach(c=>CBRE[c].forEach(r=>{total++; if(!r) missing++;}));
@@ -1537,13 +1705,14 @@ function clearAllSavedMemos(){
 }
 
 function showTab(t){
-  const tabs=['chart','market','macro','assistant','tools','intel','qc','rates','spread','compare','table'];
+  const tabs=['chart','market','macro','assistant','tools','intel','ic','qc','rates','spread','compare','table'];
   tabs.forEach(id=>{const el=document.getElementById('tab-'+id); if(el) el.style.display=id===t?'':'none';});
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   if(t==='market') setTimeout(renderMarketCompare,0);
   if(t==='macro') renderMacro();
   if(t==='tools'){calcValuation();renderSnapshot();}
   if(t==='intel') renderIntel();
+  if(t==='ic') renderICMemo();
   if(t==='qc') renderQC();
   if(t==='rates'&&!charts.rates) renderRatesTab();
   if(t==='spread') renderSpread();
