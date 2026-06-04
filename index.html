@@ -120,7 +120,7 @@ canvas{background:transparent}
 .source-item strong{color:#f2f6f7}.tag{display:inline-block;font-size:8px;letter-spacing:1px;text-transform:uppercase;border:1px solid #31414a;border-radius:2px;padding:2px 5px;margin-left:6px;color:var(--terminal)}
 .report-sheet{background:#f7f7f2;color:#111;padding:22px;border-radius:2px;border:1px solid #d8d8cc;margin-top:10px;font-family:Georgia,serif}
 .report-sheet h2{font-size:18px;margin-bottom:8px;color:#111}.report-sheet h3{font-size:13px;margin:12px 0 6px;color:#111}.report-sheet p,.report-sheet li{font-size:11px;line-height:1.55;color:#222}.report-sheet table{font-size:10px;background:#fff;color:#111}.report-sheet th{background:#1f2b2f;color:#dbe6a4}.report-sheet td{color:#111;border-bottom:1px solid #ddd}.report-sheet tr:nth-child(even) td{background:#fafafa}
-@media print{body{background:#fff;color:#111}.hdr,.tabs,.control-grid,.cr,.btn,.note:not(.print-note){display:none!important}.body{max-width:none;padding:0}.cbox,.sc,.info,.tw,.memo-card,.qa-card,.qc-card{box-shadow:none;border-color:#ccc;background:#fff;color:#111}.report-sheet{display:block!important}.tab-page{display:none!important}#tab-qc{display:block!important}}
+@media print{body{background:#fff;color:#111}.hdr,.tabs,.control-grid,.cr,.btn,.note:not(.print-note){display:none!important}.body{max-width:none;padding:0}.cbox,.sc,.info,.tw,.memo-card,.qa-card,.qc-card{box-shadow:none;border-color:#ccc;background:#fff;color:#111}.report-sheet{display:block!important}.tab-page{display:none!important}}
 
 </style>
 
@@ -130,14 +130,14 @@ canvas{background:transparent}
     <div class="logo">T</div>
     <div>
       <div class="hdr-title">Trinity Development Group — Retail Cap Rate Tracker</div>
-      <div class="hdr-sub">Colliers + CBRE · GoC 10Y / 5Y / Prime · 2008 context · Q1 2018 – Q1 2026</div>
+      <div class="hdr-sub">Colliers Canada · GoC 10Y / 5Y / Prime · 2008 context · Q1 2018 – Q1 2026</div>
     </div>
   </div>
   <div style="display:flex;gap:12px;flex-wrap:wrap;margin:0 0 10px 52px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8f9ca3">
     <span style="color:#b8c95b">LIVE VIEW: CUSTOM SERIES BUILDER</span>
     <span>Rates 2008–Q1 2026</span>
     <span>City retail Q1 2018–Q1 2026</span>
-    <span>Spread bars independently toggleable</span><span>Market Compare + Macro & Rates + Intelligence + IC Memo + Offline Assistant</span>
+    <span>Spread bars independently toggleable</span><span>Market Compare + Macro & Rates + Canada Rankings + Offline Assistant</span>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('chart')">Chart View</button>
@@ -145,11 +145,8 @@ canvas{background:transparent}
     <button class="tab" onclick="showTab('macro')">Macro & Rates</button>
     <button class="tab" onclick="showTab('assistant')">Data Assistant</button>
     <button class="tab" onclick="showTab('tools')">Deal Lens</button>
-    <button class="tab" onclick="showTab('intel')">Market Intelligence</button>
-    <button class="tab" onclick="showTab('ic')">IC Memo</button>
-    <button class="tab" onclick="showTab('qc')">QC & Sources</button>
+    <button class="tab" onclick="showTab('intel')">Canada Market Rankings</button>
     <button class="tab" onclick="showTab('spread')">Spread Analysis</button>
-    <button class="tab" onclick="showTab('compare')">Colliers vs CBRE</button>
     <button class="tab" onclick="showTab('table')">Full Data Table</button>
   </div>
 </div>
@@ -180,10 +177,8 @@ canvas{background:transparent}
       <span class="lbl">Cap series</span>
       <button class="btn on" id="scol" onclick="togSrc('col')">Colliers City Mid</button>
       <button class="btn on" id="lcolRange" onclick="togLine('colRange')">Colliers Range</button>
-      <button class="btn on" id="scbre" onclick="togSrc('cbre')">CBRE City Mid</button>
       <button class="btn on" id="lnat" onclick="togLine('nat')">National Retail</button>
       <button class="btn on" id="lcbreNat" onclick="togLine('cbreNat')">CBRE National</button>
-      <button class="btn on" id="liso" onclick="togLine('iso')">Isolated Points</button>
       <button class="btn on" id="lcycle" onclick="togLine('cycle')">Cycle Shading</button>
     </div>
     <div class="cr">
@@ -213,44 +208,50 @@ canvas{background:transparent}
     <div style="position:relative;height:430px"><canvas id="mainC" role="img" aria-label="Cap rate chart">Cap rate data.</canvas></div>
   </div>
   <div class="info" id="chins">Loading...</div>
-  <div class="note">2008–2017 national context is approximate and not city-specific. Q4 2011, Q2 2013, Q2 2016, and Q2 2017 show isolated city points. Q1 2018–Q1 2026 uses quarterly city-level data. All cap-rate, rate, reference, isolated-point, and spread-bar series can be independently toggled. GoC 10Y and GoC 5Y values in Chart View are now mechanically derived from the uploaded Bank of Canada CSV using the last available observation in each quarter.</div>
+  <div class="note">2008–2017 national context is approximate and not city-specific. Q1 2018–Q1 2026 uses audited quarterly city-level Colliers data. City lines can now be layered in Chart View, with cap-rate, range, rate, reference, and spread-bar series independently toggleable. GoC 10Y and GoC 5Y values in Chart View are now mechanically derived from the uploaded Bank of Canada CSV using the last available observation in each quarter.</div>
 </div>
 
 
 <!-- MARKET COMPARE TAB -->
 <div id="tab-market" style="display:none">
   <div class="info">
-    <strong style="color:#e6edf0">Market Compare:</strong> Compare Colliers city-level retail midpoint cap rates across markets and categories. This tab uses exact quarterly city data from Q1 2018 to Q1 2026, so it is separated from the national historical context series.
+    <strong style="color:#e6edf0">Market Compare:</strong> A simplified market comparison tool. Pick one retail category, then turn cities on or off to layer them on the chart. The table below updates automatically so you can see the latest cap rate, change since Q1 2018, cycle high, and cycle low.
   </div>
-  <div class="control-grid">
-    <div class="cr">
-      <span class="lbl">Compare mode</span>
-      <button class="btn on" id="mcModeCities" onclick="setMarketMode('cities')">Cities, same category</button>
-      <button class="btn" id="mcModeCats" onclick="setMarketMode('cats')">Categories, same city</button>
-      <button class="btn" id="mcModeMatrix" onclick="setMarketMode('matrix')">Latest matrix</button>
-    </div>
-    <div class="cr" id="mcCityToggles">
-      <span class="lbl">City toggles</span>
-      <button class="btn on" id="mcCityToronto" onclick="togMcCity('Toronto')">Toronto</button>
-      <button class="btn on" id="mcCityOttawa" onclick="togMcCity('Ottawa')">Ottawa</button>
-      <button class="btn" id="mcCityCalgary" onclick="togMcCity('Calgary')">Calgary</button>
-      <button class="btn" id="mcCityMontreal" onclick="togMcCity('Montreal')">Montréal</button>
-      <button class="btn ghost" onclick="setMcCities(['Toronto','Ottawa','Calgary','Montreal'])">All cities</button>
-      <button class="btn ghost" onclick="setMcCities(['Toronto','Calgary'])">Toronto vs Calgary</button>
-    </div>
-    <div class="cr">
+
+  <input type="hidden" id="mcType" value="rp">
+  <div class="cbox">
+    <div class="ct">1. Choose retail category</div>
+    <div class="cr" style="margin-bottom:0">
       <span class="lbl">Category</span>
-      <select id="mcType" onchange="renderMarketCompare()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
-      <span class="lbl" style="margin-left:8px">City</span>
-      <select id="mcCity" onchange="renderMarketCompare()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
+      <button class="btn on" id="mcCatrp" onclick="setMcCategory('rp')">Regional / Power</button>
+      <button class="btn" id="mcCatgc" onclick="setMcCategory('gc')">Grocery / Community</button>
+      <button class="btn" id="mcCatns" onclick="setMcCategory('ns')">Neighbourhood / Strip</button>
     </div>
   </div>
+
+  <div class="cbox">
+    <div class="ct">2. Choose markets to layer</div>
+    <div class="cr" id="mcCityToggles" style="margin-bottom:8px">
+      <span class="lbl">Markets</span>
+    </div>
+    <div class="cr" style="margin-bottom:0">
+      <span class="lbl">Presets</span>
+      <button class="btn ghost" onclick="setMcCities(Object.keys(COL))">All markets</button>
+      <button class="btn ghost" onclick="setMcCities(Object.keys(COL).slice(0,4))">First four</button>
+      <button class="btn ghost" onclick="setMcTopLatest(5)">Top 5 latest cap</button>
+      <button class="btn ghost" onclick="setMcLowestLatest(5)">Lowest 5 latest cap</button>
+      <button class="btn ghost" onclick="setMcCities([Object.keys(COL)[0]])">Reset</button>
+    </div>
+  </div>
+
   <div class="sg" id="mcCards"></div>
   <div class="cbox">
     <div class="ct" id="mcTitle">Market comparison</div>
-    <div style="position:relative;height:360px"><canvas id="marketC" role="img" aria-label="Market comparison chart">Market comparison data.</canvas></div>
+    <div class="leg" id="mcLegend"></div>
+    <div style="position:relative;height:380px"><canvas id="marketC" role="img" aria-label="Market comparison chart">Market comparison data.</canvas></div>
   </div>
-  <div class="tw"><table><thead><tr><th>Series</th><th>Q1 2018</th><th>Q1 2026</th><th>Change</th><th>Max</th><th>Min</th></tr></thead><tbody id="mcTable"></tbody></table></div>
+  <div class="tw"><table><thead><tr><th>Market</th><th>Q1 2018</th><th>Latest</th><th>Change</th><th>Cycle High</th><th>Cycle Low</th><th>Current Rank</th></tr></thead><tbody id="mcTable"></tbody></table></div>
+  <div class="note">This tab compares Colliers midpoint cap rates only. Use the buttons above like a checklist: pick a category, then toggle markets on the chart.</div>
 </div>
 
 <!-- MACRO & RATES TAB -->
@@ -311,7 +312,6 @@ canvas{background:transparent}
         <span class="pill" onclick="sampleQ('most expansion since 2018')">Most expansion</span>
         <span class="pill" onclick="sampleQ('compare Toronto Calgary regional')">Compare cities</span>
         <span class="pill" onclick="sampleQ('Toronto regional percentile')">Market profile</span>
-        <span class="pill" onclick="sampleQ('CBRE data gaps')">CBRE gaps</span>
         <span class="pill" onclick="sampleQ('inflation and rates')">Macro read</span>
       </div>
     </div>
@@ -320,7 +320,7 @@ canvas{background:transparent}
       <div class="qa-help">
         <strong>Rankings:</strong> highest/lowest cap rate, spread, value score, percentile, expansion.<br>
         <strong>Profiles:</strong> market/category current cap rate, cycle position, spread, score.<br>
-        <strong>Comparisons:</strong> city vs city, category vs category, Colliers vs CBRE where available.<br>
+        <strong>Comparisons:</strong> city vs city, category vs category, spreads, rankings, and market profiles.<br>
         <strong>Macro:</strong> loaded CPI, GoC 10Y, GoC 5Y, Prime context.
       </div>
     </div>
@@ -384,7 +384,7 @@ canvas{background:transparent}
 <!-- MARKET INTELLIGENCE TAB -->
 <div id="tab-intel" style="display:none">
   <div class="info">
-    <strong style="color:#e6edf0">Market Intelligence:</strong> A simple acquisition screener built from the embedded Colliers city/category data. It ranks the 12 city/category combinations by current cap rate, spread, historical percentile, expansion since Q1 2018, and a Trinity value score.
+    <strong style="color:#e6edf0">Market Intelligence:</strong> A simple acquisition screener built from the embedded Colliers city/category data. It ranks all city/category combinations by current cap rate, spread, historical percentile, expansion since Q1 2018, and a Trinity value score.
   </div>
   <div class="sg" id="intelCards"></div>
   <div class="grid2">
@@ -471,61 +471,6 @@ canvas{background:transparent}
 </div>
 
 
-<!-- IC MEMO TAB -->
-<div id="tab-ic" style="display:none">
-  <div class="info">
-    <strong style="color:#e6edf0">IC Memo Builder:</strong> Turn the selected market, ranking data, spreads, value score, and saved thesis notes into a clean investment committee style summary. This is meant to help organize thinking, not replace property-level underwriting.
-  </div>
-  <div class="control-grid">
-    <div class="cr">
-      <span class="lbl">Memo market</span>
-      <select id="icCity" onchange="renderICMemo()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
-      <select id="icType" onchange="renderICMemo()"><option value="rp">Regional/Power</option><option value="gc">Grocery/Community</option><option value="ns">Neighbourhood/Strip</option></select>
-      <span class="lbl" style="margin-left:8px">Deal name</span>
-      <input id="icDeal" oninput="renderICMemo()" placeholder="Optional deal / site name" style="min-width:210px;background:#091014;color:#e6edf0;border:1px solid #2c3b43;border-radius:3px;padding:6px 8px;font-family:Georgia,serif;font-size:11px">
-    </div>
-    <div class="cr">
-      <span class="lbl">Decision</span>
-      <select id="icDecision" onchange="renderICMemo()"><option>Investigate</option><option>Prioritize</option><option>Watch</option><option>Pass</option></select>
-      <button class="btn on" onclick="copyICMemo()">Copy IC Memo</button>
-      <button class="btn ghost" onclick="downloadICMemo()">Download Memo</button>
-      <button class="btn ghost" onclick="openICPrintView()">Open Print View</button>
-    </div>
-  </div>
-  <div class="sg" id="icCards"></div>
-  <div class="grid2">
-    <div class="cbox">
-      <div class="ct">Executive Summary</div>
-      <div class="answer-box" id="icSummary">Loading memo summary...</div>
-    </div>
-    <div class="cbox">
-      <div class="ct">Scenario Presets</div>
-      <div class="cr" style="background:transparent;border:none;padding:0;margin-bottom:8px">
-        <span class="lbl">NOI</span>
-        <input id="icNOI" value="1000000" oninput="renderICMemo()" style="width:120px;background:#091014;color:#e6edf0;border:1px solid #2c3b43;border-radius:3px;padding:6px 8px;font-family:Georgia,serif;font-size:11px">
-      </div>
-      <div class="grp" style="margin-bottom:8px">
-        <button class="btn ghost" onclick="setICScenario('rateCut')">Rate-cut case</button>
-        <button class="btn ghost" onclick="setICScenario('higher')">Higher-for-longer</button>
-        <button class="btn ghost" onclick="setICScenario('compression')">Spread compression</button>
-        <button class="btn ghost" onclick="setICScenario('stress')">Stress case</button>
-      </div>
-      <div class="answer-box" id="icScenario">Choose a preset to test value sensitivity.</div>
-    </div>
-  </div>
-  <div class="grid2">
-    <div class="cbox">
-      <div class="ct">Decision Checklist</div>
-      <div class="answer-box" id="icChecklist"></div>
-    </div>
-    <div class="cbox">
-      <div class="ct">Saved Market Memo Pull-through</div>
-      <div class="answer-box" id="icSavedMemo">No saved memo found for this market/category yet.</div>
-    </div>
-  </div>
-  <div class="report-sheet" id="icReportSheet"></div>
-</div>
-
 <!-- SPREAD TAB -->
 <div id="tab-spread" style="display:none">
   <div class="info">
@@ -560,47 +505,11 @@ canvas{background:transparent}
   <div class="note">Colliers data only. Quarter-end yields from Bank of Canada.</div>
 </div>
 
-<!-- COMPARE TAB -->
-<div id="tab-compare" style="display:none">
-  <div class="info">
-    <strong style="color:#e6edf0">Colliers vs CBRE — same market, different survey methodology.</strong> Differences of 25–75 bps are normal and expected. CBRE gaps appear as breaks in the line. CBRE Regional/Power = average of CBRE's "Regional" and "Sector/Power" subcategories.
-  </div>
-  <div class="cr">
-    <span class="lbl">City</span>
-    <div class="grp" id="cmpc">
-      <button class="btn on" onclick="setCmpC('Toronto')">Toronto</button>
-      <button class="btn" onclick="setCmpC('Ottawa')">Ottawa</button>
-      <button class="btn" onclick="setCmpC('Calgary')">Calgary</button>
-      <button class="btn" onclick="setCmpC('Montreal')">Montréal</button>
-    </div>
-  </div>
-  <div class="cr">
-    <span class="lbl">Type</span>
-    <div class="grp" id="cmpt">
-      <button class="btn on" onclick="setCmpT('rp')">Regional/Power</button>
-      <button class="btn" onclick="setCmpT('gc')">Grocery/Community</button>
-      <button class="btn" onclick="setCmpT('ns')">Neighbourhood/Strip</button>
-    </div>
-  </div>
-  <div class="cbox">
-    <div class="ct" id="cmptit">Colliers vs CBRE — Toronto Regional/Power</div>
-    <div class="leg">
-      <div class="li"><div class="ld" style="background:#7d8f42"></div>Colliers midpoint</div>
-      <div class="li"><div class="lbar" style="background:#7d8f42"></div>Colliers range</div>
-      <div class="li"><div class="ldd" style="border-color:#5b1732"></div>CBRE midpoint (confirmed quarters only)</div>
-    </div>
-    <div style="position:relative;height:280px"><canvas id="cmpC" role="img" aria-label="Broker comparison">Colliers vs CBRE.</canvas></div>
-  </div>
-  <div class="note">CBRE R/P = avg of Regional + Sector/Power subcategories. confirmed quarters only; gaps remain breaks.</div>
-</div>
-
 <!-- TABLE TAB -->
 <div id="tab-table" style="display:none">
   <div class="cr">
     <span class="lbl">City</span>
     <select id="tbcity" onchange="renderTable()"><option>Toronto</option><option>Ottawa</option><option>Calgary</option><option>Montreal</option></select>
-    <span class="lbl" style="margin-left:8px">Source</span>
-    <select id="tbsrc" onchange="renderTable()"><option value="col">Colliers</option><option value="cbre">CBRE</option></select>
   </div>
   <div class="tw"><table><thead><tr>
     <th>Quarter</th><th>R/P Low</th><th>R/P High</th><th>R/P Mid</th>
@@ -608,51 +517,17 @@ canvas{background:transparent}
     <th>N/S Low</th><th>N/S High</th><th>N/S Mid</th>
     <th>GoC 10Y</th><th>GoC 5Y</th><th>Prime</th><th>R/P Sprd</th><th>G/C Sprd</th>
   </tr></thead><tbody id="tbb"></tbody></table></div>
-  <div class="note">Spread = midpoint − GoC 10Y. Green ≥2.5%, amber 1.5–2.5%, red &lt;1.5%.</div>
-</div>
-
-
-<!-- QC & SOURCES TAB -->
-<div id="tab-qc" style="display:none">
-  <div class="info">
-    <strong style="color:#e6edf0">Quality Control & Source Notes:</strong> This tab is designed to make the dashboard defensible. It separates exact data from estimated/visual data, flags missing observations, and gives you a simple report-mode summary for IC or internal research use.
-  </div>
-
-  <div class="qc-grid" id="qcCards"></div>
-
-  <div class="grid2">
-    <div class="cbox">
-      <div class="ct">Data Coverage & Reliability</div>
-      <div class="tw"><table><thead><tr><th>Dataset</th><th>Coverage</th><th>Status</th><th>Use Case</th></tr></thead><tbody id="sourceBody"></tbody></table></div>
-      <div class="note">Estimated data is useful for historical context but should not be treated as precise transaction-level evidence.</div>
-    </div>
-    <div class="cbox">
-      <div class="ct">Automated QC Flags</div>
-      <div class="tw"><table><thead><tr><th>Flag</th><th>Location</th><th>Why It Matters</th></tr></thead><tbody id="qcFlagBody"></tbody></table></div>
-      <div class="note">Flags are simple rules-based checks, not corrections to the dataset.</div>
-    </div>
-  </div>
-
-  <div class="cbox">
-    <div class="ct">Research Exports & Report Mode</div>
-    <div class="cr">
-      <span class="lbl">Actions</span>
-      <button class="btn" onclick="printReportMode()">Print / Save PDF Report</button>
-      <button class="btn" onclick="copySourceNotes()">Copy Source Notes</button>
-      <button class="btn" onclick="clearAllSavedMemos()">Clear All Saved Memos</button>
-    </div>
-    <div id="qcReport" class="report-sheet"></div>
-  </div>
+  <div class="note">Spread = Colliers midpoint − GoC 10Y. Green ≥2.5%, amber 1.5–2.5%, red &lt;1.5%.</div>
 </div>
 
 </div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const QS=['Q1 2019','Q2 2019','Q3 2019','Q4 2019','Q1 2020','Q2 2020','Q3 2020','Q4 2020','Q1 2021','Q2 2021','Q3 2021','Q4 2021','Q1 2022','Q2 2022','Q3 2022','Q4 2022','Q1 2023','Q2 2023','Q3 2023','Q4 2023','Q1 2024','Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026'];
-const R10=[1.62,1.46,1.37,1.7,0.71,0.52,0.57,0.67,1.55,1.39,1.51,1.42,2.4,3.23,3.16,3.3,2.9,3.26,4.03,3.1,3.45,3.5,2.95,3.23,2.97,3.28,3.17,3.42,3.46];
-const R5=[1.52,1.39,1.4,1.68,0.6,0.36,0.36,0.39,0.99,0.97,1.11,1.25,2.39,3.1,3.32,3.41,3.02,3.68,4.25,3.17,3.51,3.51,2.73,2.96,2.61,2.83,2.74,2.96,3.09];
-const PR=[3.95,3.95,3.95,3.95,2.45,2.45,2.45,2.45,2.45,2.45,2.45,2.45,2.70,3.70,5.45,6.45,6.70,6.95,7.20,7.20,7.20,6.95,6.45,5.45,4.95,4.95,4.70,4.45,4.45];
+const QS=["Q1 2018","Q2 2018","Q3 2018","Q4 2018","Q1 2019","Q2 2019","Q3 2019","Q4 2019","Q1 2020","Q2 2020","Q3 2020","Q4 2020","Q1 2021","Q2 2021","Q3 2021","Q4 2021","Q1 2022","Q2 2022","Q3 2022","Q4 2022","Q1 2023","Q2 2023","Q3 2023","Q4 2023","Q1 2024","Q2 2024","Q3 2024","Q4 2024","Q1 2025","Q2 2025","Q3 2025","Q4 2025","Q1 2026"];
+const R10=[2.09,2.17,2.42,1.96,1.62,1.46,1.37,1.7,0.71,0.52,0.57,0.67,1.55,1.39,1.51,1.42,2.4,3.23,3.16,3.3,2.9,3.26,4.03,3.1,3.45,3.5,2.95,3.23,2.97,3.28,3.17,3.42,3.46];
+const R5=[1.96,2.06,2.33,1.88,1.52,1.39,1.4,1.68,0.6,0.36,0.36,0.39,0.99,0.97,1.11,1.25,2.39,3.1,3.32,3.41,3.02,3.68,4.25,3.17,3.51,3.51,2.73,2.96,2.61,2.83,2.74,2.96,3.09];
+const PR=[3.45,3.45,3.7,3.95,3.95,3.95,3.95,3.95,2.45,2.45,2.45,2.45,2.45,2.45,2.45,2.45,2.7,3.7,5.45,6.45,6.7,6.95,7.2,7.2,7.2,6.95,6.45,5.45,4.95,4.95,4.7,4.45,4.45];
 
 const PRIME_HISTORY=[
   {d:'2004-10-20',v:4.25},{d:'2005-09-07',v:4.50},{d:'2005-10-19',v:4.75},{d:'2005-12-06',v:5.00},
@@ -676,56 +551,10 @@ function primeValueOnDate(dateStr){
 }
 
 
-const COL={
-Toronto:[[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,5.75],[4.25,5.00,5.25,6.00,4.75,6.00],[4.25,5.25,5.25,6.25,4.75,6.00],[4.25,5.25,5.25,6.25,4.75,7.25],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.25,6.25,4.75,6.00],[4.50,5.50,5.00,6.25,4.75,6.00],[4.50,5.50,5.00,6.25,4.75,6.00],[4.75,5.50,5.00,6.25,4.75,6.00],[5.00,6.00,5.00,6.25,5.00,6.00],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.50,6.50,5.50,6.50],[5.50,6.75,5.25,6.25,5.25,6.25],[5.50,6.75,5.00,6.00,5.00,6.25]],
-Ottawa:[[5.00,5.50,6.00,6.50,6.25,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.00,6.00,6.00,6.50,6.00,7.00],[5.50,6.50,6.00,6.50,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[5.75,6.75,6.00,6.75,6.00,7.00],[6.00,6.75,6.00,6.75,6.00,7.00],[6.25,6.75,6.25,6.75,6.25,7.00],[6.25,6.75,6.25,6.75,6.25,7.00],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.25,7.00,6.25,7.00,6.25,7.25],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,6.00,7.00,6.00,7.00],[6.00,7.00,5.75,6.75,6.00,7.00]],
-Calgary:[[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.00,5.25,6.00,5.50,6.50],[5.25,6.25,5.25,6.25,5.50,6.75],[5.50,6.50,5.50,6.50,5.75,7.00],[5.50,6.50,5.50,6.50,5.75,7.00],[5.50,6.50,5.50,6.50,5.75,7.00],[5.75,6.75,5.75,6.75,6.00,7.25],[5.75,6.75,5.75,6.75,6.00,7.25],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.50,7.50],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.25,7.00],[5.75,6.75,5.75,6.75,6.00,7.00],[5.75,6.75,5.50,6.50,5.75,6.75],[5.75,6.75,5.75,6.25,5.75,6.75]],
-Montreal:[[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.50,7.25,6.00,7.00],[4.75,6.50,6.25,7.00,6.00,7.00],[4.75,6.50,6.25,7.00,6.50,7.50],[5.25,6.50,6.25,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,7.00,7.75],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.25,6.50,6.00,7.00,6.50,7.50],[5.00,6.50,6.00,7.00,6.50,7.50],[5.50,6.50,6.50,7.00,7.00,7.50],[5.00,6.00,5.50,6.50,6.00,7.00],[5.50,6.25,5.75,6.75,6.00,7.00],[5.00,6.00,5.50,6.50,6.00,7.00],[5.00,6.00,6.00,7.00,6.00,7.00],[5.50,6.50,5.50,6.50,5.50,6.50],[6.00,6.50,6.25,6.75,6.50,7.00],[6.00,6.50,6.25,6.75,6.50,7.00],[6.00,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.75,6.50,7.00],[5.75,6.50,6.25,6.50,6.50,7.00],[6.00,7.00,6.00,6.75,6.25,7.00],[6.00,7.00,6.00,6.75,6.25,7.00]]
-};
-const CBRE={
-Toronto:[[4.25,5.25,5.00,6.25,5.00,5.50],[4.25,5.25,5.00,6.25,4.75,6.00],[4.25,5.50,5.00,6.25,4.75,6.00],null,[4.25,5.50,5.00,6.25,5.00,5.50],[4.25,5.50,5.00,6.25,4.75,6.00],[4.25,5.50,5.00,6.25,4.75,6.00],[4.25,6.00,5.00,6.25,4.75,6.00],[4.25,6.00,5.00,6.25,4.75,6.00],null,null,[4.25,6.00,5.00,6.25,4.50,5.75],null,[4.25,5.00,5.00,6.25,4.50,5.75],null,null,[5.00,6.50,5.50,6.50,5.00,5.75],[5.25,6.75,5.75,6.75,5.25,6.00],null,null,null,null,null,null,[5.25,7.00,5.75,6.75,5.00,6.00],[5.25,7.00,5.50,6.50,5.00,6.00],null,null,[5.25,7.00,5.50,6.50,5.00,6.00]],
-Ottawa:[[5.00,5.75,6.00,6.75,6.25,7.00],[5.00,5.75,6.00,6.50,6.00,7.00],[5.00,5.75,6.00,6.50,6.00,7.00],null,[5.00,5.75,6.00,6.75,5.75,6.50],[5.00,5.75,5.75,6.50,5.50,6.25],[5.00,5.75,5.75,6.75,5.75,6.50],[5.00,5.75,5.75,6.50,5.50,6.25],[5.00,5.75,5.75,6.75,5.50,6.25],null,null,[5.00,5.75,5.75,6.75,4.75,5.50],null,[5.25,5.75,6.00,6.75,5.75,6.25],null,null,[5.75,6.00,5.75,6.00,6.25,6.50],[6.00,6.25,6.25,6.75,6.50,7.00],null,null,null,null,null,null,[6.00,6.50,6.00,6.75,6.25,6.75],[6.00,6.50,6.00,7.00,6.25,6.75],null,null,[6.00,7.00,5.75,6.75,6.00,7.00]],
-Calgary:[[4.75,5.50,5.25,6.00,5.50,6.00],[4.75,5.50,5.25,6.00,5.50,6.00],[4.75,5.50,5.50,6.00,5.50,6.00],null,[4.75,5.50,5.75,6.25,5.50,6.00],[4.75,6.75,5.50,6.25,5.50,6.25],[5.00,6.00,5.50,6.25,5.75,6.50],[5.00,6.00,6.50,7.00,5.75,6.50],[5.00,6.00,6.50,7.50,5.50,6.00],null,null,[5.00,6.00,6.50,7.00,5.25,5.75],null,[5.00,6.25,5.25,6.25,5.50,5.75],null,null,[5.25,6.25,5.25,6.50,5.75,6.25],[5.75,6.75,5.75,6.75,5.25,5.75],null,null,null,null,null,null,[5.50,6.50,5.50,6.50,5.00,5.50],[5.50,6.00,5.75,6.75,5.25,5.75],null,null,[5.50,6.50,5.75,6.25,5.75,6.75]],
-Montreal:[[5.00,5.75,6.00,6.75,5.25,6.00],[5.25,5.75,6.00,6.75,5.50,6.00],[5.25,5.75,6.25,6.75,5.75,6.25],null,[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,7.25,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],[5.50,6.00,6.25,6.75,5.75,6.25],null,null,[5.50,6.00,6.25,6.75,5.75,6.25],null,[6.00,6.50,6.75,7.25,6.25,6.75],null,null,[6.00,6.50,5.50,6.50,6.25,6.75],[6.25,6.75,6.00,6.75,6.50,7.00],null,null,null,null,null,null,[6.00,6.75,6.25,6.75,6.00,6.50],[6.00,6.75,6.25,6.75,6.00,6.50],null,null,[6.75,7.50,6.00,6.75,6.25,7.25]]
-};
+const COL={"Toronto":[[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,5.75],[4.25,5.0,5.25,6.0,4.75,6.0],[4.25,5.25,5.25,6.25,4.75,6.0],[4.25,5.25,5.25,6.25,4.75,7.25],[4.5,5.5,5.25,6.25,4.75,6.0],[4.5,5.5,5.25,6.25,4.75,6.0],[4.5,5.5,5.25,6.25,4.75,6.0],[4.5,5.5,5.0,6.25,4.75,6.0],[4.5,5.5,5.0,6.25,4.75,6.0],[4.75,5.5,5.0,6.25,4.75,6.0],[5.0,6.0,5.0,6.25,5.0,6.0],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.5,6.5,5.5,6.5],[5.5,6.75,5.25,6.25,5.25,6.25],[5.5,6.75,5.0,6.0,5.0,6.25]],"Montreal":[[5.0,6.75,7.0,7.75,6.75,7.75],[5.0,6.75,7.0,7.75,6.75,7.75],[4.75,6.5,6.75,7.5,6.25,7.25],[4.75,6.5,6.75,7.5,6.25,7.25],[4.75,6.5,6.5,7.25,6.0,7.0],[4.75,6.5,6.5,7.25,6.0,7.0],[4.75,6.5,6.5,7.25,6.0,7.0],[4.75,6.5,6.25,7.0,6.0,7.0],[4.75,6.5,6.25,7.0,6.5,7.5],[5.25,6.5,6.25,7.0,7.0,7.75],[5.25,6.5,6.0,7.0,7.0,7.75],[5.25,6.5,6.0,7.0,7.0,7.75],[5.25,6.5,6.0,7.0,7.0,7.75],[5.25,6.5,6.0,7.0,7.0,7.75],[5.25,6.5,6.0,7.0,6.5,7.5],[5.25,6.5,6.0,7.0,6.5,7.5],[5.25,6.5,6.0,7.0,6.5,7.5],[5.25,6.5,6.0,7.0,6.5,7.5],[5.0,6.5,6.0,7.0,6.5,7.5],[5.5,6.5,6.5,7.0,7.0,7.5],[5.0,6.0,5.5,6.5,6.0,7.0],[5.5,6.25,5.75,6.75,6.0,7.0],[5.0,6.0,5.5,6.5,6.0,7.0],[5.0,6.0,6.0,7.0,6.0,7.0],[5.5,6.5,6.0,7.0,6.0,7.0],[6.0,6.5,6.25,6.75,6.5,7.0],[6.0,6.5,6.25,6.75,6.5,7.0],[6.0,6.5,6.25,6.75,6.5,7.0],[5.75,6.5,6.25,6.75,6.5,7.0],[5.75,6.5,6.25,6.75,6.5,7.0],[5.75,6.5,6.25,6.75,6.5,7.0],[6.0,7.0,6.0,6.75,6.25,7.0],[6.0,7.0,6.0,6.75,6.25,7.0]],"Vancouver":[[3.75,5.25,4.0,5.25,4.0,5.0],[3.5,5.25,4.0,5.25,4.0,5.0],[3.5,5.25,4.0,5.25,4.0,5.0],[3.5,5.25,4.0,5.75,4.0,5.0],[3.5,5.25,4.0,5.75,4.0,5.5],[3.75,5.25,4.0,5.75,4.0,5.5],[3.75,5.5,4.0,5.75,4.0,5.5],[4.0,5.5,4.0,5.75,3.5,5.5],[4.0,5.5,4.0,5.75,3.5,5.5],[4.0,5.75,4.0,5.75,3.5,5.5],[4.0,5.75,4.0,5.75,3.5,5.5],[4.0,5.75,4.0,5.75,3.5,5.5],[4.0,6.0,4.0,5.75,3.5,5.5],[4.0,6.0,4.0,5.75,3.5,5.5],[4.0,6.0,4.0,5.5,3.5,5.25],[4.0,6.0,4.0,5.5,3.25,5.25],[4.0,6.0,4.0,5.5,3.25,5.25],[4.25,6.5,4.25,5.75,3.5,5.25],[4.5,6.5,4.25,5.75,3.75,5.25],[4.5,6.5,4.25,5.75,3.75,5.25],[4.5,6.5,4.25,5.75,4.0,5.25],[4.75,6.5,4.5,5.75,4.25,5.5],[4.75,6.5,4.5,5.75,4.25,5.25],[5.0,6.5,4.75,6.0,4.5,5.5],[5.0,6.5,4.75,5.25,4.5,5.5],[5.0,6.5,4.75,5.5,4.5,5.5],[5.0,6.5,4.5,5.5,4.5,5.5],[5.0,6.5,4.5,5.5,4.5,5.5],[4.75,6.0,4.5,5.5,4.5,5.5],[4.75,6.0,4.5,5.5,4.5,5.5],[4.75,6.25,4.25,5.5,4.25,5.5],[4.75,6.25,4.25,5.5,4.25,5.5],[4.75,6.25,4.25,5.5,4.25,5.5]],"Calgary":[[5.25,6.0,5.25,6.25,5.5,6.5],[5.25,6.0,5.25,6.25,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.0,5.25,6.0,5.5,6.5],[5.25,6.25,5.25,6.25,5.5,6.75],[5.5,6.5,5.5,6.5,5.75,7.0],[5.5,6.5,5.5,6.5,5.75,7.0],[5.5,6.5,5.5,6.5,5.75,7.0],[5.75,6.75,5.75,6.75,6.0,7.25],[5.75,6.75,5.75,6.75,6.0,7.25],[5.75,6.75,5.75,6.75,6.5,7.5],[5.75,6.75,5.75,6.75,6.5,7.5],[5.75,6.75,5.75,6.75,6.5,7.5],[5.75,6.75,5.75,6.75,6.25,7.0],[5.75,6.75,5.75,6.75,6.25,7.0],[5.75,6.75,5.75,6.75,6.25,7.0],[5.75,6.75,5.75,6.75,6.25,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.5,6.5,5.75,6.75],[5.75,6.75,5.75,6.25,5.75,6.75]],"Edmonton":[[5.25,6.0,5.5,6.25,5.75,6.5],[5.25,6.0,5.5,6.25,5.75,6.5],[5.25,6.0,5.5,6.25,5.5,6.5],[5.25,6.0,5.5,6.25,5.5,6.5],[5.25,6.0,5.5,6.25,5.5,6.5],[5.25,6.0,5.5,6.25,5.5,6.5],[5.25,6.0,5.5,6.25,5.5,6.5],[5.5,6.25,5.5,6.25,5.75,6.5],[5.5,6.25,5.5,6.25,5.75,6.5],[5.5,6.25,5.5,6.25,5.75,6.5],[5.75,6.75,5.75,6.75,5.75,7.25],[6.0,7.0,6.0,7.0,6.0,7.25],[6.0,7.0,6.0,7.0,6.0,7.5],[5.75,6.75,5.75,6.75,6.0,7.5],[5.75,6.75,5.75,6.75,6.0,7.25],[5.5,6.5,5.5,6.5,5.75,7.0],[5.5,6.5,5.5,6.5,5.75,6.75],[5.5,6.5,5.5,6.5,5.75,6.75],[5.75,6.75,5.75,6.75,5.75,6.75],[5.75,6.75,5.75,6.75,5.75,6.75],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[6.0,7.0,6.0,7.0,6.25,7.25],[6.0,7.0,6.0,7.0,6.5,7.5],[6.25,7.25,6.25,7.25,6.5,7.5],[6.0,7.0,6.0,7.0,6.25,7.25],[6.0,7.0,6.0,7.0,6.25,7.25],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0],[5.75,6.75,5.75,6.75,6.0,7.0]],"Ottawa":[[5.0,5.5,6.0,6.5,6.25,7.0],[5.0,5.5,6.0,6.5,6.25,7.0],[5.0,5.5,6.0,6.5,6.25,7.0],[5.0,5.5,6.0,6.5,6.25,7.0],[5.0,5.5,6.0,6.5,6.25,7.0],[5.0,6.0,6.0,6.5,6.0,7.0],[5.0,6.0,6.0,6.5,6.0,7.0],[5.0,6.0,6.0,6.5,6.0,7.0],[5.0,6.0,6.0,6.5,6.0,7.0],[5.0,6.0,6.0,6.5,6.0,7.0],[5.5,6.5,6.0,6.5,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[5.75,6.75,6.0,6.75,6.0,7.0],[6.0,6.75,6.0,6.75,6.0,7.0],[6.25,6.75,6.25,6.75,6.25,7.0],[6.25,6.75,6.25,6.75,6.25,7.0],[6.25,7.0,6.25,7.0,6.25,7.25],[6.25,7.0,6.25,7.0,6.25,7.25],[6.25,7.0,6.25,7.0,6.25,7.25],[6.25,7.0,6.25,7.0,6.25,7.25],[6.25,7.0,6.25,7.0,6.25,7.25],[6.25,7.0,6.25,7.0,6.25,7.25],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,5.75,6.75,6.0,7.0]],"Winnipeg":[[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.0,6.5,6.0,6.75,6.0,6.75],[6.25,7.0,6.25,7.0,6.25,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.0,7.0,6.0,7.0,6.0,7.0],[6.5,7.5,6.75,7.75,6.75,7.75],[6.5,7.5,6.75,7.75,6.75,7.75],[6.5,7.5,6.75,7.75,6.75,7.75],[6.5,7.5,6.5,7.5,6.5,7.5],[6.5,7.5,6.5,7.5,6.25,7.25],[6.5,7.5,6.5,7.5,6.25,7.25],[6.5,7.5,6.5,7.5,6.25,7.25],[6.5,7.5,6.5,7.5,6.25,7.25],[6.5,7.5,6.0,7.0,6.0,7.0],[6.5,7.5,6.0,7.0,6.0,7.0],[6.5,7.5,6.0,6.75,6.0,7.0]],"Halifax":[[5.25,6.25,6.75,7.75,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.25,7.5],[5.5,6.25,7.0,8.0,6.0,7.25],[5.5,6.25,7.0,7.75,6.0,7.25],[5.5,6.25,6.25,7.5,6.0,7.25],[5.5,6.25,6.25,7.5,6.0,7.25],[5.5,6.25,6.25,7.5,6.0,7.25],[5.5,6.25,6.25,7.5,6.0,7.25],[5.75,6.75,6.0,7.5,6.0,7.25],[6.0,7.0,6.0,7.5,6.25,7.25],[6.0,6.75,6.0,7.5,6.25,7.25],[6.0,6.75,6.0,7.5,6.25,7.5],[6.0,6.75,6.0,7.5,6.25,7.25],[6.75,7.75,6.5,7.5,7.0,8.0],[7.0,8.0,6.25,7.75,7.0,8.5],[7.0,8.0,6.25,7.75,7.0,8.5],[6.75,7.75,6.25,7.75,7.0,8.5],[6.75,7.75,6.25,7.75,7.0,8.5],[6.75,7.5,6.5,7.5,6.75,8.0],[6.75,7.5,6.5,7.5,6.75,8.0],[6.5,7.5,6.5,7.5,6.5,8.0],[6.5,7.5,6.5,7.5,6.5,8.0],[6.5,7.5,6.5,7.5,6.5,8.0]],"Victoria":[[5.0,5.25,5.25,5.5,5.25,5.5],[5.0,5.25,5.25,5.5,5.25,5.5],[5.0,5.25,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.25,5.5,5.25,5.5,5.25,5.5],[5.0,5.75,5.25,6.0,5.25,6.0],[5.0,5.75,5.25,6.0,5.25,6.0],[5.0,5.75,5.25,6.0,5.25,6.0],[5.25,5.5,5.0,5.25,5.0,5.25],[5.25,5.5,5.0,5.25,5.0,5.25],[5.5,6.0,5.25,5.75,5.25,5.75],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0],[5.75,6.25,5.5,6.0,5.5,6.0]],"Waterloo":[[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.25,5.25,6.0,6.25,7.5],[6.0,6.75,5.75,6.5,6.75,8.0],[5.5,6.25,5.25,6.0,6.25,7.5],[5.5,6.75,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.25,7.5],[5.5,6.25,5.5,6.5,6.5,7.5],[5.75,6.25,5.5,6.5,6.5,7.5],[5.75,6.25,5.0,6.0,6.5,7.5],[5.75,6.25,5.0,6.0,6.5,7.5],[5.75,6.25,5.0,6.0,6.5,7.5]],"Quebec City":[[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[5.75,7.0,6.5,7.5,6.75,7.75],[5.75,7.0,6.5,7.5,6.75,7.75],[5.75,7.0,6.5,7.5,6.75,7.75],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.5,7.5,6.75,8.0],[6.0,7.25,6.0,7.25,6.75,8.0],[6.0,7.25,6.0,7.25,6.75,8.0],[6.0,7.25,6.0,7.25,6.75,8.0],[6.0,7.25,6.0,7.25,6.75,8.0],[6.0,7.25,6.0,7.25,6.75,8.0]],"Moncton":[[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,7.25,8.25],[null,null,null,null,7.25,8.25],[null,null,null,null,7.25,8.25],[null,null,null,null,7.25,8.25],[null,null,null,null,7.25,8.25],[null,null,null,null,null,5.5],[null,null,null,null,7.25,8.25],[null,null,null,null,7.25,8.25],[null,null,null,null,7.5,8.5],[null,null,null,null,7.5,8.5],[null,null,null,null,7.5,8.5],[null,null,null,null,7.5,8.5],[null,null,null,null,7.5,8.5]],"Niagara Region":[[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[6.0,6.5,5.5,6.5,5.5,6.25],[6.0,8.0,5.75,6.5,5.5,6.25],[6.0,8.0,5.75,6.5,5.5,6.25]]};
 
-// --- 2018 expansion + historical context added June 2026 ---
-(function expandTo2018(){
-  const q18=['Q1 2018','Q2 2018','Q3 2018','Q4 2018'];
-  QS.unshift(...q18);
-  R10.unshift(2.09,2.17,2.42,1.96);
-  R5.unshift(1.96,2.06,2.33,1.88);
-  PR.unshift(3.45,3.45,3.70,3.95);
-
-  COL.Toronto.unshift(
-    [4.25,5.00,5.25,6.00,4.75,5.75],
-    [4.25,5.00,5.25,6.00,4.75,5.75],
-    [4.25,5.00,5.25,6.00,4.75,5.75],
-    [4.25,5.00,5.25,6.00,4.75,5.75]
-  );
-  COL.Ottawa.unshift(
-    [5.00,5.50,6.00,6.50,6.25,7.00],
-    [5.00,5.50,6.00,6.50,6.25,7.00],
-    [5.00,5.50,6.00,6.50,6.25,7.00],
-    [5.00,5.50,6.00,6.50,6.25,7.00]
-  );
-  COL.Calgary.unshift(
-    [5.25,6.00,5.25,6.00,5.50,6.50],
-    [5.25,6.00,5.25,6.25,5.50,6.50],
-    [5.25,6.00,5.25,6.00,5.50,6.50],
-    [5.25,6.00,5.25,6.00,5.50,6.50]
-  );
-  COL.Montreal.unshift(
-    [4.75,6.50,6.75,7.50,6.25,7.25],
-    [4.75,6.50,6.75,7.50,6.25,7.25],
-    [4.75,6.50,6.75,7.50,6.25,7.25],
-    [4.75,6.50,6.75,7.50,6.25,7.25]
-  );
-  CBRE.Toronto.unshift([4.25,5.25,5.00,6.25,5.00,5.50],null,null,null);
-  CBRE.Ottawa.unshift(null,null,null,null);
-  CBRE.Calgary.unshift(null,null,null,null);
-  CBRE.Montreal.unshift(null,null,null,null);
-})();
+const COLLIERS_AUDIT={source:'Colliers_Master_2018_2026_Audited_Final(1).xlsx',sheet:'Raw Quarterly Data',rows:348,cities:13,quarters:33,dataHash:'74a44269c7dd7b8e'};
+const CBRE={"Toronto":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Montreal":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Vancouver":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Calgary":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Edmonton":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Ottawa":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Winnipeg":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Halifax":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Victoria":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Waterloo":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Quebec City":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Moncton":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"Niagara Region":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]};
 
 const HIST_LABELS=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017'];
 const HIST_GOC10=[2.69,3.61,3.11,1.94,1.8,2.77,1.79,1.39,1.72,2.04];
@@ -796,7 +625,7 @@ function annualFromQuarterRate(hist, q, year){
 function annualRateSeries(hist,q,years){return years.map(y=>annualFromQuarterRate(hist,q,+y));}
 
 
-function m(a,b){return Math.round((a+b)/2*100)/100}
+function m(a,b){if(a===null||b===null||a===undefined||b===undefined) return null; return Math.round((a+b)/2*100)/100}
 function ti(t){return t==='rp'?[0,1]:t==='gc'?[2,3]:[4,5]}
 function tn(t){return{rp:'Regional/Power',gc:'Grocery/Community',ns:'Neighbourhood/Strip'}[t]}
 function ra(k){return k==='10y'?R10:k==='5y'?R5:PR}
@@ -806,7 +635,7 @@ function rc(k){return k==='10y'?'#5b1732':k==='5y'?'#2f6f87':'#8a6f2a'}
 // State
 let city='Toronto',type='rp',spCity='Toronto',spB='10y',cmpC='Toronto',cmpT='rp';
 let rOn={r10:true,r5:true,rpr:false};
-let sOn={col:true,cbre:true,nat:true,cbreNat:true,iso:true,colRange:true,cycle:true};
+let sOn={col:true,cbre:false,nat:true,cbreNat:true,iso:true,colRange:true,cycle:true};
 let spOn={s10:true,s5:false,spr:false};
 let charts={};
 let marketMode='cities';
@@ -899,14 +728,14 @@ function renderMain(){
   const spreadsBy={};
   Object.keys(spreadDefs).forEach(k=>{
     const b=spreadDefs[k];
-    const qSp=mids.map((v,i)=>+(v-b.q[i]).toFixed(2));
+    const qSp=mids.map((v,i)=>v===null?null:+(v-b.q[i]).toFixed(2));
     const hSp=HIST_LABELS.map((y,i)=>+(NAT_RETAIL_BY_YEAR[y]-b.hist[i]).toFixed(2));
     spreadsBy[k]=[...hSp,...qSp];
   });
   const activeSpreadKey=spOn.s10?'s10':spOn.s5?'s5':spOn.spr?'spr':'s10';
   const spreadBench=spreadDefs[activeSpreadKey];
-  const spreads=mids.map((v,i)=>+(v-spreadBench.q[i]).toFixed(2));
-  const cbreMids=cd.map(r=>r?+m(r[lo],r[hi]).toFixed(2):null);
+  const spreads=mids.map((v,i)=>v===null?null:+(v-spreadBench.q[i]).toFixed(2));
+  const cbreMids=(cd||[]).map(r=>{const mm=r?m(r[lo],r[hi]):null; return mm===null?null:+mm.toFixed(2);});
   const mainLabels=[...HIST_LABELS,...QS];
   const isoData=isolatedSeries(city,type);
 
@@ -921,7 +750,7 @@ function renderMain(){
   if(rOn.r10) allVals.push(...fullRate(HIST_GOC10,R10));
   if(rOn.r5) allVals.push(...fullRate(HIST_GOC5,R5));
   if(rOn.rpr) allVals.push(...fullRate(HIST_PRIME,PR));
-  if(!allVals.length) allVals=[0,1];
+  allVals=allVals.filter(v=>Number.isFinite(v)); if(!allVals.length) allVals=[0,1];
   const yMin=Math.max(0,Math.floor(Math.min(...allVals)*4)/4-0.25);
   const yMax=Math.ceil(Math.max(...allVals)*4)/4+0.25;
 
@@ -929,8 +758,8 @@ function renderMain(){
   const last=mids[mids.length-1];
   const b10=spreadBench.q[spreadBench.q.length-1];
   const sp=(last-b10).toFixed(2);
-  const minSp=Math.min(...spreads).toFixed(2);
-  const minQ=QS[spreads.indexOf(Math.min(...spreads))];
+  const finiteSpreads=spreads.filter(v=>Number.isFinite(v)); const minSpreadVal=finiteSpreads.length?Math.min(...finiteSpreads):0; const minSp=minSpreadVal.toFixed(2);
+  const minQ=QS[spreads.indexOf(minSpreadVal)];
   document.getElementById('chins').innerHTML=`<strong style="color:#e6edf0">${city} ${tn(type)}:</strong> Latest Colliers midpoint <strong>${last}%</strong>. Current spreads: <strong>${(last-R10[R10.length-1]).toFixed(2)}%</strong> vs 10Y, <strong>${(last-R5[R5.length-1]).toFixed(2)}%</strong> vs 5Y, <strong>${(last-PR[PR.length-1]).toFixed(2)}%</strong> vs Prime. Visible spread bars are controlled independently below. Bond yields are BoC CSV quarter-end values.`;
   const kt=document.getElementById('kpiTape');
   if(kt){kt.innerHTML=`
@@ -1021,31 +850,31 @@ function renderRatesTab(){
 }
 
 function renderSpread(){
-  const d=COL[spCity];
+  const d=COL[spCity] || [];
   const rate=ra(spB);
   document.getElementById('sptit').textContent=`Spread over ${rn(spB)} — ${spCity}`;
-  const rp=d.map((r,i)=>+(m(r[0],r[1])-rate[i]).toFixed(2));
-  const gc=d.map((r,i)=>+(m(r[2],r[3])-rate[i]).toFixed(2));
-  const ns=d.map((r,i)=>+(m(r[4],r[5])-rate[i]).toFixed(2));
+  const spreadFor=(a,b)=>d.map((r,i)=>{const mid=r?m(r[a],r[b]):null; return Number.isFinite(mid)?+(mid-rate[i]).toFixed(2):null;});
+  const rp=spreadFor(0,1), gc=spreadFor(2,3), ns=spreadFor(4,5);
+  const latestMid=(a,b)=>{for(let i=d.length-1;i>=0;i--){const r=d[i]; const mid=r?m(r[a],r[b]):null; if(Number.isFinite(mid)) return {mid,i};} return {mid:null,i:null};};
   const latR=rate[rate.length-1];
-  const latRP=m(d[d.length-1][0],d[d.length-1][1]);
-  const latGC=m(d[d.length-1][2],d[d.length-1][3]);
+  const latRP=latestMid(0,1), latGC=latestMid(2,3);
+  const fmt=v=>Number.isFinite(v)?v.toFixed(2)+'%':'—';
   document.getElementById('spst').innerHTML=`
-    <div class="sc"><div class="sv" style="color:${rc(spB)}">${latR.toFixed(2)}%</div><div class="sl">${rn(spB)} — Q1 2026</div></div>
-    <div class="sc"><div class="sv">${latRP.toFixed(2)}%</div><div class="sl">R/P Midpoint — Q1 2026</div><div class="ss">${spCity} (Colliers)</div></div>
-    <div class="sc"><div class="sv">${(latRP-latR).toFixed(2)}%</div><div class="sl">R/P Spread</div></div>
-    <div class="sc"><div class="sv">${(latGC-latR).toFixed(2)}%</div><div class="sl">G/C Spread</div></div>`;
-  const all=[...rp,...gc,...ns];
-  const sMin=Math.floor(Math.min(...all)*4)/4-0.25;
-  const sMax=Math.ceil(Math.max(...all)*4)/4+0.25;
+    <div class="sc"><div class="sv" style="color:${rc(spB)}">${fmt(latR)}</div><div class="sl">${rn(spB)} — Q1 2026</div></div>
+    <div class="sc"><div class="sv">${fmt(latRP.mid)}</div><div class="sl">R/P Midpoint</div><div class="ss">${spCity} (latest workbook value)</div></div>
+    <div class="sc"><div class="sv">${Number.isFinite(latRP.mid)?(latRP.mid-latR).toFixed(2)+'%':'—'}</div><div class="sl">R/P Spread</div></div>
+    <div class="sc"><div class="sv">${Number.isFinite(latGC.mid)?(latGC.mid-latR).toFixed(2)+'%':'—'}</div><div class="sl">G/C Spread</div></div>`;
+  const all=[...rp,...gc,...ns].filter(v=>Number.isFinite(v));
+  const sMin=all.length?Math.floor(Math.min(...all)*4)/4-0.25:-1;
+  const sMax=all.length?Math.ceil(Math.max(...all)*4)/4+0.25:1;
   kill('sp');
   const ctx=document.getElementById('spC').getContext('2d');
   charts.sp=new Chart(ctx,{type:'line',data:{labels:QS,datasets:[
-    {label:'R/P',data:rp,borderColor:'#0f3460',backgroundColor:'transparent',borderWidth:2.5,pointRadius:3,tension:.3},
-    {label:'G/C',data:gc,borderColor:'#3a6f53',backgroundColor:'transparent',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3},
-    {label:'N/S',data:ns,borderColor:'#7d8f42',backgroundColor:'transparent',borderWidth:2,borderDash:[2,2],pointRadius:3,tension:.3},
+    {label:'R/P',data:rp,borderColor:'#0f3460',backgroundColor:'transparent',borderWidth:2.5,pointRadius:3,tension:.3,spanGaps:false},
+    {label:'G/C',data:gc,borderColor:'#3a6f53',backgroundColor:'transparent',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,spanGaps:false},
+    {label:'N/S',data:ns,borderColor:'#7d8f42',backgroundColor:'transparent',borderWidth:2,borderDash:[2,2],pointRadius:3,tension:.3,spanGaps:false},
     {label:'Zero',data:QS.map(()=>0),borderColor:'rgba(226,75,74,.5)',backgroundColor:'transparent',borderWidth:1.5,borderDash:[6,4],pointRadius:0},
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:9},boxWidth:20,color:'#c8d1d5',filter:i=>i.text!=='Zero'}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},y:{grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:sMin,max:sMax,title:{display:true,text:`Spread over ${rn(spB)} (%)`,font:{size:9},color:'#8f9ca3'}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:9},boxWidth:20,color:'#c8d1d5',filter:i=>i.text!=='Zero'}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y===null?'—':c.parsed.y.toFixed(2)+'%'}`}}},scales:{x:{grid:{color:'rgba(255,255,255,.045)'},ticks:{font:{size:8},maxRotation:45,color:'#8f9ca3',autoSkip:true,maxTicksLimit:15}},y:{grid:{color:'rgba(255,255,255,.07)'},ticks:{font:{size:10},color:'#e6edf0',callback:v=>v+'%'},min:sMin,max:sMax,title:{display:true,text:`Spread over ${rn(spB)} (%)`,font:{size:9},color:'#8f9ca3'}}}}});
 }
 
 function renderCompare(){
@@ -1071,18 +900,25 @@ function renderCompare(){
 }
 
 function renderTable(){
-  const c=document.getElementById('tbcity').value;
-  const s=document.getElementById('tbsrc').value;
-  const data=s==='col'?COL[c]:CBRE[c];
+  const citySel=document.getElementById('tbcity');
+  const c=(citySel && citySel.value) || Object.keys(COL)[0];
+  const data=COL[c] || [];
   const tb=document.getElementById('tbb');
+  if(!tb) return;
   tb.innerHTML='';
   QS.forEach((q,i)=>{
     const r=data[i];
-    if(!r){tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td colspan="14" style="color:#8f9ca3;font-style:italic">No ${s==='cbre'?'CBRE ':''} data confirmed for this quarter</td></tr>`;return}
-    const rpm=m(r[0],r[1]),gcm=m(r[2],r[3]),nsm=m(r[4],r[5]);
-    const rps=+(rpm-R10[i]).toFixed(2),gcs=+(gcm-R10[i]).toFixed(2);
-    const sc=v=>{const cl=v>=2.5?'spg':v>=1.5?'spa':'spr';return`<td class="${cl}">${v.toFixed(2)}%</td>`};
-    tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td>${r[0].toFixed(2)}%</td><td>${r[1].toFixed(2)}%</td><td style="font-weight:bold">${rpm.toFixed(2)}%</td><td>${r[2].toFixed(2)}%</td><td>${r[3].toFixed(2)}%</td><td style="font-weight:bold">${gcm.toFixed(2)}%</td><td>${r[4].toFixed(2)}%</td><td>${r[5].toFixed(2)}%</td><td style="font-weight:bold">${nsm.toFixed(2)}%</td><td style="color:#5b1732">${R10[i].toFixed(2)}%</td><td style="color:#2f6f87">${R5[i].toFixed(2)}%</td><td style="color:#8a6f2a">${PR[i].toFixed(2)}%</td>${sc(rps)}${sc(gcs)}</tr>`;
+    const hasRow=r && r.some(v=>v!==null && v!==undefined && Number.isFinite(v));
+    if(!hasRow){
+      tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td colspan="14" style="color:#8f9ca3;font-style:italic">No Colliers data in workbook for this city/quarter</td></tr>`;
+      return;
+    }
+    const fmt=v=>Number.isFinite(v)?v.toFixed(2)+'%':'—';
+    const rpm=m(r[0],r[1]), gcm=m(r[2],r[3]), nsm=m(r[4],r[5]);
+    const spreadCell=v=>{ if(!Number.isFinite(v)) return '<td style="color:#8f9ca3">—</td>'; const cl=v>=2.5?'spg':v>=1.5?'spa':'spr'; return `<td class="${cl}">${v.toFixed(2)}%</td>`; };
+    const rps=Number.isFinite(rpm)?+(rpm-R10[i]).toFixed(2):null;
+    const gcs=Number.isFinite(gcm)?+(gcm-R10[i]).toFixed(2):null;
+    tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td>${fmt(r[0])}</td><td>${fmt(r[1])}</td><td style="font-weight:bold">${fmt(rpm)}</td><td>${fmt(r[2])}</td><td>${fmt(r[3])}</td><td style="font-weight:bold">${fmt(gcm)}</td><td>${fmt(r[4])}</td><td>${fmt(r[5])}</td><td style="font-weight:bold">${fmt(nsm)}</td><td style="color:#5b1732">${R10[i].toFixed(2)}%</td><td style="color:#2f6f87">${R5[i].toFixed(2)}%</td><td style="color:#8a6f2a">${PR[i].toFixed(2)}%</td>${spreadCell(rps)}${spreadCell(gcs)}</tr>`;
   });
 }
 
@@ -1096,76 +932,87 @@ function summarizeSeries(vals){
   const max=Math.max(...vals), min=Math.min(...vals);
   return {first,last,change:+(last-first).toFixed(2),max,min};
 }
-function mcActiveCities(){return ['Toronto','Ottawa','Calgary','Montreal'].filter(c=>mcCityOn[c]);}
+function mcActiveCities(){return Object.keys(COL).filter(c=>mcCityOn[c]);}
+function syncMcCityButtons(){
+  Object.keys(COL).forEach(cityName=>{
+    const el=document.getElementById('mcCity'+safeId(cityName));
+    if(el) el.classList.toggle('on',!!mcCityOn[cityName]);
+  });
+}
 function togMcCity(c){
   const active=mcActiveCities();
   if(mcCityOn[c]&&active.length===1) return;
   mcCityOn[c]=!mcCityOn[c];
-  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
-    const el=document.getElementById('mcCity'+cityName);
-    if(el) el.classList.toggle('on',mcCityOn[cityName]);
-  });
+  syncMcCityButtons();
   renderMarketCompare();
 }
 function setMcCities(list){
-  ['Toronto','Ottawa','Calgary','Montreal'].forEach(c=>mcCityOn[c]=list.includes(c));
-  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
-    const el=document.getElementById('mcCity'+cityName);
-    if(el) el.classList.toggle('on',mcCityOn[cityName]);
-  });
+  const cities=Object.keys(COL);
+  const keep=new Set((list||[]).filter(c=>COL[c]));
+  if(!keep.size) keep.add(cities[0]);
+  cities.forEach(c=>mcCityOn[c]=keep.has(c));
+  syncMcCityButtons();
   renderMarketCompare();
 }
+function setMcCategory(key){
+  const hidden=document.getElementById('mcType');
+  if(hidden) hidden.value=key;
+  ['rp','gc','ns'].forEach(k=>{const el=document.getElementById('mcCat'+k); if(el) el.classList.toggle('on',k===key);});
+  renderMarketCompare();
+}
+function latestForCityType(c,key){
+  const vals=seriesMidFor(c,key).filter(v=>Number.isFinite(v));
+  return vals.length?vals[vals.length-1]:null;
+}
+function setMcTopLatest(n){
+  const key=document.getElementById('mcType')?.value||'rp';
+  const picks=Object.keys(COL).map(c=>[c,latestForCityType(c,key)]).filter(x=>Number.isFinite(x[1])).sort((a,b)=>b[1]-a[1]).slice(0,n).map(x=>x[0]);
+  setMcCities(picks);
+}
+function setMcLowestLatest(n){
+  const key=document.getElementById('mcType')?.value||'rp';
+  const picks=Object.keys(COL).map(c=>[c,latestForCityType(c,key)]).filter(x=>Number.isFinite(x[1])).sort((a,b)=>a[1]-b[1]).slice(0,n).map(x=>x[0]);
+  setMcCities(picks);
+}
 function setMarketMode(mode){
-  marketMode=mode;
-  document.getElementById('mcModeCities').classList.toggle('on',mode==='cities');
-  document.getElementById('mcModeCats').classList.toggle('on',mode==='cats');
-  document.getElementById('mcModeMatrix').classList.toggle('on',mode==='matrix');
+  // Kept as a harmless compatibility shim for saved presets from older versions.
+  marketMode='cities';
   renderMarketCompare();
 }
 function renderMarketCompare(){
   const typeKey=document.getElementById('mcType')?.value||'rp';
-  const cityName=document.getElementById('mcCity')?.value||'Toronto';
+  ['rp','gc','ns'].forEach(k=>{const el=document.getElementById('mcCat'+k); if(el) el.classList.toggle('on',k===typeKey);});
   const activeCities=mcActiveCities();
-  const cityColors={Toronto:'#2f6f87',Ottawa:'#3a6f53',Calgary:'#b6464a',Montreal:'#5b1732'};
-  let datasets=[], rows=[], cards='';
-  let title='';
-  if(marketMode==='cities'){
-    title=`Cities compared — ${tn(typeKey)} (${activeCities.join(' vs ')})`;
-    activeCities.forEach(c=>{
-      const vals=seriesMidFor(c,typeKey); const st=summarizeSeries(vals);
-      datasets.push({label:c,data:vals,borderColor:cityColors[c],backgroundColor:'transparent',borderWidth:2.8,pointRadius:3,pointHoverRadius:6,tension:.25});
-      rows.push([c,st]);
-    });
-  }else if(marketMode==='cats'){
-    title=`Retail categories compared — ${cityName}`;
-    const defs=[['Regional/Power','rp','#2f6f87'],['Grocery/Community','gc','#3a6f53'],['Neighbourhood/Strip','ns','#b8c95b']];
-    defs.forEach(([label,key,color])=>{
-      const vals=seriesMidFor(cityName,key); const st=summarizeSeries(vals);
-      datasets.push({label,data:vals,borderColor:color,backgroundColor:'transparent',borderWidth:2.6,pointRadius:3,pointHoverRadius:6,tension:.25});
-      rows.push([label,st]);
-    });
-  }else{
-    title=`Latest cap-rate matrix — Q1 2026 (${activeCities.join(', ')})`;
-    const keys=[['R/P','rp'],['G/C','gc'],['N/S','ns']];
-    activeCities.forEach(c=>keys.forEach(([lab,key])=>{const vals=seriesMidFor(c,key); rows.push([`${c} ${lab}`,summarizeSeries(vals)]);}));
-    datasets=[{type:'bar',label:'Q1 2026 midpoint',data:rows.map(r=>r[1].last),backgroundColor:rows.map(r=>r[0].startsWith('Toronto')?'rgba(47,111,135,.78)':r[0].startsWith('Ottawa')?'rgba(58,111,83,.78)':r[0].startsWith('Calgary')?'rgba(182,70,74,.78)':'rgba(91,23,50,.78)'),borderColor:'transparent'}];
-  }
-  const sorted=[...rows].sort((a,b)=>b[1].last-a[1].last);
-  const high=sorted[0], low=sorted[sorted.length-1];
-  cards=`<div class="sc"><div class="sv">${high[1].last.toFixed(2)}%</div><div class="sl">Highest latest</div><div class="ss">${high[0]}</div></div>
-  <div class="sc"><div class="sv">${low[1].last.toFixed(2)}%</div><div class="sl">Lowest latest</div><div class="ss">${low[0]}</div></div>
-  <div class="sc"><div class="sv">${(high[1].last-low[1].last).toFixed(2)}%</div><div class="sl">Current gap</div><div class="ss">High minus low</div></div>
-  <div class="sc"><div class="sv">${sorted[0][1].change>=0?'+':''}${sorted[0][1].change.toFixed(2)}%</div><div class="sl">Change since Q1 2018</div><div class="ss">${sorted[0][0]}</div></div>`;
-  document.getElementById('mcCards').innerHTML=cards;
-  document.getElementById('mcTitle').textContent=title;
+  const cityPalette=['#2f6f87','#3a6f53','#b6464a','#5b1732','#7d8f42','#d7a63f','#6fc68c','#8a6f2a','#9fb0b6','#c8d1d5','#0f3460','#ef777c','#b8c95b','#4f7b8f','#8f6f42'];
+  const cityColors=Object.fromEntries(Object.keys(COL).map((c,i)=>[c,cityPalette[i%cityPalette.length]]));
+  let datasets=[], rows=[];
+  activeCities.forEach(c=>{
+    const vals=seriesMidFor(c,typeKey); const st=summarizeSeries(vals);
+    if(st.last===null) return;
+    datasets.push({label:c,data:vals,borderColor:cityColors[c],backgroundColor:'transparent',borderWidth:2.6,pointRadius:3,pointHoverRadius:6,tension:.25,spanGaps:false});
+    rows.push([c,st]);
+  });
+  const ranked=[...rows].sort((a,b)=>b[1].last-a[1].last);
+  const high=ranked[0], low=ranked[ranked.length-1];
+  const avgLatest=rows.length?rows.reduce((sum,r)=>sum+r[1].last,0)/rows.length:null;
+  const widestMove=[...rows].sort((a,b)=>Math.abs(b[1].change)-Math.abs(a[1].change))[0];
+  document.getElementById('mcCards').innerHTML=rows.length?`
+    <div class="sc"><div class="sv">${high[1].last.toFixed(2)}%</div><div class="sl">Highest latest</div><div class="ss">${high[0]}</div></div>
+    <div class="sc"><div class="sv">${low[1].last.toFixed(2)}%</div><div class="sl">Lowest latest</div><div class="ss">${low[0]}</div></div>
+    <div class="sc"><div class="sv">${avgLatest.toFixed(2)}%</div><div class="sl">Selected average</div><div class="ss">${rows.length} market${rows.length===1?'':'s'} selected</div></div>
+    <div class="sc"><div class="sv">${widestMove[1].change>=0?'+':''}${widestMove[1].change.toFixed(2)}%</div><div class="sl">Largest move since 2018</div><div class="ss">${widestMove[0]}</div></div>`:'';
+  document.getElementById('mcTitle').textContent=`${tn(typeKey)} cap rates by market — ${activeCities.length} selected`;
+  const leg=document.getElementById('mcLegend');
+  if(leg) leg.innerHTML=activeCities.map(c=>`<div class="li"><div class="ld" style="background:${cityColors[c]}"></div>${cityLabel(c)}</div>`).join('');
+  const rankMap=Object.fromEntries(ranked.map((r,i)=>[r[0],i+1]));
   const tb=document.getElementById('mcTable');
-  tb.innerHTML=rows.map(([name,st])=>`<tr><td style="font-weight:bold;color:#e6edf0">${name}</td><td>${st.first.toFixed(2)}%</td><td>${st.last.toFixed(2)}%</td><td class="${st.change>=0?'spa':'spg'}">${st.change>=0?'+':''}${st.change.toFixed(2)}%</td><td>${st.max.toFixed(2)}%</td><td>${st.min.toFixed(2)}%</td></tr>`).join('');
+  tb.innerHTML=ranked.map(([name,st])=>`<tr><td style="font-weight:bold;color:#e6edf0">${name}</td><td>${st.first.toFixed(2)}%</td><td style="font-weight:bold">${st.last.toFixed(2)}%</td><td class="${st.change>=0?'spa':'spg'}">${st.change>=0?'+':''}${st.change.toFixed(2)}%</td><td>${st.max.toFixed(2)}%</td><td>${st.min.toFixed(2)}%</td><td>#${rankMap[name]}</td></tr>`).join('');
   kill('market');
   const ctx=document.getElementById('marketC').getContext('2d');
-  const allVals=marketMode==='matrix'?rows.map(r=>r[1].last):datasets.flatMap(d=>d.data||[]).filter(v=>v!==null&&Number.isFinite(v));
-  const yMin=Math.max(3,Math.floor(Math.min(...allVals)*4)/4-0.25);
-  const yMax=Math.ceil(Math.max(...allVals)*4)/4+0.25;
-  charts.market=new Chart(ctx,{type:'line',data:{labels:marketMode==='matrix'?rows.map(r=>r[0]):QS,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{size:10},color:'#c8d1d5',boxWidth:20}},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:8},color:'#8f9ca3',maxRotation:45,autoSkip:marketMode!=='matrix',maxTicksLimit:16}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{font:{size:10},color:'#cbd4d8',callback:v=>v+'%'},min:yMin,max:yMax,title:{display:true,text:'Cap rate midpoint (%)',font:{size:9},color:'#8f9ca3'}}}}});
+  const allVals=datasets.flatMap(d=>d.data||[]).filter(v=>v!==null&&Number.isFinite(v));
+  const yMin=allVals.length?Math.max(3,Math.floor(Math.min(...allVals)*4)/4-0.25):3;
+  const yMax=allVals.length?Math.ceil(Math.max(...allVals)*4)/4+0.25:8;
+  charts.market=new Chart(ctx,{type:'line',data:{labels:QS,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:8},color:'#8f9ca3',maxRotation:45,autoSkip:true,maxTicksLimit:16}},y:{grid:{color:'rgba(255,255,255,.06)'},ticks:{font:{size:10},color:'#cbd4d8',callback:v=>v+'%'},min:yMin,max:yMax,title:{display:true,text:'Cap rate midpoint (%)',font:{size:9},color:'#8f9ca3'}}}}});
 }
 function togMacro(k){
   macroOn[k]=!macroOn[k];
@@ -1199,7 +1046,7 @@ function qaButtonRow(){return `<div class="qa-answer-actions"><button class="btn
 function qaPct(v){return (v>=0?'+':'')+v.toFixed(2)+'%';}
 function qaBps(v){return (v>=0?'+':'')+Math.round(v*100)+' bps';}
 function qaTypeFromText(q){if(q.includes('grocery')||q.includes('community')) return 'gc'; if(q.includes('neigh')||q.includes('strip')) return 'ns'; if(q.includes('regional')||q.includes('power')||q.includes('sector')) return 'rp'; return null;}
-function qaCitiesFromText(q){return ['Toronto','Ottawa','Calgary','Montreal'].filter(c=>q.includes(c.toLowerCase()));}
+function qaCitiesFromText(q){return Object.keys(COL).filter(c=>q.includes(c.toLowerCase()));}
 function qaRecords(){return allMarketRecords().map(r=>({...r,spreadPrime:+(r.current-PR[PR.length-1]).toFixed(2)}));}
 function qaTable(rows, cols){return `<table class="qa-table"><thead><tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
 function qaWhy(text){return `<div style="margin-top:10px;border-left:3px solid var(--terminal);padding-left:10px;color:#c8d1d5"><strong style="color:#e6edf0">Why this matters:</strong> ${text}</div>`;}
@@ -1228,8 +1075,7 @@ function answerQuestion(){
   }
 
   if(q.includes('cbre') && (q.includes('gap')||q.includes('missing')||q.includes('available')||q.includes('data'))){
-    const rows=['Toronto','Ottawa','Calgary','Montreal'].map(c=>{const n=CBRE[c].filter(Boolean).length; return {city:c,confirmed:n,missing:CBRE[c].length-n,total:CBRE[c].length};});
-    reply(`<strong>CBRE coverage in the loaded quarterly dataset</strong>` + qaTable(rows,[['City',r=>r.city],['Confirmed quarters',r=>r.confirmed],['Missing quarters',r=>r.missing],['Total',r=>r.total]]) + qaWhy('CBRE is useful as a cross-check, but gaps should be treated as missing observations rather than interpolated values.'));
+    reply(`<strong>CBRE city-level data has been removed from this version.</strong><br>The dashboard now keeps only the national CBRE reference line and the national retail line. City-level comparisons, rankings, spreads, and tables use the audited Colliers workbook.` + qaWhy('This avoids implying precision from incomplete CBRE city observations.'));
     return;
   }
 
@@ -1286,32 +1132,39 @@ function downloadCSV(filename, rows){
 }
 function exportFullDataCSV(){
   const rows=[['Quarter','City','Source','Category','Low','High','Mid','GoC 10Y','GoC 5Y','Prime','Spread 10Y','Spread 5Y','Spread Prime']];
-  ['Toronto','Ottawa','Calgary','Montreal'].forEach(c=>['col','cbre'].forEach(src=>{
-    const data=src==='col'?COL[c]:CBRE[c];
+  Object.keys(COL).forEach(c=>{
+    const data=COL[c];
     QS.forEach((q,i)=>['rp','gc','ns'].forEach(t=>{
       const r=data[i]; const [lo,hi]=ti(t); if(!r) return;
-      const mid=m(r[lo],r[hi]); rows.push([q,c,src==='col'?'Colliers':'CBRE',tn(t),r[lo],r[hi],mid,R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);
+      const mid=m(r[lo],r[hi]);
+      if(!Number.isFinite(mid)) return;
+      rows.push([q,c,'Colliers',tn(t),r[lo],r[hi],mid,R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);
     }));
-  }));
-  downloadCSV('trinity_full_cap_rate_data.csv',rows);
+  });
+  downloadCSV('trinity_full_colliers_audited_data.csv',rows);
 }
 function exportCurrentViewCSV(){
-  const [lo,hi]=ti(type); const data=COL[city]; const bd=CBRE[city];
-  const rows=[['Label','Colliers Mid','Colliers Low','Colliers High','CBRE Mid','National Retail','CBRE National','GoC 10Y','GoC 5Y','Prime','Spread vs 10Y','Spread vs 5Y','Spread vs Prime']];
-  HIST_LABELS.forEach((y,i)=>rows.push([y,'','','','',NAT_RETAIL_BY_YEAR[y],CBRE_NATIONAL_BY_YEAR[y],HIST_GOC10[i],HIST_GOC5[i],HIST_PRIME[i],+(NAT_RETAIL_BY_YEAR[y]-HIST_GOC10[i]).toFixed(2),+(NAT_RETAIL_BY_YEAR[y]-HIST_GOC5[i]).toFixed(2),+(NAT_RETAIL_BY_YEAR[y]-HIST_PRIME[i]).toFixed(2)]));
-  QS.forEach((q,i)=>{const mid=m(data[i][lo],data[i][hi]); const b=bd[i]?m(bd[i][lo],bd[i][hi]):''; rows.push([q,mid,data[i][lo],data[i][hi],b,NAT_RETAIL_BY_YEAR[yearOfLabel(q)],CBRE_NATIONAL_BY_YEAR[yearOfLabel(q)],R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);});
-  downloadCSV(`trinity_current_view_${city}_${type}.csv`,rows);
+  const [lo,hi]=ti(type);
+  const cities=(typeof selectedCities!=='undefined'&&selectedCities.length)?selectedCities:[city];
+  const rows=[['Quarter','City','Category','Low','High','Mid','GoC 10Y','GoC 5Y','Prime','Spread 10Y','Spread 5Y','Spread Prime']];
+  cities.forEach(c=>{
+    const data=COL[c]||[];
+    QS.forEach((q,i)=>{
+      const r=data[i]; if(!r) return;
+      const mid=m(r[lo],r[hi]);
+      if(!Number.isFinite(mid)) return;
+      rows.push([q,c,tn(type),r[lo],r[hi],mid,R10[i],R5[i],PR[i],+(mid-R10[i]).toFixed(2),+(mid-R5[i]).toFixed(2),+(mid-PR[i]).toFixed(2)]);
+    });
+  });
+  downloadCSV('trinity_current_chart_colliers_view.csv',rows);
 }
 function exportMarketCompareCSV(){
   const typeKey=document.getElementById('mcType')?.value||'rp';
-  const cityName=document.getElementById('mcCity')?.value||'Toronto';
   const rows=[['Quarter']]; const series=[];
-  if(marketMode==='cities') mcActiveCities().forEach(c=>series.push([c,seriesMidFor(c,typeKey)]));
-  else if(marketMode==='cats') [['Regional/Power','rp'],['Grocery/Community','gc'],['Neighbourhood/Strip','ns']].forEach(([n,k])=>series.push([cityName+' '+n,seriesMidFor(cityName,k)]));
-  else mcActiveCities().forEach(c=>['rp','gc','ns'].forEach(k=>series.push([c+' '+tn(k),seriesMidFor(c,k)])));
+  mcActiveCities().forEach(c=>series.push([c,seriesMidFor(c,typeKey)]));
   series.forEach(s=>rows[0].push(s[0]));
   QS.forEach((q,i)=>rows.push([q,...series.map(s=>s[1][i]) ]));
-  downloadCSV('trinity_market_compare.csv',rows);
+  downloadCSV('trinity_market_compare_'+typeKey+'.csv',rows);
 }
 function saveCustomPreset(){
   const payload={city,type,rOn,sOn,spOn,marketMode,mcCityOn};
@@ -1336,12 +1189,16 @@ function calcValuation(){
   document.getElementById('valTable').innerHTML=moves.map(bp=>{const c=Math.max(.01,cap+(bp/100)); const v=noi/c; const d=v-now; return `<tr><td>${bp>0?'+':''}${bp.toFixed(2)}%</td><td>${(c*100).toFixed(2)}%</td><td>${money(v)}</td><td class="${d>=0?'spg':'spr'}">${d>=0?'+':''}${money(d)}</td></tr>`;}).join('');
 }
 function renderSnapshot(){
-  const c=document.getElementById('snapCity').value; const t=document.getElementById('snapType').value; const vals=seriesMidFor(c,t); const latest=vals[vals.length-1];
-  const all=[]; ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>['rp','gc','ns'].forEach(k=>{const v=seriesMidFor(cityName,k); all.push({name:`${cityName} ${tn(k)}`,val:v[v.length-1],chg:v[v.length-1]-v[0]});}));
-  const rank=[...all].sort((a,b)=>b.val-a.val).findIndex(x=>x.name===`${c} ${tn(t)}`)+1;
-  const chg=latest-vals[0];
+  const c=document.getElementById('snapCity').value; const t=document.getElementById('snapType').value; const vals=seriesMidFor(c,t).filter(v=>Number.isFinite(v));
+  if(!vals.length){document.getElementById('snapshotBox').innerHTML=`No workbook data is available for <strong>${c} ${tn(t)}</strong>.`;return;}
+  const latest=vals[vals.length-1], first=vals[0];
+  const all=allMarketRecords();
+  const sorted=[...all].sort((a,b)=>b.current-a.current);
+  const r=all.find(x=>x.city===c&&x.type===t);
+  const rank=r?sorted.findIndex(x=>x.city===c&&x.type===t)+1:null;
+  const chg=latest-first;
   const spread10=latest-R10[R10.length-1], spread5=latest-R5[R5.length-1];
-  document.getElementById('snapshotBox').innerHTML=`<strong>${c} ${tn(t)}</strong><br>Latest cap-rate midpoint: <strong>${latest.toFixed(2)}%</strong>. Change since Q1 2018: <strong>${chg>=0?'+':''}${chg.toFixed(2)}%</strong>. Current spread: <strong>${spread10.toFixed(2)}%</strong> vs GoC 10Y and <strong>${spread5.toFixed(2)}%</strong> vs GoC 5Y. Rank among 12 city/category combinations: <strong>${rank}/12</strong> by latest cap rate.`;
+  document.getElementById('snapshotBox').innerHTML=`<strong>${c} ${tn(t)}</strong><br>Latest cap-rate midpoint: <strong>${latest.toFixed(2)}%</strong>. Change since first available workbook quarter: <strong>${chg>=0?'+':''}${chg.toFixed(2)}%</strong>. Current spread: <strong>${spread10.toFixed(2)}%</strong> vs GoC 10Y and <strong>${spread5.toFixed(2)}%</strong> vs GoC 5Y. Rank among ${all.length} available city/category combinations: <strong>${rank||'—'}/${all.length}</strong> by latest cap rate.`;
 }
 
 
@@ -1356,10 +1213,12 @@ function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
 function allMarketRecords(){
   const latest10=R10[R10.length-1], latest5=R5[R5.length-1];
   let raw=[];
-  ['Toronto','Ottawa','Calgary','Montreal'].forEach(cityName=>{
+  Object.keys(COL).forEach(cityName=>{
     ['rp','gc','ns'].forEach(typeKey=>{
-      const vals=seriesMidFor(cityName,typeKey);
+      const vals=seriesMidFor(cityName,typeKey).filter(v=>Number.isFinite(v));
+      if(!vals.length) return;
       const first=vals[0], current=vals[vals.length-1];
+      if(!Number.isFinite(current)) return;
       const min=Math.min(...vals), max=Math.max(...vals);
       const change=+(current-first).toFixed(2);
       const spread10=+(current-latest10).toFixed(2);
@@ -1408,7 +1267,7 @@ function renderIntel(){
     <ul style="margin-left:18px;line-height:1.9">
       <li><strong>${sortedByCap[0].market}</strong> has the highest current cap-rate midpoint at <strong>${sortedByCap[0].current.toFixed(2)}%</strong>.</li>
       <li><strong>${lowCap.market}</strong> has the lowest current cap-rate midpoint at <strong>${lowCap.current.toFixed(2)}%</strong>.</li>
-      <li>The current high-low gap across the 12 city/category combinations is <strong>${widestGap}%</strong>.</li>
+      <li>The current high-low gap across all city/category combinations is <strong>${widestGap}%</strong>.</li>
       <li><strong>${sortedBySpread[0].market}</strong> offers the widest spread to GoC 10Y at <strong>+${Math.round(sortedBySpread[0].spread10*100)} bps</strong>.</li>
       <li>Average current spread to GoC 10Y across the screen is <strong>${avgSpread}%</strong> with GoC 10Y at <strong>${latest10.toFixed(2)}%</strong>.</li>
       <li><strong>${maxExpansion.market}</strong> has expanded the most since Q1 2018 at <strong>+${maxExpansion.change.toFixed(2)}%</strong>.</li>
@@ -1618,7 +1477,7 @@ function icReportHTML(){
 }
 function copyICMemo(){
   const o=icText(), r=o.r;
-  const text=`Trinity Retail Market IC Memo\n\nDeal / focus: ${o.deal}\nMarket: ${r.market}\nDecision: ${o.decision}\nScreen: ${o.signal}\n\nCurrent cap-rate midpoint: ${r.current.toFixed(2)}%\nSpread vs GoC 10Y: ${(r.spread10*100).toFixed(0)} bps\nSpread vs GoC 5Y: ${(r.spread5*100).toFixed(0)} bps\nHistorical percentile: ${r.percentile}th\nCycle position: ${r.cycle}%\nTrinity value score: ${r.score}/100\nRank by value score: ${o.rankByScore}/12\n\nExecutive summary\n${o.why}\n\nInvestment thesis\n${o.thesis}\n\nRisks\n${o.risks}\n\nWatch list / catalysts\n${o.watch}\n\nDeal notes / follow-ups\n${o.deals}`;
+  const text=`Trinity Retail Market IC Memo\n\nDeal / focus: ${o.deal}\nMarket: ${r.market}\nDecision: ${o.decision}\nScreen: ${o.signal}\n\nCurrent cap-rate midpoint: ${r.current.toFixed(2)}%\nSpread vs GoC 10Y: ${(r.spread10*100).toFixed(0)} bps\nSpread vs GoC 5Y: ${(r.spread5*100).toFixed(0)} bps\nHistorical percentile: ${r.percentile}th\nCycle position: ${r.cycle}%\nTrinity value score: ${r.score}/100\nRank by value score: ${o.rankByScore}/${allMarketRecords().length}\n\nExecutive summary\n${o.why}\n\nInvestment thesis\n${o.thesis}\n\nRisks\n${o.risks}\n\nWatch list / catalysts\n${o.watch}\n\nDeal notes / follow-ups\n${o.deals}`;
   navigator.clipboard?.writeText(text).then(()=>alert('IC memo copied.')).catch(()=>alert(text));
 }
 function downloadICMemo(){
@@ -1875,7 +1734,7 @@ function renderUnifiedMacro(){
     <div class="sc"><div class="sv">${last.prime!==null?last.prime.toFixed(2)+'%':'—'}</div><div class="sl">Latest prime context</div><div class="ss">${quarterLabelFromMonth(last.d)}</div></div>
     <div class="sc"><div class="sv">${peakInfl.yoy.toFixed(2)}%</div><div class="sl">Peak inflation in range</div><div class="ss">${peakInfl.d}</div></div>`;
   document.getElementById('unifiedMacroReconBody').innerHTML=`
-    <tr><td>Cap-rate data</td><td class="spg">Preserved</td><td>Colliers and CBRE embedded cap-rate datasets were not removed or changed.</td></tr>
+    <tr><td>Cap-rate data</td><td class="spg">Preserved</td><td>Audited Colliers cap-rate dataset is embedded; CBRE city-level data has been removed.</td></tr>
     <tr><td>Bond-rate source</td><td class="spg">Uploaded Bank of Canada CSV</td><td>Quarter-end chart/spread values still use the last available BoC observation in each quarter.</td></tr>
     <tr><td>Q1 2026 quarter-end check</td><td>10Y ${R10[R10.length-1].toFixed(2)}%, 5Y ${R5[R5.length-1].toFixed(2)}% on ${BOC_QE_DATES['Q1 2026']}</td><td>These are the values used in cap-rate spreads.</td></tr>
     <tr><td>Latest daily CSV observation</td><td>${latestDaily.d}: 10Y ${latestDaily.y10.toFixed(2)}%, 5Y ${latestDaily.y5.toFixed(2)}%</td><td>The full daily CSV remains embedded even though this tab now shows one monthly-aligned chart.</td></tr>
@@ -1899,7 +1758,7 @@ function renderMacroStatusCards(){
 }
 
 function showTab(t){
-  const tabs=['chart','market','macro','assistant','tools','intel','ic','qc','spread','compare','table'];
+  const tabs=['chart','market','macro','assistant','tools','intel','spread','table'];
   tabs.forEach(id=>{const el=document.getElementById('tab-'+id); if(el) el.style.display=id===t?'':'none';});
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   if(t==='market') setTimeout(renderMarketCompare,0);
@@ -1909,12 +1768,267 @@ function showTab(t){
   }
   if(t==='tools'){calcValuation();renderSnapshot();}
   if(t==='intel') renderIntel();
-  if(t==='ic') renderICMemo();
-  if(t==='qc') renderQC();
   if(t==='spread') renderSpread();
-  if(t==='compare') renderCompare();
   if(t==='table') renderTable();
 }
+
+
+// --- Dynamic city UI + requested simplification patch ---
+function safeId(s){return String(s).replace(/[^A-Za-z0-9]/g,'');}
+function cityLabel(c){return c==='Montreal'?'Montréal':c;}
+function cityButtonHtml(targetFn, activeCity){return Object.keys(COL).map(c=>`<button class="btn ${c===activeCity?'on':''}" onclick="${targetFn}('${c.replace(/'/g,"\\'")}')">${cityLabel(c)}</button>`).join('');}
+function fillCitySelect(id, selected){const el=document.getElementById(id); if(!el) return; el.innerHTML=Object.keys(COL).map(c=>`<option ${c===selected?'selected':''}>${c}</option>`).join('');}
+function configureDynamicCities(){
+  const cities=Object.keys(COL);
+  city=cities.includes(city)?city:cities[0]; spCity=cities.includes(spCity)?spCity:cities[0]; cmpC=cities.includes(cmpC)?cmpC:cities[0];
+  mcCityOn={}; cities.forEach((c,i)=>mcCityOn[c]=i<4);
+  const cc=document.getElementById('cc'); if(cc) cc.innerHTML=cityButtonHtml('setCity',city);
+  const spc=document.getElementById('spc'); if(spc) spc.innerHTML=cityButtonHtml('setSpCity',spCity);
+  const mcT=document.getElementById('mcCityToggles'); if(mcT){
+    mcT.innerHTML='<span class="lbl">City toggles</span>'+cities.map((c,i)=>`<button class="btn ${i<4?'on':''}" id="mcCity${safeId(c)}" onclick="togMcCity('${c.replace(/'/g,"\\'")}')">${cityLabel(c)}</button>`).join('')+`<button class="btn ghost" onclick="setMcCities(Object.keys(COL))">All cities</button><button class="btn ghost" onclick="setMcCities(Object.keys(COL).slice(0,4))">First four</button>`;
+  }
+  ['mcCity','snapCity','intelCity','noteCity','tbcity'].forEach(id=>fillCitySelect(id,city));
+  const tbsrc=document.getElementById('tbsrc'); if(tbsrc) tbsrc.value='col';
+}
+
+summarizeSeries=function(vals){
+  const clean=vals.filter(v=>Number.isFinite(v));
+  if(!clean.length) return {first:null,last:null,change:null,max:null,min:null};
+  const first=clean[0], last=clean[clean.length-1];
+  const max=Math.max(...clean), min=Math.min(...clean);
+  return {first,last,change:+(last-first).toFixed(2),max,min};
+};
+allMarketRecords=function(){
+  const latest10=R10[R10.length-1], latest5=R5[R5.length-1];
+  let raw=[];
+  Object.keys(COL).forEach(cityName=>{
+    ['rp','gc','ns'].forEach(typeKey=>{
+      const vals=seriesMidFor(cityName,typeKey).filter(v=>Number.isFinite(v));
+      if(!vals.length) return;
+      const first=vals[0], current=vals[vals.length-1], min=Math.min(...vals), max=Math.max(...vals);
+      const change=+(current-first).toFixed(2), spread10=+(current-latest10).toFixed(2), spread5=+(current-latest5).toFixed(2);
+      const percentile=percentileRank(vals,current), cycle=max===min?100:Math.round(((current-min)/(max-min))*100);
+      raw.push({city:cityName,type:typeKey,category:tn(typeKey),market:`${cityName} ${tn(typeKey)}`,current,first,min,max,change,spread10,spread5,percentile,cycle});
+    });
+  });
+  const maxSpread=Math.max(...raw.map(r=>r.spread10)), minSpread=Math.min(...raw.map(r=>r.spread10));
+  const maxChange=Math.max(...raw.map(r=>r.change)), minChange=Math.min(...raw.map(r=>r.change));
+  const maxCap=Math.max(...raw.map(r=>r.current)), minCap=Math.min(...raw.map(r=>r.current));
+  raw.forEach(r=>{const spreadScore=maxSpread===minSpread?50:((r.spread10-minSpread)/(maxSpread-minSpread))*100; const changeScore=maxChange===minChange?50:((r.change-minChange)/(maxChange-minChange))*100; const capScore=maxCap===minCap?50:((r.current-minCap)/(maxCap-minCap))*100; r.score=Math.round(0.40*spreadScore + 0.30*r.percentile + 0.20*changeScore + 0.10*capScore);});
+  return raw;
+};
+
+renderTable=function(){
+  const c=document.getElementById('tbcity')?.value||city;
+  const data=COL[c];
+  const tb=document.getElementById('tbb'); if(!tb) return;
+  tb.innerHTML='';
+  QS.forEach((q,i)=>{
+    const r=data[i];
+    const rpm=m(r[0],r[1]),gcm=m(r[2],r[3]),nsm=m(r[4],r[5]);
+    if(rpm===null&&gcm===null&&nsm===null){tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td colspan="14" style="color:#8f9ca3;font-style:italic">No Colliers data in audited workbook for this market/quarter</td></tr>`; return;}
+    const rps=rpm===null?null:+(rpm-R10[i]).toFixed(2),gcs=gcm===null?null:+(gcm-R10[i]).toFixed(2);
+    const sc=v=>{if(v===null)return'<td>—</td>'; const cl=v>=2.5?'spg':v>=1.5?'spa':'spr';return`<td class="${cl}">${v.toFixed(2)}%</td>`};
+    tb.innerHTML+=`<tr><td style="font-weight:bold;color:#24364d">${q}</td><td>${r[0]===null?'—':r[0].toFixed(2)+'%'}</td><td>${r[1]===null?'—':r[1].toFixed(2)+'%'}</td><td style="font-weight:bold">${rpm===null?'—':rpm.toFixed(2)+'%'}</td><td>${r[2]===null?'—':r[2].toFixed(2)+'%'}</td><td>${r[3]===null?'—':r[3].toFixed(2)+'%'}</td><td style="font-weight:bold">${gcm===null?'—':gcm.toFixed(2)+'%'}</td><td>${r[4]===null?'—':r[4].toFixed(2)+'%'}</td><td>${r[5]===null?'—':r[5].toFixed(2)+'%'}</td><td style="font-weight:bold">${nsm===null?'—':nsm.toFixed(2)+'%'}</td><td style="color:#5b1732">${R10[i].toFixed(2)}%</td><td style="color:#2f6f87">${R5[i].toFixed(2)}%</td><td style="color:#8a6f2a">${PR[i].toFixed(2)}%</td>${sc(rps)}${sc(gcs)}</tr>`;
+  });
+};
+
+renderIntel=function(){
+  const recs=allMarketRecords().sort((a,b)=>b.score-a.score).map((r,i)=>({...r,rank:i+1}));
+  const currentTop=recs[0], highestCap=[...recs].sort((a,b)=>b.current-a.current)[0], widestSpread=[...recs].sort((a,b)=>b.spread10-a.spread10)[0];
+  const cards=document.getElementById('intelCards'); if(cards){cards.innerHTML=`
+    <div class="sc"><div class="sv">${Object.keys(COL).length}</div><div class="sl">Canadian markets</div><div class="ss">From audited Colliers workbook</div></div>
+    <div class="sc"><div class="sv">${recs.length}</div><div class="sl">City/category series</div><div class="ss">R/P, G/C, N/S per city</div></div>
+    <div class="sc"><div class="sv">${currentTop.score}</div><div class="sl">Top value score</div><div class="ss">${currentTop.market}</div></div>
+    <div class="sc"><div class="sv">${highestCap.current.toFixed(2)}%</div><div class="sl">Highest latest cap</div><div class="ss">${highestCap.market}</div></div>
+    <div class="sc"><div class="sv">${widestSpread.spread10.toFixed(2)}%</div><div class="sl">Widest spread vs 10Y</div><div class="ss">${widestSpread.market}</div></div>`;}
+  const insights=document.getElementById('intelInsights'); if(insights){insights.innerHTML=`<strong>Canada market ranking:</strong> This page ranks every Colliers market/category combination from the audited spreadsheet. The scoring keeps the prior methodology: spread vs GoC 10Y, historical percentile, cap-rate expansion since first available quarter, and relative current cap rate. It no longer functions as a memo page.`;}
+  const prof=document.getElementById('intelProfile'); if(prof){const selCity=document.getElementById('intelCity')?.value||city; const selType=document.getElementById('intelType')?.value||type; const r=recs.find(x=>x.city===selCity&&x.type===selType)||recs[0]; prof.innerHTML=`
+    <div class="sc"><div class="sv">#${r.rank}</div><div class="sl">Rank</div><div class="ss">${r.market}</div></div>
+    <div class="sc"><div class="sv">${r.current.toFixed(2)}%</div><div class="sl">Latest cap</div><div class="ss">Q1 2026 midpoint</div></div>
+    <div class="sc"><div class="sv">${r.spread10.toFixed(2)}%</div><div class="sl">Spread vs 10Y</div></div>
+    <div class="sc"><div class="sv">${r.percentile}th</div><div class="sl">Historical percentile</div></div>
+    <div class="sc"><div class="sv">${r.score}</div><div class="sl">Value score</div></div>`;}
+  const table=document.getElementById('intelTable'); if(table){table.innerHTML=recs.map(r=>`<tr><td>${r.rank}</td><td>${r.city}</td><td>${r.category}</td><td>${r.current.toFixed(2)}%</td><td>${r.spread10.toFixed(2)}%</td><td>${r.spread5.toFixed(2)}%</td><td>${r.change>=0?'+':''}${r.change.toFixed(2)}%</td><td>${r.percentile}th</td><td>${r.cycle}%</td><td><span class="score-pill ${r.score>=70?'score-high':r.score>=50?'score-mid':'score-low'}">${r.score}</span></td></tr>`).join('');}
+};
+
+
+/* === Patch v2: audited Colliers city layering + isolated point removal === */
+const CITY_PALETTE=['#7d8f42','#2f6f87','#b8c95b','#5b1732','#d7a63f','#6fc68c','#ef777c','#8f9ca3','#9b7cc6','#c87f4f','#4f9aa6','#b48c3b','#8cb36a','#c15c6a','#6d85b8','#a0a64b'];
+let selectedCities=['Toronto'];
+function cityColor(c){const list=Object.keys(COL); const i=Math.max(0,list.indexOf(c)); return CITY_PALETTE[i % CITY_PALETTE.length];}
+function cityColorAlpha(c,a){
+  const hex=cityColor(c).replace('#','');
+  const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function normalizeCitySelection(){
+  const cities=Object.keys(COL);
+  selectedCities=selectedCities.filter(c=>cities.includes(c));
+  if(!selectedCities.length) selectedCities=[cities[0]];
+  city=selectedCities[0];
+}
+function setCity(c){
+  normalizeCitySelection();
+  if(selectedCities.includes(c)){
+    if(selectedCities.length>1) selectedCities=selectedCities.filter(x=>x!==c);
+  }else{
+    selectedCities.push(c);
+  }
+  normalizeCitySelection();
+  document.querySelectorAll('#cc .btn').forEach(b=>{
+    const val=b.getAttribute('data-city') || b.textContent.replace('Montréal','Montreal');
+    b.classList.toggle('on',selectedCities.includes(val));
+  });
+  renderMain();
+}
+function setSingleCity(c){
+  selectedCities=[c];
+  normalizeCitySelection();
+  document.querySelectorAll('#cc .btn').forEach(b=>{
+    const val=b.getAttribute('data-city') || b.textContent.replace('Montréal','Montreal');
+    b.classList.toggle('on',selectedCities.includes(val));
+  });
+  renderMain();
+}
+function selectAllMainCities(){selectedCities=Object.keys(COL); syncCityButtons(); renderMain();}
+function clearMainCities(){selectedCities=[Object.keys(COL)[0]]; syncCityButtons(); renderMain();}
+function syncCityButtons(){
+  normalizeCitySelection();
+  document.querySelectorAll('#cc .btn').forEach(b=>{
+    const val=b.getAttribute('data-city') || b.textContent.replace('Montréal','Montreal');
+    b.classList.toggle('on',selectedCities.includes(val));
+  });
+}
+function seriesMidFor(cityName,typeKey){
+  const [lo,hi]=ti(typeKey);
+  return (COL[cityName]||[]).map(r=>{const mm=r?m(r[lo],r[hi]):null; return mm===null?null:+mm.toFixed(2);});
+}
+function safeLast(arr){for(let i=arr.length-1;i>=0;i--){if(Number.isFinite(arr[i])) return arr[i];} return null;}
+function firstFinite(arr){for(let i=0;i<arr.length;i++){if(Number.isFinite(arr[i])) return arr[i];} return null;}
+function summarizeSeries(vals){
+  const clean=vals.filter(v=>Number.isFinite(v));
+  if(!clean.length) return {first:null,last:null,change:null,max:null,min:null};
+  const first=clean[0], last=clean[clean.length-1];
+  const max=Math.max(...clean), min=Math.min(...clean);
+  return {first,last,change:+(last-first).toFixed(2),max,min};
+}
+function renderMain(){
+  normalizeCitySelection();
+  const [lo,hi]=ti(type);
+  const primary=selectedCities[0];
+  document.getElementById('cht').textContent=`${selectedCities.length===1?primary:selectedCities.length+' selected markets'} — ${tn(type)}`;
+
+  const spreadDefs={
+    s10:{name:'GoC 10Y',hist:HIST_GOC10,q:R10,color:'#5b1732'},
+    s5:{name:'GoC 5Y',hist:HIST_GOC5,q:R5,color:'#2f6f87'},
+    spr:{name:'Prime',hist:HIST_PRIME,q:PR,color:'#8a6f2a'}
+  };
+  const primaryMids=seriesMidFor(primary,type);
+  const spreadsBy={};
+  Object.keys(spreadDefs).forEach(k=>{
+    const b=spreadDefs[k];
+    const qSp=primaryMids.map((v,i)=>v===null?null:+(v-b.q[i]).toFixed(2));
+    const hSp=HIST_LABELS.map((y,i)=>+(NAT_RETAIL_BY_YEAR[y]-b.hist[i]).toFixed(2));
+    spreadsBy[k]=[...hSp,...qSp];
+  });
+
+  let allVals=[];
+  selectedCities.forEach(c=>{
+    const rows=COL[c]||[];
+    const mids=seriesMidFor(c,type);
+    const lows=rows.map(r=>r?r[lo]:null), highs=rows.map(r=>r?r[hi]:null);
+    if(sOn.col) allVals.push(...mids);
+    if(sOn.colRange) allVals.push(...lows,...highs);
+  });
+  if(sOn.nat) allVals.push(...natRetailSeries());
+  if(sOn.cbreNat) allVals.push(...cbreNationalSeries());
+  if(rOn.r10) allVals.push(...fullRate(HIST_GOC10,R10));
+  if(rOn.r5) allVals.push(...fullRate(HIST_GOC5,R5));
+  if(rOn.rpr) allVals.push(...fullRate(HIST_PRIME,PR));
+  allVals=allVals.filter(v=>Number.isFinite(v)); if(!allVals.length) allVals=[0,1];
+  const yMin=Math.max(0,Math.floor(Math.min(...allVals)*4)/4-0.25);
+  const yMax=Math.ceil(Math.max(...allVals)*4)/4+0.25;
+
+  const pLast=safeLast(primaryMids);
+  const kt=document.getElementById('kpiTape');
+  if(kt){
+    const latestLabel=selectedCities.length===1?primary:`${selectedCities.length} markets layered`;
+    kt.innerHTML=`
+      <div class="kpi"><div class="kv">${pLast===null?'—':pLast.toFixed(2)+'%'}</div><div class="kl">Primary: ${primary} ${tn(type)}</div></div>
+      <div class="kpi"><div class="kv" style="color:#5b1732">${R10[R10.length-1].toFixed(2)}%</div><div class="kl">GoC 10Y</div></div>
+      <div class="kpi"><div class="kv" style="color:#2f6f87">${R5[R5.length-1].toFixed(2)}%</div><div class="kl">GoC 5Y</div></div>
+      <div class="kpi"><div class="kv" style="color:#8a6f2a">${PR[PR.length-1].toFixed(2)}%</div><div class="kl">Prime</div></div>
+      <div class="kpi"><div class="kv">${pLast===null?'—':(pLast-R10[R10.length-1]).toFixed(2)+'%'}</div><div class="kl">Primary spread vs 10Y</div></div>
+      <div class="kpi"><div class="kv">${selectedCities.length}</div><div class="kl">Visible city layers</div></div>`;
+  }
+  const selectedTxt=selectedCities.map(c=>`<span style="color:${cityColor(c)};font-weight:bold">${c}</span>`).join(', ');
+  document.getElementById('chins').innerHTML=`<strong style="color:#e6edf0">${tn(type)} layered city view:</strong> Showing ${selectedTxt}. Spread bars, if on, are calculated against the primary selected market: <strong>${primary}</strong>. All Colliers city lines and range shading are pulled from the audited workbook.`;
+
+  let legHTML='';
+  if(sOn.nat) legHTML+='<div class="li"><div class="ldd" style="border-color:#6f6f72"></div>National retail avg. 2008–2026 (estimated)</div>';
+  if(sOn.cbreNat) legHTML+='<div class="li"><div class="ldd" style="border-color:#3a6f53;border-style:dotted"></div>CBRE national avg. reference</div>';
+  selectedCities.forEach(c=>{ if(sOn.col) legHTML+=`<div class="li"><div class="ld" style="background:${cityColor(c)}"></div>${c} midpoint</div>`; if(sOn.colRange) legHTML+=`<div class="li"><div class="lbar" style="background:${cityColorAlpha(c,.20)};border:1px solid ${cityColorAlpha(c,.45)}"></div>${c} low/high range</div>`; });
+  Object.keys(spOn).forEach(k=>{if(spOn[k]) legHTML+=`<div class="li"><div class="lbar" style="background:${k==='s10'?'rgba(91,23,50,.48)':k==='s5'?'rgba(47,111,135,.42)':'rgba(138,111,42,.36)'}"></div>Spread vs ${spreadDefs[k].name} (${primary})</div>`;});
+  if(rOn.r10) legHTML+='<div class="li"><div class="ld" style="background:#5b1732"></div>GoC 10Y</div>';
+  if(rOn.r5) legHTML+='<div class="li"><div class="ldd" style="border-color:#2f6f87"></div>GoC 5Y</div>';
+  if(rOn.rpr) legHTML+='<div class="li"><div class="ldd" style="border-color:#8a6f2a;border-style:dotted"></div>Prime Rate</div>';
+  document.getElementById('chleg').innerHTML=legHTML;
+
+  const ds=[];
+  const spreadColors={s10:'rgba(91,23,50,.48)',s5:'rgba(47,111,135,.42)',spr:'rgba(138,111,42,.36)'};
+  Object.keys(spOn).forEach(k=>{ if(spOn[k]) ds.push({type:'bar',label:'Spread vs '+spreadDefs[k].name+' ('+primary+')',data:spreadsBy[k],backgroundColor:spreadsBy[k].map(v=>spreadColors[k]),borderColor:'transparent',yAxisID:'yr',order:20,barPercentage:.8,categoryPercentage:.72}); });
+  if(sOn.nat) ds.push({type:'line',label:'Colliers national retail avg. (est.)',data:natRetailSeries(),borderColor:'#6f6f72',backgroundColor:'transparent',borderWidth:2,borderDash:[7,4],pointRadius:2,pointBackgroundColor:'#fff',pointBorderColor:'#6f6f72',pointBorderWidth:1.5,tension:.25,yAxisID:'yl',order:0});
+  if(sOn.cbreNat) ds.push({type:'line',label:'CBRE national all-property avg. (ref.)',data:cbreNationalSeries(),borderColor:'#3a6f53',backgroundColor:'transparent',borderWidth:1.8,borderDash:[2,4],pointRadius:0,tension:.25,yAxisID:'yl',order:0});
+
+  selectedCities.forEach((c,idx)=>{
+    const rows=COL[c]||[];
+    const mids=seriesMidFor(c,type);
+    const lows=rows.map(r=>r?r[lo]:null), highs=rows.map(r=>r?r[hi]:null);
+    const col=cityColor(c);
+    if(sOn.colRange){
+      ds.push({type:'line',label:`${c} range high`,data:padded(highs),borderColor:cityColorAlpha(c,.26),backgroundColor:cityColorAlpha(c,.13),borderWidth:1,pointRadius:0,fill:'+1',tension:.3,yAxisID:'yl',order:6+idx});
+      ds.push({type:'line',label:`${c} range low`,data:padded(lows),borderColor:cityColorAlpha(c,.26),borderWidth:1,pointRadius:0,fill:false,tension:.3,yAxisID:'yl',order:7+idx});
+    }
+    if(sOn.col){
+      ds.push({type:'line',label:`${c} midpoint`,data:padded(mids),borderColor:col,backgroundColor:col,borderWidth:c===primary?2.8:2.1,pointRadius:selectedCities.length>5?1.8:3,pointHoverRadius:6,pointBackgroundColor:col,tension:.3,yAxisID:'yl',order:2});
+    }
+  });
+  if(rOn.r10) ds.push({type:'line',label:'GoC 10Y',data:fullRate(HIST_GOC10,R10),borderColor:'#5b1732',backgroundColor:'transparent',borderWidth:2,pointRadius:2,pointBackgroundColor:'#5b1732',tension:.4,yAxisID:'yl',order:1});
+  if(rOn.r5) ds.push({type:'line',label:'GoC 5Y',data:fullRate(HIST_GOC5,R5),borderColor:'#2f6f87',backgroundColor:'transparent',borderWidth:2,borderDash:[6,3],pointRadius:2,pointBackgroundColor:'#2f6f87',tension:.4,yAxisID:'yl',order:1});
+  if(rOn.rpr) ds.push({type:'line',label:'Prime Rate',data:fullRate(HIST_PRIME,PR),borderColor:'#8a6f2a',backgroundColor:'transparent',borderWidth:2,borderDash:[3,3],pointRadius:2,pointBackgroundColor:'#8a6f2a',tension:.3,yAxisID:'yl',order:1});
+
+  kill('main');
+  const ctx=document.getElementById('mainC').getContext('2d');
+  charts.main=new Chart(ctx,{data:{labels:[...HIST_LABELS,...QS],datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{ if(c.parsed.y===null||Number.isNaN(c.parsed.y)) return `  ${c.dataset.label}: —`; if(c.dataset.label.includes('range high')) return `  ${c.dataset.label.replace(' range high','')} cap rate high: ${c.parsed.y.toFixed(2)}%`; if(c.dataset.label.includes('range low')) return `  ${c.dataset.label.replace(' range low','')} cap rate low: ${c.parsed.y.toFixed(2)}%`; if(c.dataset.label.startsWith('Spread vs')) return `  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`; return `  ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`;}}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:8},color:'#8f9ca3',maxRotation:45,autoSkip:true,maxTicksLimit:22}},yl:{type:'linear',position:'left',grid:{color:'rgba(255,255,255,.06)'},ticks:{font:{size:10},color:'#cbd4d8',callback:v=>v+'%'},min:yMin,max:yMax,title:{display:true,text:'Cap rate / benchmark (%)',font:{size:9},color:'#8f9ca3'}},yr:{type:'linear',position:'right',grid:{display:false},ticks:{font:{size:9},color:'#8f9ca3',callback:v=>v+'%'},title:{display:true,text:'Spread (%)',font:{size:9},color:'#8f9ca3'}}}}});
+}
+function syncButtons(){
+  ['col','cbre'].forEach(k=>{const el=document.getElementById('s'+k); if(el) el.classList.toggle('on',sOn[k]);});
+  ['nat','cbreNat','colRange','cycle'].forEach(k=>{const el=document.getElementById('l'+k); if(el) el.classList.toggle('on',sOn[k]);});
+  ['r10','r5','rpr'].forEach(k=>{const el=document.getElementById(k); if(el) el.classList.toggle('on',rOn[k]);});
+  [['s10','sp10'],['s5','sp5'],['spr','sppr']].forEach(([k,id])=>{const el=document.getElementById(id); if(el) el.classList.toggle('on',spOn[k]);});
+  syncCityButtons();
+}
+function preset(p){
+  if(p==='clean'){setAll(sOn,false);sOn.col=true;sOn.colRange=true;sOn.nat=true;setAll(rOn,false);rOn.r10=true;setAll(spOn,false);spOn.s10=true;}
+  if(p==='rates'){setAll(sOn,false);setAll(rOn,true);setAll(spOn,false);}
+  if(p==='spreads'){setAll(sOn,false);sOn.col=true;sOn.nat=true;setAll(rOn,false);rOn.r10=true;rOn.r5=true;setAll(spOn,false);spOn.s10=true;spOn.s5=true;}
+  if(p==='all'){setAll(sOn,true);sOn.iso=false;setAll(rOn,true);spOn.s10=true;spOn.s5=true;spOn.spr=false;}
+  syncButtons();renderMain();
+}
+function configureDynamicCities(){
+  const cities=Object.keys(COL);
+  selectedCities=selectedCities.filter(c=>cities.includes(c)); if(!selectedCities.length) selectedCities=[cities[0]]; city=selectedCities[0]; spCity=cities.includes(spCity)?spCity:cities[0]; cmpC=cities.includes(cmpC)?cmpC:cities[0];
+  mcCityOn={}; cities.forEach((c,i)=>mcCityOn[c]=i<4);
+  const cc=document.getElementById('cc'); if(cc) cc.innerHTML='<button class="btn ghost" onclick="selectAllMainCities()">All cities</button><button class="btn ghost" onclick="clearMainCities()">Reset</button>'+cities.map(c=>`<button class="btn ${selectedCities.includes(c)?'on':''}" data-city="${c}" onclick="setCity('${c.replace(/'/g,"\\'")}')">${cityLabel(c)}</button>`).join('');
+  const spc=document.getElementById('spc'); if(spc) spc.innerHTML=cityButtonHtml('setSpCity',spCity);
+  const mcT=document.getElementById('mcCityToggles'); if(mcT){mcT.innerHTML='<span class="lbl">Markets</span>'+cities.map((c,i)=>`<button class="btn ${i<4?'on':''}" id="mcCity${safeId(c)}" onclick="togMcCity('${c.replace(/'/g,"\\'")}')">${cityLabel(c)}</button>`).join('');}
+  ['mcCity','snapCity','intelCity','noteCity','tbcity'].forEach(id=>fillCitySelect(id,city));
+  const tbsrc=document.getElementById('tbsrc'); if(tbsrc) tbsrc.value='col';
+  syncCityButtons();
+}
+
+configureDynamicCities();
 
 renderMain();
 renderTable();
