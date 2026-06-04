@@ -140,18 +140,21 @@ canvas{background:transparent}
     <span>Spread bars independently toggleable</span><span>Market Compare + Macro & Rates + Canada Rankings + Offline Assistant</span>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="showTab('chart')">Chart View</button>
-    <button class="tab" onclick="showTab('market')">Market Compare</button>
+    <button class="tab active" onclick="showTab('chart')">Build a Chart</button>
+    <button class="tab" onclick="showTab('market')">Compare Markets</button>
+    <button class="tab" onclick="showTab('intel')">Rank Markets</button>
+    <button class="tab" onclick="showTab('spread')">Cap Rate Spreads</button>
     <button class="tab" onclick="showTab('macro')">Macro & Rates</button>
     <button class="tab" onclick="showTab('assistant')">Data Assistant</button>
     <button class="tab" onclick="showTab('tools')">Deal Lens</button>
-    <button class="tab" onclick="showTab('intel')">Canada Market Rankings</button>
-    <button class="tab" onclick="showTab('spread')">Spread Analysis</button>
-    <button class="tab" onclick="showTab('table')">Full Data Table</button>
+    <button class="tab" onclick="showTab('table')">Raw Data</button>
   </div>
 </div>
 
 <div class="body">
+
+
+
 
 <!-- CHART TAB -->
 <div id="tab-chart">
@@ -207,7 +210,7 @@ canvas{background:transparent}
     <div class="leg" id="chleg"></div>
     <div style="position:relative;height:430px"><canvas id="mainC" role="img" aria-label="Cap rate chart">Cap rate data.</canvas></div>
   </div>
-  <div class="info" id="chins">Loading...</div>
+  <div class="info" id="chins">Loading...</div><div class="info"><strong>Key Takeaway:</strong> Dynamic takeaway box placeholder for next development phase.</div>
   <div class="note">2008–2017 national context is approximate and not city-specific. Q1 2018–Q1 2026 uses audited quarterly city-level Colliers data. City lines can now be layered in Chart View, with cap-rate, range, rate, reference, and spread-bar series independently toggleable. GoC 10Y and GoC 5Y values in Chart View are now mechanically derived from the uploaded Bank of Canada CSV using the last available observation in each quarter.</div>
 </div>
 
@@ -1045,82 +1048,112 @@ function qaCopy(){const el=document.getElementById('qaAnswer'); const txt=el.inn
 function qaButtonRow(){return `<div class="qa-answer-actions"><button class="btn" onclick="qaCopy()">Copy answer</button></div>`;}
 function qaPct(v){return (v>=0?'+':'')+v.toFixed(2)+'%';}
 function qaBps(v){return (v>=0?'+':'')+Math.round(v*100)+' bps';}
-function qaTypeFromText(q){if(q.includes('grocery')||q.includes('community')) return 'gc'; if(q.includes('neigh')||q.includes('strip')) return 'ns'; if(q.includes('regional')||q.includes('power')||q.includes('sector')) return 'rp'; return null;}
-function qaCitiesFromText(q){return Object.keys(COL).filter(c=>q.includes(c.toLowerCase()));}
-function qaRecords(){return allMarketRecords().map(r=>({...r,spreadPrime:+(r.current-PR[PR.length-1]).toFixed(2)}));}
+function qaNormalize(q){return String(q||'').toLowerCase().replace(/[–—]/g,'-').replace(/[^a-z0-9%\.\s-]/g,' ').replace(/\s+/g,' ').trim();}
+function qaTypeFromText(q){
+  q=qaNormalize(q);
+  if(/\b(grocery|community|g c|gc|food anchored|food-anchored)\b/.test(q)) return 'gc';
+  if(/\b(neighbourhood|neighborhood|strip|neigh|n s|ns)\b/.test(q)) return 'ns';
+  if(/\b(regional|power|regional power|r p|rp|box|big box|sector)\b/.test(q)) return 'rp';
+  return null;
+}
+function qaCitiesFromText(q){
+  q=qaNormalize(q);
+  const aliases={montreal:['montreal','montréal'],toronto:['toronto','gta'],ottawa:['ottawa'],calgary:['calgary'],edmonton:['edmonton'],vancouver:['vancouver']};
+  return Object.keys(COL).filter(c=>{
+    const key=c.toLowerCase(); const list=aliases[key]||[key];
+    return list.some(a=>q.includes(a));
+  });
+}
+function qaRecords(){
+  const ranked=[...allMarketRecords()].sort((a,b)=>b.current-a.current);
+  return ranked.map((r,i)=>({...r,rank:i+1,spreadPrime:+(r.current-PR[PR.length-1]).toFixed(2)}));
+}
 function qaTable(rows, cols){return `<table class="qa-table"><thead><tr>${cols.map(c=>`<th>${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
 function qaWhy(text){return `<div style="margin-top:10px;border-left:3px solid var(--terminal);padding-left:10px;color:#c8d1d5"><strong style="color:#e6edf0">Why this matters:</strong> ${text}</div>`;}
 function qaProfile(r){
+  if(!r) return `<strong>I could not find that exact market/category.</strong><br>Try a city like Toronto, Ottawa, Calgary, Montréal, Vancouver, or Edmonton plus a category like regional, grocery, or strip.`;
   return `<strong>${r.market}</strong><br>
-  Current midpoint: <strong>${r.current.toFixed(2)}%</strong> | Spread: <strong>${qaPct(r.spread10)}</strong> vs GoC 10Y, <strong>${qaPct(r.spread5)}</strong> vs GoC 5Y | Change since Q1 2018: <strong>${qaPct(r.change)}</strong><br>
+  Current midpoint: <strong>${r.current.toFixed(2)}%</strong> | Spread: <strong>${qaPct(r.spread10)}</strong> vs GoC 10Y, <strong>${qaPct(r.spread5)}</strong> vs GoC 5Y, <strong>${qaPct(r.spreadPrime)}</strong> vs Prime | Change since Q1 2018: <strong>${qaPct(r.change)}</strong><br>
   Historical percentile: <strong>${r.percentile}th</strong> | Cycle position: <strong>${r.cycle}%</strong> toward cycle high | Trinity value score: <strong>${r.score}/100</strong>`;
 }
+function qaLatestQuarter(){return QS[QS.length-1]||'latest quarter';}
+function qaExtractTopN(q, fallback=5){const m=qaNormalize(q).match(/(?:top|first|show)\s*(\d+)/); return Math.min(Math.max(parseInt(m?.[1]||fallback,10),1),12);}
+function qaFilteredRecords(recs,qType,qCities){return recs.filter(r=>(!qType||r.type===qType)&&(!qCities.length||qCities.includes(r.city)));}
+function qaMetricFromQuestion(q){
+  q=qaNormalize(q);
+  if(/\b(lowest|lowest cap|tightest|most expensive|compressed|compression)\b/.test(q)) return {key:q.includes('spread')?'spread10':'current',dir:'asc',title:q.includes('spread')?'Tightest spreads':'Lowest current cap rates',why:'Lower cap rates or tighter spreads usually point to stronger pricing, lower perceived risk, or more competitive investor demand.'};
+  if(/\b(value score|best value|score|opportunity|attractive|screen)\b/.test(q)) return {key:'score',dir:'desc',title:'Highest Trinity value scores',why:'The score blends spread, historical percentile, cap-rate expansion, and relative cap rate into one screening metric.'};
+  if(/\b(spread|yield cushion|premium)\b/.test(q)){
+    const key=/\b5y|5 year|five year\b/.test(q)?'spread5':/\bprime\b/.test(q)?'spreadPrime':'spread10';
+    return {key,dir:'desc',title:`Widest spreads to ${key==='spread5'?'GoC 5Y':key==='spreadPrime'?'Prime':'GoC 10Y'}`,why:'A wider spread can indicate more yield cushion relative to the selected benchmark, but it should still be checked against tenant quality and growth prospects.'};
+  }
+  if(/\b(expansion|expanded|change since|since 2018|moved up|increased)\b/.test(q)) return {key:'change',dir:'desc',title:'Largest cap-rate expansion since Q1 2018',why:'Expansion can point to markets where pricing has reset most, which may create acquisition opportunities if fundamentals remain sound.'};
+  if(/\b(percentile|cycle high|historically high|relative to history)\b/.test(q)) return {key:'percentile',dir:'desc',title:'Highest historical percentiles',why:'A high percentile means the current cap rate is high relative to its own post-2018 history.'};
+  if(/\b(highest|highest cap|top|yield|yielding)\b/.test(q)) return {key:'current',dir:'desc',title:'Highest current cap rates',why:'Higher cap rates may indicate better going-in yield, but can also reflect weaker growth, higher risk, or less liquidity.'};
+  return null;
+}
+function qaComparisonRows(recs,cities,typeKey){
+  const ranking=[...recs].sort((a,b)=>b.current-a.current);
+  return cities.map(c=>recs.find(x=>x.city===c&&x.type===typeKey)).filter(Boolean).map(r=>({...r,rank:ranking.findIndex(x=>x.market===r.market)+1}));
+}
 function answerQuestion(){
-  const q=(document.getElementById('qaInput').value||'').toLowerCase().trim();
+  const raw=document.getElementById('qaInput').value||'';
+  const q=qaNormalize(raw);
   const ans=document.getElementById('qaAnswer');
   if(!q){clearAssistant();return;}
   const recs=qaRecords();
+  const qType=qaTypeFromText(q);
+  const qCities=qaCitiesFromText(q);
   const colsBasic=[['Rank',r=>r.rank],['Market',r=>r.market],['Current cap',r=>r.current.toFixed(2)+'%'],['Spread 10Y',r=>qaPct(r.spread10)],['Spread 5Y',r=>qaPct(r.spread5)],['Percentile',r=>r.percentile+'th'],['Score',r=>r.score]];
   function reply(html){ans.innerHTML=html+qaButtonRow();}
 
-  if(q.includes('help')||q.includes('what can')){
-    reply(`<strong>Ask me things like:</strong><br>• “Top 5 cap rates”<br>• “Best value score”<br>• “Compare Toronto and Calgary grocery”<br>• “Toronto regional percentile”<br>• “Widest spread to 5Y”<br>• “Most expansion since 2018”<br>• “CBRE data gaps”<br>• “Inflation and rates”`);
+  if(/\b(help|what can|examples|how do i ask)\b/.test(q)){
+    reply(`<strong>Ask me things like:</strong><br>• “Top 5 cap rates”<br>• “Best value score”<br>• “Compare Toronto vs Calgary grocery”<br>• “Toronto regional profile”<br>• “Widest spread to 5Y”<br>• “Most expansion since 2018”<br>• “Which market is historically high?”<br>• “Macro read”`);
     return;
   }
 
-  if(q.includes('inflation')||q.includes('cpi')||q.includes('macro')||q.includes('rates')){
+  if(/\b(inflation|cpi|macro|rates|bond|prime|goc|10y|5y)\b/.test(q) && !/\bspread|cap rate|compare\b/.test(q)){
     const cpiLatest=CPI_INFL[CPI_INFL.length-1], cpiPeak=Math.max(...CPI_INFL), peakYear=MACRO_YEARS[CPI_INFL.indexOf(cpiPeak)];
-    const html=`<strong>Macro read</strong><br>Latest loaded full-year CPI inflation is <strong>${cpiLatest.toFixed(1)}%</strong>. The loaded period peak is <strong>${cpiPeak.toFixed(1)}%</strong> in <strong>${peakYear}</strong>. Current loaded quarter-end rates are GoC 10Y <strong>${R10[R10.length-1].toFixed(2)}%</strong>, GoC 5Y <strong>${R5[R5.length-1].toFixed(2)}%</strong>, and Prime <strong>${PR[PR.length-1].toFixed(2)}%</strong>.` + qaWhy('Inflation and rates influence required returns, financing costs, and the spread investors demand over bonds.');
-    reply(html); return;
-  }
-
-  if(q.includes('cbre') && (q.includes('gap')||q.includes('missing')||q.includes('available')||q.includes('data'))){
-    reply(`<strong>CBRE city-level data has been removed from this version.</strong><br>The dashboard now keeps only the national CBRE reference line and the national retail line. City-level comparisons, rankings, spreads, and tables use the audited Colliers workbook.` + qaWhy('This avoids implying precision from incomplete CBRE city observations.'));
+    reply(`<strong>Macro read</strong><br>Latest loaded full-year CPI inflation is <strong>${cpiLatest.toFixed(1)}%</strong>. The loaded period peak is <strong>${cpiPeak.toFixed(1)}%</strong> in <strong>${peakYear}</strong>. Current loaded quarter-end rates are GoC 10Y <strong>${R10[R10.length-1].toFixed(2)}%</strong>, GoC 5Y <strong>${R5[R5.length-1].toFixed(2)}%</strong>, and Prime <strong>${PR[PR.length-1].toFixed(2)}%</strong>.` + qaWhy('Inflation and rates influence required returns, financing costs, and the spread investors demand over bonds.'));
     return;
   }
 
-  const qType=qaTypeFromText(q);
-  const qCities=qaCitiesFromText(q);
-  if(q.includes('compare') && qCities.length>=2){
+  if(q.includes('cbre') && /\b(gap|missing|available|data|city)\b/.test(q)){
+    reply(`<strong>CBRE city-level data is not used for city rankings in this version.</strong><br>The dashboard keeps only the national CBRE reference line and national retail line. City-level comparisons, rankings, spreads, and tables use the audited Colliers data.` + qaWhy('This avoids implying precision from incomplete CBRE city observations.'));
+    return;
+  }
+
+  if((/\b(compare|versus|vs|v\b|between)\b/.test(q) || qCities.length>=2) && qCities.length>=2){
     const typeKey=qType||'rp';
-    const rows=qCities.map(c=>{const r=recs.find(x=>x.city===c&&x.type===typeKey); return {...r,rank:recs.sort((a,b)=>b.current-a.current).findIndex(x=>x.market===r.market)+1};});
-    reply(`<strong>${tn(typeKey)} city comparison</strong>` + qaTable(rows,[['City',r=>r.city],['Current cap',r=>r.current.toFixed(2)+'%'],['Spread 10Y',r=>qaPct(r.spread10)],['Change since 2018',r=>qaPct(r.change)],['Percentile',r=>r.percentile+'th'],['Score',r=>r.score]]) + qaWhy('This lets you compare the same retail category across markets without mixing property types.'));
-    return;
+    const rows=qaComparisonRows(recs,qCities,typeKey);
+    if(rows.length){
+      const best=[...rows].sort((a,b)=>b.current-a.current)[0];
+      reply(`<strong>${tn(typeKey)} city comparison, ${qaLatestQuarter()}</strong>` + qaTable(rows,[['City',r=>r.city],['Current cap',r=>r.current.toFixed(2)+'%'],['Spread 10Y',r=>qaPct(r.spread10)],['Change since 2018',r=>qaPct(r.change)],['Percentile',r=>r.percentile+'th'],['Value score',r=>r.score]]) + `<div style="margin-top:8px">Highest current cap rate in this comparison: <strong>${best.city}</strong> at <strong>${best.current.toFixed(2)}%</strong>.</div>` + qaWhy('This compares the same retail category across markets so the answer does not mix property types.'));
+      return;
+    }
   }
 
-  if((q.includes('profile')||q.includes('percentile')||q.includes('cycle')||q.includes('score')) && qCities.length>=1){
-    const cityName=qCities[0]; const typeKey=qType||'rp'; const r=recs.find(x=>x.city===cityName&&x.type===typeKey);
-    reply(qaProfile(r) + qaWhy('Percentile and cycle position show whether today’s cap rate is high or low relative to its own history, not just relative to other markets.'));
-    return;
-  }
-
-  let metric=null, title='', why='';
-  if(q.includes('score')||q.includes('opportunity')||q.includes('attractive')||q.includes('best value')){metric='score'; title='Highest Trinity value scores'; why='The score blends spread, historical percentile, cap-rate expansion, and relative cap rate into one screening metric.';}
-  else if(q.includes('spread')){metric=q.includes('5')?'spread5':q.includes('prime')?'spreadPrime':'spread10'; title=`Widest spreads to ${metric==='spread5'?'GoC 5Y':metric==='spreadPrime'?'Prime':'GoC 10Y'}`; why='A wider spread can indicate more yield cushion relative to the selected benchmark, but it should still be checked against tenant quality and growth prospects.';}
-  else if(q.includes('expansion')||q.includes('expanded')||q.includes('change since')||q.includes('since 2018')){metric='change'; title='Largest cap-rate expansion since Q1 2018'; why='Expansion can point to markets where pricing has reset most, which may create acquisition opportunities if fundamentals remain sound.';}
-  else if(q.includes('compression')||q.includes('compressed')){metric='changeAsc'; title='Most cap-rate compression since Q1 2018'; why='Compression can indicate markets that have become more expensive relative to their 2018 starting point.';}
-  else if(q.includes('low')||q.includes('lowest')){metric='currentAsc'; title='Lowest current cap rates'; why='Lower cap rates usually signal stronger pricing, lower perceived risk, or more competitive investor demand.';}
-  else if(q.includes('high')||q.includes('highest')||q.includes('top')){metric='current'; title='Highest current cap rates'; why='Higher cap rates may indicate better going-in yield, but can also reflect weaker growth, higher risk, or less liquidity.';}
-  else if(q.includes('percentile')){metric='percentile'; title='Highest historical percentiles'; why='A high percentile means the current cap rate is high relative to its own post-2018 history.';}
-
-  if(metric){
-    let sorted=[...recs];
-    if(metric==='changeAsc'||metric==='currentAsc') sorted.sort((a,b)=>(metric==='changeAsc'?a.change-b.change:a.current-b.current));
-    else sorted.sort((a,b)=>b[metric]-a[metric]);
-    const topN=(q.match(/top\s*(\d+)/)||[])[1]; const n=Math.min(+(topN||5),12);
-    const rows=sorted.slice(0,n).map((r,i)=>({...r,rank:i+1}));
-    reply(`<strong>${title}</strong>` + qaTable(rows,colsBasic) + qaWhy(why));
-    return;
-  }
-
-  if(qCities.length>=1){
-    const cityName=qCities[0]; const typeKey=qType||'rp'; const r=recs.find(x=>x.city===cityName&&x.type===typeKey);
+  if(qCities.length>=1 && (/\b(profile|show|what is|current|cap rate|percentile|cycle|score|spread)\b/.test(q) || qType)){
+    const cityName=qCities[0];
+    const typeKey=qType||'rp';
+    const r=recs.find(x=>x.city===cityName&&x.type===typeKey);
     reply(qaProfile(r) + qaWhy('Use this as a quick market snapshot before writing a thesis or comparing acquisition opportunities.'));
     return;
   }
 
+  const metric=qaMetricFromQuestion(q);
+  if(metric){
+    let sorted=qaFilteredRecords(recs,qType,qCities);
+    if(!sorted.length) sorted=recs;
+    sorted.sort((a,b)=>metric.dir==='asc'?a[metric.key]-b[metric.key]:b[metric.key]-a[metric.key]);
+    const rows=sorted.slice(0,qaExtractTopN(q)).map((r,i)=>({...r,rank:i+1}));
+    const filterNote=(qType||qCities.length)?`<div style="margin-bottom:8px;color:#9eaab0">Filtered to ${[qCities.join(', '),qType?tn(qType):''].filter(Boolean).join(' · ')}.</div>`:'';
+    reply(`<strong>${metric.title}, ${qaLatestQuarter()}</strong>${filterNote}` + qaTable(rows,colsBasic) + qaWhy(metric.why));
+    return;
+  }
+
   const rows=[...recs].sort((a,b)=>b.score-a.score).slice(0,5).map((r,i)=>({...r,rank:i+1}));
-  reply(`<strong>I did not fully understand the question, so here are the current top value-score markets.</strong>` + qaTable(rows,colsBasic) + qaWhy('Try asking about highest cap rates, widest spreads, value scores, expansion since 2018, market profiles, or city comparisons.'));
+  reply(`<strong>I did not fully understand the question, so here are the current top value-score markets.</strong><br><span style="color:#9eaab0">Try “highest cap rates,” “widest spread to 10Y,” “Toronto grocery profile,” or “compare Vancouver Calgary strip.”</span>` + qaTable(rows,colsBasic) + qaWhy('The assistant now uses clearer intent matching, city/category filters, comparison handling, and safer fallback answers.'));
 }
 
 
@@ -1758,7 +1791,7 @@ function renderMacroStatusCards(){
 }
 
 function showTab(t){
-  const tabs=['chart','market','macro','assistant','tools','intel','spread','table'];
+  const tabs=['chart','market','intel','spread','macro','assistant','tools','table'];
   tabs.forEach(id=>{const el=document.getElementById('tab-'+id); if(el) el.style.display=id===t?'':'none';});
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   if(t==='market') setTimeout(renderMarketCompare,0);
